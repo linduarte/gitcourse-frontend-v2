@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Git Workflows</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Configuração global -->
+    <script src="../../static/js/config.js"></script>
+
+    <!-- Autenticação + Concluído -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!'
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>
+</head>
+
+<body class="intro-page">
+
+<div class="container">
+
+    <h1>O que são Git Workflows?</h1>
+
+    <p class="p-styled spaced-p">
+        Os Git workflows são práticas que definem como desenvolvedores colaboram, organizam branches e mantêm a qualidade do código.
+        A escolha do workflow adequado melhora a produtividade e reduz conflitos.
+    </p>
+
+    <h4>Principais Tipos de Git Workflows</h4>
+
+    <p class="p-styled spaced-p">
+        Existem vários workflows, cada um adequado a um tipo de projeto. Vamos explorar os mais utilizados.
+    </p>
+
+    <!-- ============================================================
+         GIT FLOW
+    ============================================================ -->
+    <h4>Git Flow</h4>
+
+    <div class="mermaid">
+        graph TD
+            A[main] --> B[develop]
+            B --> C[feature branches]
+            C --> B
+            B --> D[release]
+            D --> A
+            D --> B
+    </div>
+
+    <p class="p-styled spaced-p">
+        O Git Flow, criado por Vincent Driessen, é ideal para projetos com ciclos de lançamento bem definidos.
+        Ele utiliza duas branches principais:
+    </p>
+
+    <ul class="p-styled spaced-p">
+        <li><strong>main</strong>: versão estável e pronta para produção.</li>
+        <li><strong>develop</strong>: branch de integração onde funcionalidades são mescladas.</li>
+    </ul>
+
+    <p class="p-styled spaced-p">Branches auxiliares:</p>
+
+    <ul class="p-styled spaced-p">
+        <li><strong>feature</strong>: desenvolvimento de novas funcionalidades.</li>
+        <li><strong>release</strong>: preparação de versões.</li>
+        <li><strong>hotfix</strong>: correções urgentes em produção.</li>
+    </ul>
+
+    <p class="p-styled spaced-p"><strong>Exemplo real:</strong><br>
+        Uma empresa que lança versões a cada 30 dias usa o Git Flow para organizar features, correções e releases.
+    </p>
+
+    <p class="p-styled spaced-p"><strong>Quando usar:</strong><br>
+        Projetos com versões planejadas, equipes médias ou grandes e pouca necessidade de deploy contínuo.
+    </p>
+
+    <!-- ============================================================
+         GITHUB FLOW
+    ============================================================ -->
+    <h4>GitHub Flow</h4>
+
+    <div class="mermaid">
+        graph LR
+            A[main] --> B[branch curta]
+            B --> C[pull request]
+            C --> D[review]
+            D --> E[merge na main]
+            E --> F[deploy]
+    </div>
+
+    <p class="p-styled spaced-p">
+        O GitHub Flow é simples e ideal para deploys frequentes. Baseia-se em branches curtas e revisões rápidas.
+    </p>
+
+    <ul class="p-styled spaced-p">
+        <li><strong>main</strong>: branch única e sempre estável.</li>
+        <li><strong>branches curtas</strong>: criadas para cada mudança.</li>
+        <li><strong>pull requests</strong>: revisão antes do merge.</li>
+        <li><strong>deploy contínuo</strong>: mudanças vão rapidamente para produção.</li>
+    </ul>
+
+    <p class="p-styled spaced-p"><strong>Exemplo real:</strong><br>
+        Times que trabalham em sites com deploy várias vezes ao dia usam GitHub Flow.
+    </p>
+
+    <p class="p-styled spaced-p"><strong>Quando usar:</strong><br>
+        Projetos web, equipes pequenas e ambientes com CI/CD rápido.
+    </p>
+
+    <!-- ============================================================
+         GITLAB FLOW
+    ============================================================ -->
+    <h4>GitLab Flow</h4>
+
+    <div class="mermaid">
+        graph LR
+            A[main] --> B[pre-production]
+            B --> C[deploy staging]
+            C --> D[deploy produção]
+    </div>
+
+    <p class="p-styled spaced-p">
+        O GitLab Flow combina simplicidade com suporte a múltiplos ambientes (dev, staging, produção).
+    </p>
+
+    <ul class="p-styled spaced-p">
+        <li><strong>main</strong>: produção.</li>
+        <li><strong>pre-production</strong>: ambiente de staging.</li>
+        <li><strong>environment branches</strong>: opcionais para QA ou homologação.</li>
+    </ul>
+
+    <p class="p-styled spaced-p"><strong>Exemplo real:</strong><br>
+        Empresas com pipelines complexos e múltiplos ambientes usam GitLab Flow para organizar deploys.
+    </p>
+
+    <p class="p-styled spaced-p"><strong>Quando usar:</strong><br>
+        Projetos corporativos, times com CI/CD robusto e múltiplos ambientes.
+    </p>
+
+    <!-- ============================================================
+         VANTAGENS
+    ============================================================ -->
+    <h4>Vantagens dos Git Workflows</h4>
+
+    <ul class="p-styled spaced-p">
+        <li>Organização e clareza no repositório.</li>
+        <li>Colaboração eficiente entre desenvolvedores.</li>
+        <li>Qualidade do código por meio de revisões e testes.</li>
+        <li>Flexibilidade para diferentes tamanhos de equipe.</li>
+    </ul>
+
+    <!-- ============================================================
+         CONCEITOS BÁSICOS
+    ============================================================ -->
+    <h4>Conceitos básicos no Git</h4>
+
+    <ul class="p-styled spaced-p">
+        <li><strong>Repository (Repo):</strong> pasta rastreada pelo Git.</li>
+        <li><strong>Commit:</strong> instantâneo do projeto.</li>
+        <li><strong>Branch:</strong> linha paralela de desenvolvimento.</li>
+        <li><strong>Merge:</strong> mesclagem de mudanças.</li>
+        <li><strong>Remote:</strong> repositório hospedado online.</li>
+    </ul>
+
+    <!-- ============================================================
+         COMANDOS
+    ============================================================ -->
+    <h4>Comandos Git usados no dia a dia</h4>
+
+    <h5>Configurando o Git</h5>
+    <img src="../../static/images/set-a.webp" class="img-full">
+
+    <h5>Iniciando um repositório</h5>
+    <img src="../../static/images/set-b.webp" class="img-full">
+
+    <h5>Acompanhando mudanças</h5>
+    <img src="../../static/images/set-c.webp" class="img-full">
+
+    <h5>Sincronizando com repositório remoto</h5>
+    <img src="../../static/images/set-d.webp" class="img-full">
+
+    <!-- ============================================================
+         FLUXOS DE TRABALHO
+    ============================================================ -->
+    <h4>Fluxos de trabalho do Git</h4>
+
+    <p class="p-styled spaced-p">
+        Agora vamos ver workflows práticos usados no dia a dia.
+    </p>
+
+    <!-- ============================================================
+         BÁSICO
+    ============================================================ -->
+    <h4>Fluxo de trabalho básico (desenvolvedor solo)</h4>
+
+    <div class="mermaid">
+        graph LR
+            A[git init] --> B[git add]
+            B --> C[git commit]
+            C --> D[git push]
+    </div>
+
+    <p class="p-styled spaced-p">
+        Ideal para quem trabalha sozinho.
+    </p>
+
+    <pre><code class="language-bash">git init</code></pre>
+    <pre><code class="language-bash">git add &lt;nome-do-arquivo&gt;</code></pre>
+    <pre><code class="language-bash">git commit -m "Mensagem significativa"</code></pre>
+    <pre><code class="language-bash">git push origin main</code></pre>
+
+    <!-- ============================================================
+         CENTRALIZADO
+    ============================================================ -->
+    <h4>Fluxo de trabalho centralizado</h4>
+
+    <div class="mermaid">
+        graph LR
+            A[main] --> B[git pull]
+            B --> C[alterações]
+            C --> D[git add]
+            D --> E[git commit]
+            E --> F[git push]
+    </div>
+
+    <p class="p-styled spaced-p">
+        Todos trabalham na mesma branch (geralmente main).
+    </p>
+
+    <pre><code class="language-bash">git pull</code></pre>
+    <pre><code class="language-bash">git add .</code></pre>
+    <pre><code class="language-bash">git commit -m "Mensagem"</code></pre>
+    <pre><code class="language-bash">git push</code></pre>
+
+    <!-- ============================================================
+         FEATURE BRANCH
+    ============================================================ -->
+    <h4>Fluxo de trabalho com branch de funcionalidade</h4>
+
+    <div class="mermaid">
+        graph LR
+            A[main] --> B[feature/my-feature]
+            B --> C[commits]
+            C --> D[pull request]
+            D --> E[merge]
+    </div>
+
+    <p class="p-styled spaced-p">
+        Ideal para equipes trabalhando em paralelo.
+    </p>
+
+    <pre><code class="language-bash">git clone &lt;repo-url&gt;</code></pre>
+    <pre><code class="language-bash">git checkout -b feature/minha-feature</code></pre>
+    <pre><code class="language-bash">git commit -m "Implementa feature X"</code></pre>
+    <pre><code class="language-bash">git push -u origin feature/minha-feature</code></pre>
+
+    <!-- ============================================================
+         FORKING
+    ============================================================ -->
+    <h4>Fluxo de trabalho Forking (open source)</h4>
+
+    <div class="mermaid">
+        graph LR
+            A[fork] --> B[clone]
+            B --> C[branch]
+            C --> D[commit]
+            D --> E[push]
+            E --> F[pull request]
+    </div>
+
+    <pre><code class="language-bash">git clone &lt;fork-url&gt;</code></pre>
+    <pre><code class="language-bash">git checkout -b feature/fix-bug</code></pre>
+    <pre><code class="language-bash">git push origin feature/fix-bug</code></pre>
+
+    <p class="p-styled spaced-p">
+        Esse fluxo é comum em projetos open source.
+    </p>
+
+    <!-- ============================================================
+         APLICAÇÃO EM OUTRAS ÁREAS
+    ============================================================ -->
+    <p class="p-styled spaced-p">
+        Embora muito usado em software, o Git também pode versionar desenhos mecânicos, elétricos, documentos operacionais e qualquer artefato que exija controle rigoroso.
+    </p>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+
+        <nav class="footer-nav">
+            <!-- Última página: sem voltar ou próximo -->
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="16" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

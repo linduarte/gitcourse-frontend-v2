@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Git Course</title>
+
+    <!-- Configuração global -->
+    <script src="script/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('access_token');
+
+        // Usuário autenticado → vai para o dashboard
+        if (token) {
+            window.location.href = "dashboard.html";
+            return;
+        }
+
+        // Usuário não autenticado → vai para a landing
+        window.location.href = "landing.html";
+    });
+    </script>
+</head>
+
+<body>
+    <p>Redirecionando...</p>
+</body>
+</html>

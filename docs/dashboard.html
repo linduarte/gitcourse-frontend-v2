@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Git Course</title>
+
+  <!-- CSS principal do curso -->
+  <link rel="stylesheet" href="assets/css/gitcourse.css">
+
+  <!-- CSS específico da dashboard -->
+  <link rel="stylesheet" href="static/css/pages/dashboard.css">
+</head>
+
+<body>
+
+  <!-- SIDEBAR ORIGINAL (preservada) -->
+  <aside class="sidebar">
+    <h2>Git Course</h2>
+    <ul>
+      <li><a href="dashboard.html">🏠 Dashboard</a></li>
+      <li><a href="curso/git-course/progress.html">📊 Progresso</a></li>
+      <li id="menuContinue">⏭ Continuar</li>
+      <li id="menuLastTopic">📌 Último tópico</li>
+      <li id="menuLogout">🚪 Sair</li>
+    </ul>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="dashboard-container container">
+
+    <h1>Bem-vindo ao Git Course!</h1>
+    <p id="welcomeMessage">Carregando...</p>
+
+    <!-- CARD DE PROGRESSO -->
+    <section id="progressCard" class="card">
+      <h3>Seu Progresso</h3>
+
+      <div id="progressCardContent">Carregando...</div>
+
+      <div class="progress-bar">
+        <div id="progressBarFill" class="progress-bar-fill"></div>
+      </div>
+
+      <button type="button" id="btnContinueCard" class="btn-footer-primary">
+        Continuar de onde parei →
+      </button>
+    </section>
+
+    <!-- PRÓXIMO TÓPICO -->
+    <section id="nextTopicCard" class="card"></section>
+
+    <!-- ÚLTIMO TÓPICO -->
+    <section id="lastTopicCard" class="card"></section>
+
+  </main>
+
+  <!-- CONFIG DA API -->
+  <script src="script/config.js"></script>
+
+  <!-- MÓDULO GLOBAL -->
+  <script type="module">
+    import { protectRoute, getCurrentUser } from "./scripts/git-course-functions.js";
+
+    // Proteção de rota padronizada
+    protectRoute();
+
+    // Carregar nome do usuário
+    (async () => {
+      const user = await getCurrentUser();
+      const welcome = document.getElementById('welcomeMessage');
+      welcome.textContent = `Olá, ${user.email}! 🚀 Pronto para continuar seus estudos?`;
+    })();
+  </script>
+
+  <!-- SEU SCRIPT ORIGINAL (preservado) -->
+  <script>
+    /* ============================================================
+       MAPA DOS ARQUIVOS HTML DO CURSO
+    ============================================================ */
+    const topicFiles = {
+      1: "curso/git-course/1a-prefacio.html",
+      2: "curso/git-course/2-introduction.html",
+      3: "curso/git-course/3-git-config.html",
+      4: "curso/git-course/4-hosting.html",
+      5: "curso/git-course/5-connect.html",
+      6: "curso/git-course/6-git-clone.html",
+      7: "curso/git-course/7-git-status.html",
+      8: "curso/git-course/8-git-add.html",
+      9: "curso/git-course/9-git-commit.html",
+      10: "curso/git-course/10-feature_req.html",
+      11: "curso/git-course/11-branch.html",
+      12: "curso/git-course/12-branch-merge.html",
+      13: "curso/git-course/13-git-diff.html",
+      14: "curso/git-course/14-undo-changes.html",
+      15: "curso/git-course/15-git-init.html",
+      16: "curso/git-course/16-git-workflows.html"
+    };
+
+    /* ============================================================
+       LOGOUT
+    ============================================================ */
+    document.getElementById('menuLogout').addEventListener('click', () => {
+      localStorage.clear();
+      window.location.href = "auth/login.html";
+    });
+
+    /* ============================================================
+       PROGRESSO
+    ============================================================ */
+    async function loadDashboardProgress() {
+      const cardContent = document.getElementById("progressCardContent");
+      const barFill = document.getElementById("progressBarFill");
+
+      try {
+        const resp = await fetch(`${API_URL}/progress/summary`, {
+          headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
+        });
+
+        const data = await resp.json();
+
+        cardContent.innerHTML = `
+          <b>${data.completion_rate}% concluído</b><br>
+          ${data.completed_topics} de ${data.total_topics} tópicos finalizados
+        `;
+
+        barFill.style.width = data.completion_rate + "%";
+
+      } catch (e) {
+        cardContent.innerHTML = "Erro ao carregar progresso.";
+      }
+    }
+
+    /* ============================================================
+       PRÓXIMO TÓPICO
+    ============================================================ */
+    async function loadNextTopic() {
+      const nextCard = document.getElementById("nextTopicCard");
+
+      const topicsResp = await fetch(`${API_URL}/topics/`);
+      const topics = await topicsResp.json();
+
+      const progressResp = await fetch(`${API_URL}/progress/`);
+      const progress = await progressResp.json();
+
+      const completedIds = progress.filter(p => p.completed).map(p => p.topic_id);
+
+      const nextTopic = topics.find(t => !completedIds.includes(t.id));
+
+      if (nextTopic) {
+        nextCard.innerHTML = `
+          <h3>Próximo tópico recomendado</h3>
+          <p><b>${nextTopic.chapter}. ${nextTopic.title}</b></p>
+          <button class="btn-footer-primary" onclick="window.location.href='${topicFiles[nextTopic.id]}'">
+            Ir para o tópico →
+          </button>
+        `;
+      } else {
+        nextCard.innerHTML = `<h3>Você concluiu todos os tópicos! 🎉</h3>`;
+      }
+    }
+
+    /* ============================================================
+       ÚLTIMO TÓPICO
+    ============================================================ */
+    function loadLastTopic() {
+      const lastCard = document.getElementById("lastTopicCard");
+      const last = localStorage.getItem("last_topic");
+
+      if (!last) {
+        lastCard.innerHTML = `<h3>Nenhum tópico acessado ainda.</h3>`;
+        return;
+      }
+
+      lastCard.innerHTML = `
+        <h3>Último tópico acessado</h3>
+        <button class="btn-footer-secondary" onclick="window.location.href='${topicFiles[last]}'">
+          Retomar →
+        </button>
+      `;
+    }
+
+    /* ============================================================
+       BOTÃO "CONTINUAR"
+    ============================================================ */
+    document.getElementById("btnContinueCard").addEventListener("click", () => {
+      const last = localStorage.getItem("last_topic");
+      if (last) {
+        window.location.href = topicFiles[last];
+      } else {
+        loadNextTopic().then(() => {
+          const next = document.querySelector("#nextTopicCard button");
+          if (next) next.click();
+        });
+      }
+    });
+
+    /* ============================================================
+       MENU LATERAL
+    ============================================================ */
+    document.getElementById("menuContinue").addEventListener("click", () => {
+      document.getElementById("btnContinueCard").click();
+    });
+
+    document.getElementById("menuLastTopic").addEventListener("click", () => {
+      const last = localStorage.getItem("last_topic");
+      if (last) window.location.href = topicFiles[last];
+      else alert("Nenhum tópico acessado ainda.");
+    });
+
+    /* ============================================================
+       CARREGAR TUDO
+    ============================================================ */
+    loadDashboardProgress();
+    loadNextTopic();
+    loadLastTopic();
+
+  </script>
+
+</body>
+</html>

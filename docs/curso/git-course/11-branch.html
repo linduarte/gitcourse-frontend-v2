@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Branch</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Configuração global -->
+    <script src="../../static/js/config.js"></script>
+
+    <!-- Autenticação + Concluído -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!'
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: "default"
+        });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container">
+
+    <h1>O que é um branch (ramo)?</h1>
+
+    <nav class="styled-nav" aria-label="Navegação principal do tópico">
+        <h2 class="nav-title">Navegação rápida deste tópico</h2>
+        <p class="nav-description">Explore cada parte deste conteúdo sobre branches no Git:</p>
+
+        <ul>
+            <li><a href="#section1">📌 Introdução</a></li>
+            <li><a href="#section2">🌿 Trabalhando com ramos</a></li>
+            <li><a href="#section3">🗂️ Movendo, apagando e renomeando arquivos</a></li>
+            <li><a href="#section4">📊 Git Graph</a></li>
+        </ul>
+    </nav>
+
+    <!-- ============================
+         SECTION 1 — INTRODUÇÃO
+    ============================= -->
+    <section id="section1">
+        <h2>Introdução</h2>
+
+        <p class="p-styled spaced-p">
+            Um <strong>branch</strong> representa uma linha independente de desenvolvimento no projeto, com sua própria história de commits.
+            Você pode listar os branches no repositório local usando:
+        </p>
+
+        <pre class="spaced-pre"><code class="language-bash">git branch</code></pre>
+
+        <p class="p-styled spaced-p">
+            Quando se associa o parâmetro <code>--remote</code>, é possível listar os branches remotos:
+        </p>
+
+        <pre class="spaced-pre"><code class="language-bash">git branch --remote</code></pre>
+
+        <img src="../../static/images/git-branch-re.webp" 
+             alt="Exemplo dos comandos git branch e git branch --remote" 
+             class="img-half">
+
+        <p class="p-styled spaced-p">
+            Nosso repositório possui apenas um ramo chamado <strong>main</strong>. Ele é criado automaticamente ao iniciar um novo repositório
+            e representa o tronco principal do projeto.
+        </p>
+
+        <img src="../../static/images/trunck.webp" 
+             alt="Ilustração do tronco representando o branch main" 
+             class="img-half">
+
+        <p class="p-styled spaced-p">
+            A linha representa o ramo principal, com cada commit mostrado como um círculo. A seta indica o <strong>HEAD</strong>, apontando para o commit mais recente.
+        </p>
+
+        <img src="../../static/images/git-log-oneline.webp" 
+             alt="Histórico de commits em formato oneline" 
+             class="img-full">
+    </section>
+
+    <!-- ============================
+         SECTION 2 — TRABALHANDO COM RAMOS
+    ============================= -->
+    <section id="section2">
+        <h2>Trabalhando com ramos (branches)</h2>
+
+        <p class="p-styled spaced-p">
+            Uma ramificação no Git é uma linha de desenvolvimento independente, com um histórico de commits separado.
+            Em grandes projetos, cada novo recurso ou correção de bug geralmente é desenvolvido em uma ramificação própria.
+        </p>
+    </section>
+
+    <!-- ============================
+         SECTION 3 — MOVENDO ARQUIVOS
+    ============================= -->
+    <section id="section3">
+        <h2>Movendo, apagando e renomeando arquivos</h2>
+
+        <p class="p-styled spaced-p">
+            As ramificações são úteis quando você deseja experimentar alterações sem afetar o código principal.
+        </p>
+
+        <img src="../../static/images/branch_test.webp" 
+             alt="Criação do branch test" 
+             class="img-full">
+
+        <p class="p-styled spaced-p">
+            O comando <strong>git branch test</strong> cria o novo ramo, e <strong>git checkout test</strong> alterna para ele.
+        </p>
+
+        <img src="../../static/images/git-branch.webp" 
+             alt="git branch mostrando o ramo atual" 
+             class="img-full">
+
+        <img src="../../static/images/git-log-br.webp" 
+             alt="git log do branch test" 
+             class="img-full">
+
+        <img src="../../static/images/git-mv-br.webp" 
+             alt="Movendo arquivos com git mv" 
+             class="img-full">
+
+        <img src="../../static/images/pilots-head.webp" 
+             alt="Exemplo de link CSS quebrado" 
+             class="img-full">
+
+        <img src="../../static/images/pilots-head_fix.webp" 
+             alt="Correção do link CSS" 
+             class="img-full">
+
+        <img src="../../static/images/git-add-html.webp" 
+             alt="git add dos arquivos HTML" 
+             class="img-full">
+
+        <img src="../../static/images/git-st-test.webp" 
+             alt="git status após mudanças" 
+             class="img-full">
+
+        <img src="../../static/images/git-commit-test.webp" 
+             alt="git commit das alterações" 
+             class="img-full">
+
+        <img src="../../static/images/git-log-test.webp" 
+             alt="git log do branch test" 
+             class="img-full">
+    </section>
+
+    <!-- ============================
+         SECTION 4 — GIT GRAPH
+    ============================= -->
+    <section id="section4">
+        <h2>Git Graph</h2>
+
+        <p class="p-styled spaced-p">
+            Abaixo temos o diagrama Mermaid representando a evolução dos commits no projeto.
+        </p>
+
+        <div class="mermaid">
+gitGraph
+    commit id: "0-109f780"
+    commit id: "1-d298f74"
+    commit id: "2-2dded79"
+    commit id: "3-389f0a3"
+    commit id: "4-333a382"
+    commit id: "5-0ede735"
+    commit id: "6-26bacec"
+    branch teste
+    checkout teste
+    commit id: "7-4e2d623"
+        </div>
+
+        <h3>Mermaid Code</h3>
+
+        <div class="code-box">
+<pre><code>
+gitGraph
+    commit id: "0-109f780"
+    commit id: "1-d298f74"
+    commit id: "2-2dded79"
+    commit id: "3-389f0a3"
+    commit id: "4-333a382"
+    commit id: "5-0ede735"
+    commit id: "6-26bacec"
+    branch teste
+    checkout teste
+    commit id: "7-4e2d623"
+</code></pre>
+        </div>
+    </section>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="10-feature_req.html" class="footer-link">← Voltar</a>
+            <a href="12-branch-merge.html" class="footer-link">Próximo: Branch Merge →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="11" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" 
+                 alt="GitHub Logo" 
+                 class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!" 
+                 class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

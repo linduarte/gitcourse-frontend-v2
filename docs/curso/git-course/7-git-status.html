@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Status</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    
+    <!-- PrismJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Config da API -->
+    <script src="../../static/js/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        /* --- Autenticação --- */
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        /* --- Logout --- */
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        /* --- Botão Concluído --- */
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!'
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container">
+
+    <h1>git status</h1>
+
+    <p class="p-styled spaced-p">
+        O comando <code class="language-bash">git status</code> é uma ferramenta fundamental no Git. Ele ajuda você a acompanhar
+        o estado do diretório de trabalho e da área de preparação (stage).
+    </p>
+
+    <h4>Estados dos Arquivos no Git</h4>
+
+    <p>Os arquivos podem estar nos seguintes estados:</p>
+
+    <ul>
+        <li><strong>Não rastreado (untracked)</strong></li>
+        <li><strong>Não modificado (unmodified)</strong></li>
+        <li><strong>Modificado (modified)</strong></li>
+        <li><strong>Preparado (staged)</strong></li>
+    </ul>
+
+    <p class="p-styled spaced-p">
+        O comando <code>git status</code> mostra exatamente o que está acontecendo no repositório.
+    </p>
+
+    <img src="../../static/images/git-status.webp" 
+         alt="Exemplo do comando git status mostrando arquivos untracked" 
+         class="img-full">
+
+    <p class="image-description">
+        A imagem mostra arquivos não rastreados (untracked) e indica que nenhum arquivo está preparado para commit.
+    </p>
+
+    <p class="p-styled spaced-p">
+        Usando <code>git add</code>, podemos mover arquivos modificados para o estado de preparação (staged).
+    </p>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="6-git-clone.html" class="footer-link">← Voltar</a>
+            <a href="8-git-add.html" class="footer-link">Próximo: git add →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="7" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

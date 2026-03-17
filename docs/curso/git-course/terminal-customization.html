@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script>
+        const API_URL = 'https://api.git-learn.com.br';
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customização do Terminal</title>
+
+    <!-- Caminhos corrigidos -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css"> 
+    <link rel="stylesheet" href="../../assets/css/git-term.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+
+    <!-- REMOVIDO: config.js -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Verificação de login
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/landing.html';
+            return;
+        }
+
+        // Logout
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '/landing.html';
+            });
+        }
+
+        // Marcar como concluído
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: "Terminal customizado com sucesso!"
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page" data-topic-id="20">
+<div class="container">
+
+    <!-- ========================= -->
+    <!-- CHAMADA NA PÁGINA INICIAL -->
+    <!-- ========================= -->
+
+    <section id="terminal-customization-intro" style="padding: 40px 0; text-align: center;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Transforme Seu Terminal</h2>
+        <p style="font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
+            Veja como uma simples personalização com <strong>Oh My Posh</strong> pode elevar a produtividade,
+            melhorar a leitura e deixar seu ambiente de desenvolvimento muito mais agradável.
+        </p>
+        <a href="#terminal-customization" 
+        style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #0078d4; color: white; border-radius: 6px; text-decoration: none;">
+            Ver Comparação Completa
+        </a>
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- PÁGINA COMPLETA DE CUSTOMIZAÇÃO -->
+    <!-- ========================= -->
+
+    <section id="terminal-customization" style="padding: 60px 0; max-width: 900px; margin: 0 auto;">
+
+        <h1 style="font-size: 1.5rem; margin-bottom: 15px; text-align: center;">
+            Customização do Terminal com Oh My Posh
+        </h1>
+
+        <p style="font-size: 1.15rem; line-height: 1.6;">
+            Personalizar o terminal não é apenas uma questão estética — é uma forma de tornar o ambiente de trabalho
+            mais eficiente, claro e agradável. A seguir, apresentamos uma comparação direta entre o terminal padrão
+            e o terminal customizado com <strong>Oh My Posh</strong>, destacando como essa mudança simples pode
+            melhorar significativamente a experiência de desenvolvimento.
+        </p>
+
+        <hr style="margin: 40px 0;">
+
+        <!-- ========================= -->
+        <!-- ANTES -->
+        <!-- ========================= -->
+
+        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Antes — Terminal Padrão</h2>
+
+        <div style="margin: 20px 0; text-align: center;">
+            <img src="../../static/images/command_c.webp" alt="Terminal padrão" style="max-width: 100%; border-radius: 8px;">
+        </div>
+
+        <p style="font-size: 1.1rem; line-height: 1.6;">
+            O terminal tradicional do Windows cumpre sua função, mas oferece pouca informação visual.
+            Sem cores, sem indicadores de status e sem contexto sobre o repositório Git, ele exige mais esforço
+            para interpretar o estado atual do projeto.
+        </p>
+
+        <ul style="font-size: 1.05rem; line-height: 1.6;">
+            <li>Visual neutro e pouco informativo</li>
+            <li>Sem indicação da branch atual</li>
+            <li>Sem destaque para arquivos modificados</li>
+            <li>Dificuldade para identificar rapidamente o estado do repositório</li>
+        </ul>
+
+        <hr style="margin: 40px 0;">
+
+        <!-- ========================= -->
+        <!-- DEPOIS -->
+        <!-- ========================= -->
+
+        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Depois — Terminal com Oh My Posh</h2>
+
+        <div style="margin: 20px 0; text-align: center;">
+            <img src="../../static/images/bak_untracked.webp" alt="Terminal customizado com Oh My Posh" style="max-width: 100%; border-radius: 8px;">
+        </div>
+
+        <p style="font-size: 1.1rem; line-height: 1.6;">
+            Com Oh My Posh, o terminal ganha vida: cores, ícones, informações úteis e um layout moderno que facilita
+            o trabalho diário. A leitura fica mais clara, o status do Git aparece automaticamente e o ambiente
+            se torna muito mais agradável.
+        </p>
+
+        <ul style="font-size: 1.05rem; line-height: 1.6%;">
+            <li>Exibição clara da branch atual</li>
+            <li>Ícones e cores indicando status do Git</li>
+            <li>Prompt mais organizado e visualmente agradável</li>
+            <li>Melhor leitura e navegação entre projetos</li>
+            <li>Aparência moderna e profissional</li>
+        </ul>
+
+        <hr style="margin: 40px 0;">
+
+
+        <!-- ========================= -->
+        <!-- BENEFÍCIOS -->
+        <!-- ========================= -->
+
+        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Por que usar Oh My Posh?</h2>
+
+        <table style="width: 100%; border-collapse: collapse; font-size: 1.05rem;">
+            <tr style="background: #f0f0f0;">
+                <th style="padding: 12px; border: 1px solid #ccc;">Benefício</th>
+                <th style="padding: 12px; border: 1px solid #ccc;">Descrição</th>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #ccc;">Produtividade</td>
+                <td style="padding: 12px; border: 1px solid #ccc;">Informações essenciais aparecem automaticamente no prompt.</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #ccc;">Clareza</td>
+                <td style="padding: 12px; border: 1px solid #ccc;">Cores e ícones facilitam a leitura e reduzem erros.</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #ccc;">Estética</td>
+                <td style="padding: 12px; border: 1px solid #ccc;">Um ambiente mais agradável melhora a experiência de uso.</td>
+            </tr>
+            <tr>
+                <td style="padding: 12px; border: 1px solid #ccc;">Profissionalismo</td>
+                <td style="padding: 12px; border: 1px solid #ccc;">Ideal para apresentações, gravações e documentação.</td>
+            </tr>
+        </table>
+
+        <hr>
+
+        <h2>1. Instalando uma Nerd Font (obrigatório)</h2>
+
+        <p class="p-styled spaced-p">
+            Tanto Oh My Posh quanto Starship usam ícones especiais. Para que eles apareçam corretamente,
+            você precisa instalar uma <strong>Nerd Font</strong>.
+        </p>
+
+        <p>Recomendamos a fonte <strong>Caskaydia Cove Nerd Font</strong>.</p>
+
+        <pre><code class="language-bash">winget install NerdFonts.CaskaydiaCove</code></pre>
+
+        <p>Depois, abra o Windows Terminal → Configurações → Aparência → Fonte → selecione a Nerd Font instalada.</p>
+
+        <hr>
+
+        <h2>2. Instalando o Oh My Posh</h2>
+
+        <p class="p-styled spaced-p">
+            O Oh My Posh é um dos prompts mais completos e bonitos disponíveis para Windows.
+        </p>
+
+        <h3>Instalação</h3>
+
+        <pre><code class="language-bash">winget install JanDeDobbeleer.OhMyPosh -s winget</code></pre>
+
+        <h3>Ativando no PowerShell</h3>
+
+        <p>Edite seu perfil do PowerShell:</p>
+
+        <pre><code class="language-bash">notepad $PROFILE</code></pre>
+
+        <p>Adicione esta linha:</p>
+
+        <pre><code class="language-bash">oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\paradox.omp.json" | Invoke-Expression</code></pre>
+
+        <p>Salve e abra um novo terminal.</p>
+
+        <hr>
+
+        <h2>3. Instalando o Starship (alternativa multiplataforma)</h2>
+
+        <p class="p-styled spaced-p">
+            O Starship é rápido, leve e funciona em qualquer sistema operacional.
+        </p>
+
+        <h3>Instalação</h3>
+
+        <pre><code class="language-bash">winget install Starship.Starship</code></pre>
+
+        <h3>Ativando no PowerShell</h3>
+
+        <pre><code class="language-bash">notepad $PROFILE</code></pre>
+
+        <p>Adicione:</p>
+
+        <pre><code class="language-bash">Invoke-Expression (&starship init powershell)</code></pre>
+
+        <hr>
+
+        <h2>4. Temas recomendados</h2>
+
+        <ul class="left-list">
+            <li><strong>Oh My Posh – Paradox</strong> (equilibrado e informativo)</li>
+            <li><strong>Oh My Posh – Agnoster</strong> (clássico para Git)</li>
+            <li><strong>Starship – Default</strong> (limpo e rápido)</li>
+            <li><strong>Starship – Pure</strong> (minimalista)</li>
+        </ul>
+
+        <p class="p-styled spaced-p">
+            Você pode testar outros temas com:
+        </p>
+
+        <pre><code class="language-bash">oh-my-posh config list</code></pre>
+
+        <hr>
+
+        <h2>5. Como o terminal ajuda no Git</h2>
+
+        <ul class="left-list">
+            <li>Mostra a branch atual</li>
+            <li>Indica arquivos modificados</li>
+            <li>Mostra commits pendentes</li>
+            <li>Exibe status do repositório em tempo real</li>
+            <li>Mostra tempo de execução de comandos</li>
+            <li>Ajuda a evitar erros como commit na branch errada</li>
+        </ul>
+
+        <p class="p-styled spaced-p">
+            Com o terminal customizado, você terá uma experiência muito mais fluida e profissional ao longo do curso.
+        </p>
+
+    </section>
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-copyright">
+        © 2025 Curso de Git. Todos os direitos reservados.
+    </div>
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="2-introduction.html" class="footer-link">← Voltar</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+
+            <button type="button" id="markCompletedButton" data-topic-id="20" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo" width="16" height="16">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

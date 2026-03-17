@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script>
+        const API_URL = 'https://api.git-learn.com.br';
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Introdução - Git Course</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- PrismJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+
+    <!-- REMOVIDO: config.js (não deve estar em páginas do curso) -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Verificação de login
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/landing.html';  // Caminho corrigido
+            return;
+        }
+
+        // Logout
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '/landing.html'; // Caminho corrigido
+            });
+        }
+
+        // Marcar como concluído
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: "Muito bom este tópico!"
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container page-large-font">
+
+    <h4>Introdução ao Git</h4>
+
+    <p class="p-styled spaced-p">
+        O Git Bash é um aplicativo para Windows que fornece uma camada de emulação para usar o Git via linha de comando.
+        Ele permite executar comandos Git de forma prática e eficiente, simulando um ambiente Unix dentro do Windows.
+    </p>
+
+    <img src="../../static/images/pict_contr_versao.webp"
+     alt="Representação visual das funções do Git"
+     class="img-full">
+
+    <h4>Como adicionar o Git Bash ao Terminal do Windows</h4>
+
+    <ol class="left-list">
+        <li>
+            Instale o Terminal do Windows:
+            <ul>
+                <li>No Windows 11, ele já vem pré-instalado.</li>
+                <li>No Windows 10, baixe-o pela Microsoft Store.</li>
+                <li>Ao abrir pela primeira vez, você pode personalizar perfis e aparência.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <ol>
+        <li>
+            Instale o Git para Windows:
+            <ul>
+                <li>
+                    Baixe o instalador neste
+                    <a href="https://git-scm.com/downloads/win">link</a> e siga as imagens abaixo para concluir a instalação.
+                </li>
+            </ul>
+        </li>
+    </ol>
+
+<img src="../../static/images/git-install.webp" 
+     alt="Instalação do Git para Windows" 
+     class="img-full">
+
+<img src="../../static/images/git-install-a.webp" 
+     alt="Etapa da instalação do Git" 
+     class="img-full">
+
+<img src="../../static/images/git-install-b.webp" 
+     alt="Configurações da instalação do Git" 
+     class="img-full">
+
+<img src="../../static/images/git-install-c.webp" 
+     alt="Finalização da instalação do Git" 
+     class="img-full">
+
+<p class="p-styled spaced-p">
+    As imagens acima mostram as opções recomendadas durante a instalação do Git no Windows.
+</p>
+
+<p class="p-styled spaced-p">
+    Após a instalação, o Git Bash estará disponível no Terminal do Windows, como mostrado abaixo:
+</p>
+
+<img src="../../static/images/bash_terminal.webp" 
+     alt="Terminal Windows com Git Bash" 
+     class="img-full">
+
+<p class="p-styled spaced-p">
+    A imagem abaixo mostra o mesmo Bash personalizado com o tema <strong>Oh My Posh</strong>:
+</p>
+
+<img src="../../static/images/bash-oh-my-posh.webp" 
+     alt="Terminal Windows com Git Bash personalizado com Oh My Posh" 
+     class="img-full">
+
+<p class="p-styled spaced-p">
+    Na página inicial do curso, apresentamos as definições fundamentais do Git.
+</p>
+
+<p class="p-styled spaced-p">
+    Seguiremos um roteiro baseado no livro <strong>"Practical Guide to Git and GitHub For Windows Users"</strong>, de Roberto Vormittag.
+</p>
+
+<p class="p-styled spaced-p">
+    Este curso adota a mesma filosofia do livro, com explicações claras e exemplos práticos.
+</p>
+
+<p class="p-styled spaced-p">
+    Também utilizaremos representações visuais dos comandos Git, alinhadas às imagens dos terminais.
+</p>
+
+<section class="terminal-custom-box">
+    <h2>Melhore seu Ambiente de Desenvolvimento</h2>
+
+    <p class="p-styled">
+        Antes de avançar no curso, recomendamos que você conheça nossa página especial sobre 
+        <strong>customização do terminal com Oh My Posh</strong>.  
+        Ela mostra como transformar o terminal padrão em uma ferramenta mais clara, moderna e produtiva.
+    </p>
+
+    <a href="/curso/git-course/terminal-customization.html" class="btn-footer-primary">
+    Ver Customização do Terminal
+    </a>
+
+</section>
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-copyright">
+        © 2025 Curso de Git. Todos os direitos reservados.
+    </div>
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="1a-prefacio.html" class="footer-link">← Voltar</a>
+            <a href="3-git-config.html" class="footer-link">Próximo: git config →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="2" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

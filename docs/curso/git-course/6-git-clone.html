@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Clone</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    
+    <!-- PrismJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Config da API -->
+    <script src="../../static/js/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        /* --- Autenticação --- */
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        /* --- Logout --- */
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        /* --- Botão Concluído --- */
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!'
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container">
+
+    <h1>git clone</h1>
+
+    <pre><code class="language-bash">git clone remote_repository_location path/to/directory</code></pre>
+
+    <p class="p-styled spaced-p">
+        Uma das operações fundamentais no Git é o comando <strong>git clone</strong>. Ele é essencial para criar uma cópia local de um repositório remoto,
+        permitindo trabalho offline, revisões de código e colaboração.
+    </p>
+
+    <img src="../../static/images/clone_local.webp" 
+         alt="Exemplo do comando git clone criando um repositório local" 
+         class="img-full">
+
+    <p class="image-description">
+        Ao clonar um repositório, você obtém todos os arquivos, histórico de commits e branches existentes.
+    </p>
+
+    <ul class="git-clone-steps-list">
+        <li><strong>remote_repository_location:</strong> URL ou caminho do repositório que você deseja clonar.</li>
+        <li><strong>path/to/directory:</strong> Diretório onde o clone será armazenado.</li>
+    </ul>
+
+    <p class="p-styled spaced-p">
+        Tanto <strong>git init</strong> quanto <strong>git clone</strong> criam repositórios locais, mas têm propósitos diferentes.
+    </p>
+
+    <h4>Criação de Repositório Local</h4>
+
+    <p class="p-styled spaced-p">
+        <strong>git init:</strong> Inicia um novo repositório Git em um diretório existente.<br>
+        <strong>git clone:</strong> Copia um repositório remoto inteiro.
+    </p>
+
+    <h4>Ponto de Partida</h4>
+
+    <p class="p-styled spaced-p">
+        <strong>git init:</strong> Ideal para iniciar um projeto do zero.<br>
+        <strong>git clone:</strong> Usado quando você deseja trabalhar em um projeto já existente.
+    </p>
+
+    <h4>Configuração Remota</h4>
+
+    <p class="p-styled spaced-p">
+        <strong>git init:</strong> Não configura automaticamente um repositório remoto.<br>
+        <strong>git clone:</strong> Já configura automaticamente o repositório remoto como <strong>origin</strong>.
+    </p>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="5-connect.html" class="footer-link">← Voltar</a>
+            <a href="7-git-status.html" class="footer-link">Próximo: git status →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="6" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

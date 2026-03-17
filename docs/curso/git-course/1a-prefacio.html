@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Prefácio - Git Course</title>
+
+    <!-- CSS correto para a página 1 -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css"> 
+    <link rel="stylesheet" href="../../assets/css/gitcourse-pre.css">
+
+    <!-- PrismJS (CDN permanece igual) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Config da API -->
+    <script src="../../scripts/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Logout
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        // Polling para testes automatizados (Playwright)
+        (function waitForToken(maxWait = 2500, interval = 50) {
+            const start = Date.now();
+
+            const tryCheck = () => {
+                const token = localStorage.getItem('access_token');
+                const params = new URLSearchParams(window.location.search || '');
+                const testLoginFlag = params.get('login');
+                const testInjectFlag = params.get('test_inject');
+
+                if (testLoginFlag === '1' || testInjectFlag === '1') {
+                    maxWait = 5000;
+                }
+
+                if (token) return;
+
+                if (testLoginFlag === '1') {
+                    if (Date.now() - start < maxWait) {
+                        setTimeout(tryCheck, interval);
+                        return;
+                    }
+                }
+
+                if (Date.now() - start >= maxWait) {
+                    console.log('TEST_LOG: auth-guard redirecting to landing; token=', token, 'elapsed=', Date.now() - start);
+                    window.location.href = '../../landing.html';
+                    return;
+                }
+
+                setTimeout(tryCheck, interval);
+            };
+
+            tryCheck();
+        })();
+
+        // Banner de sucesso pós-login (para testes)
+        try {
+            const success = sessionStorage.getItem('login_success');
+            if (success) {
+                const banner = document.createElement('div');
+                banner.id = 'post-login-banner';
+                banner.setAttribute('data-test', 'login-success');
+                banner.textContent = 'Sucesso! Success. Bem-vindo ao curso.';
+                banner.style.cssText =
+                    'position:fixed;top:16px;left:50%;transform:translateX(-50%);' +
+                    'background:#388e3c;color:#fff;padding:8px 16px;border-radius:8px;' +
+                    'z-index:2000;font-weight:700;';
+                document.body.appendChild(banner);
+
+                sessionStorage.removeItem('login_success');
+
+                setTimeout(() => {
+                    try { banner.remove(); } catch (e) {}
+                }, 3000);
+            }
+        } catch (e) {
+            console.log('TEST_LOG: post-login banner error', e);
+        }
+    });
+    </script>
+</head>
+
+<body class="prefacio">
+
+<div class="container">
+
+    <div class="welcome-header">
+        <h1 data-test="course-heading">🎉 Bem-vindo ao Curso de Git!</h1>
+        <p>Sua jornada para dominar o controle de versão começa aqui</p>
+    </div>
+
+    <div class="course-overview">
+
+        <div class="overview-section">
+            <h3>🎯 O que você vai aprender</h3>
+            <ul>
+                <li>Fundamentos do controle de versão</li>
+                <li>Instalação e configuração do Git</li>
+                <li>Comandos essenciais para o dia a dia</li>
+                <li>Trabalho colaborativo com Git</li>
+                <li>Integração com GitHub</li>
+                <li>Boas práticas e fluxos de trabalho</li>
+            </ul>
+        </div>
+
+        <div class="overview-section">
+            <h3>📚 Estrutura do curso</h3>
+            <ul>
+                <li>15 módulos práticos</li>
+                <li>Exemplos reais de uso</li>
+                <li>Exercícios hands-on</li>
+                <li>Projeto prático: "Phonetic Website"</li>
+                <li>Certificado de conclusão</li>
+                <li>Suporte da comunidade</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="tip-box">
+        <h4>💡 Dica importante</h4>
+        <p>
+            Este curso segue uma abordagem prática baseada no livro
+            <strong>"Practical Guide to Git and GitHub For Windows Users"</strong>,
+            de Roberto Vormittag. Você aprenderá fazendo!
+        </p>
+    </div>
+
+    <div class="start-button">
+        <button type="button" class="launch-btn" onclick="window.location.href='2-introduction.html'">
+            🚀 Iniciar Jornada Git
+        </button>
+    </div>
+
+    <div class="footer-actions">
+        <div class="footer-actions-info">
+            Tempo estimado: 4–6 horas • Nível: Iniciante
+        </div>
+    </div>
+
+    <!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+
+        <nav class="footer-nav">
+            <button type="button" onclick="window.location.href='../../index.html'" class="btn-footer-primary">
+                Início
+            </button>
+
+            <button type="button" onclick="window.location.href='../../dashboard.html'" class="btn-footer-primary">
+                Dashboard
+            </button>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">
+                Sair
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer-instruction">
+        Use os botões acima para navegar ou sair da sua conta.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+</div> <!-- /container -->
+
+<!-- Scripts -->
+<script src="../../static/js/config.js"></script>
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

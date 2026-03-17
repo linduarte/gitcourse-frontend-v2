@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Conectar Git</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Configuração global -->
+    <script src="../../static/js/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        /* --- Autenticação --- */
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        /* --- Logout --- */
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        /* --- Botão Concluído --- */
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: "Muito bom este tópico!"
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container">
+
+    <h1>Conectando Git com o GitHub</h1>
+
+    <p class="p-styled spaced-p">
+        <strong>O que é SSH?</strong>  
+        SSH (Secure Shell) é um protocolo que permite conectar e interagir com servidores de forma segura,
+        criando um canal criptografado para executar comandos e transferir dados.
+    </p>
+
+    <p class="p-styled spaced-p">
+        <strong>Como funciona o SSH?</strong>  
+        O SSH utiliza um par de chaves criptográficas: uma chave privada (guardada no seu computador)
+        e uma chave pública (compartilhada com o servidor).  
+        Quando você tenta se conectar, o servidor usa a chave pública para validar sua identidade.
+    </p>
+
+    <p class="p-styled spaced-p">
+        <strong>Uso de SSH com o GitHub</strong>  
+        Utilizar SSH no GitHub torna o processo mais seguro e evita digitar usuário e senha a cada operação.
+        Após configurar as chaves, sua máquina se autentica automaticamente.
+    </p>
+
+    <h2>Passo 1: Verificando a existência de chaves SSH</h2>
+    <p>No Windows, abra o Git Bash e execute:</p>
+    <pre><code class="language-bash">ls -al ~/.ssh</code></pre>
+
+    <h2>Passo 2: Gerando uma nova chave SSH</h2>
+    <p>Se não houver chaves, gere uma nova com:</p>
+    <pre><code class="language-bash">ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"</code></pre>
+
+    <p>Siga as instruções do terminal para salvar a chave e definir uma senha (opcional).</p>
+
+    <h2>Passo 3: Adicionando a chave SSH ao ssh-agent</h2>
+    <p>Inicie o ssh-agent:</p>
+    <pre><code class="language-bash">eval "$(ssh-agent -s)"</code></pre>
+
+    <p>Adicione sua chave:</p>
+    <pre><code class="language-bash">ssh-add ~/.ssh/id_rsa</code></pre>
+
+    <p class="p-styled spaced-p">Resumo do processo:</p>
+
+    <pre><code class="language-bash">ssh-keygen -t ed25519 -C "your_email@example.com"</code></pre>
+    <pre><code class="language-bash">Generating public/private ed25519 key pair.</code></pre>
+    <pre><code class="language-bash">Enter file in which to save the key: [Press enter]</code></pre>
+    <pre><code class="language-bash">Enter passphrase: [Type a passphrase]</code></pre>
+
+    <h2>Passo 4: Adicionando a chave SSH ao GitHub</h2>
+
+    <p class="p-styled spaced-p">Copie sua chave pública:</p>
+    <pre><code class="language-bash">clip &lt; ~/.ssh/id_rsa.pub</code></pre>
+
+    <img src="../../static/images/ssh_keys.webp" 
+         alt="Tela do GitHub para adicionar uma chave SSH" 
+         class="img-full">
+
+    <p class="p-styled spaced-p">
+        No GitHub, vá em <strong>Settings → SSH and GPG Keys</strong>, clique em <strong>New SSH Key</strong>,
+        dê um nome e cole a chave pública.
+    </p>
+
+    <h2>Passo 5: Testando a conexão</h2>
+
+    <p class="p-styled spaced-p">Execute:</p>
+    <pre><code class="language-bash">ssh -T git@github.com</code></pre>
+
+    <blockquote>
+        The authenticity of host 'github.com (IP ADDRESS)' can't be established.<br>
+        Are you sure you want to continue connecting (yes/no)?
+    </blockquote>
+
+    <p>Digite <strong>yes</strong>. Você verá:</p>
+
+    <blockquote>
+        Hi &lt;your_GitHub_username&gt;! You've successfully authenticated, but GitHub does not provide shell access.
+    </blockquote>
+
+    <p class="p-styled spaced-p">
+        Se essa mensagem aparecer, sua autenticação SSH está funcionando corretamente.
+    </p>
+
+    <p class="p-styled spaced-p">
+        Agora você pode clonar repositórios usando SSH:
+    </p>
+
+    <pre><code class="language-bash">git clone git@github.com:username/repository.git</code></pre>
+
+    <p class="p-styled spaced-p">
+        Com SSH, você não precisa digitar usuário e senha para operações como <strong>push</strong> e <strong>pull</strong>.
+    </p>
+
+    <p class="p-styled spaced-p">
+        Se você tiver várias contas ou máquinas, gere um par de chaves para cada combinação.
+    </p>
+
+    <p class="p-styled spaced-p">
+        Com SSH configurado, seu fluxo de trabalho com Git e GitHub se torna mais seguro e eficiente.
+    </p>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="4-hosting.html" class="footer-link">← Voltar</a>
+            <a href="6-git-clone.html" class="footer-link">Próximo: git clone →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="5" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

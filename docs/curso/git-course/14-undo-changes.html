@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Desfazer Alterações</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Configuração global -->
+    <script src="../../static/js/config.js"></script>
+
+    <!-- Autenticação + Concluído -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        const btn = document.getElementById('markCompletedButton');
+        if (btn) {
+            btn.addEventListener('click', async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!',
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: "default"
+        });
+    </script>
+</head>
+
+<body class="intro-page">
+
+<div class="container">
+
+    <h1>Desfazendo alterações</h1>
+
+    <p class="p-styled spaced-p">
+        Um dos grandes benefícios de rastrear o histórico de um projeto com Git é a capacidade de desfazer alterações
+        em diferentes estágios do fluxo de trabalho.
+    </p>
+
+    <p class="p-styled spaced-p">Existem três cenários principais de desfazer no Git:</p>
+
+    <ul class="p-styled spaced-p">
+        <li>Desfazer alterações no diretório de trabalho antes do staged.</li>
+        <li>Desfazer alterações após o staged e antes do commit.</li>
+        <li>Desfazer alterações já comitadas.</li>
+    </ul>
+
+    <p class="p-styled spaced-p">
+        Os exercícios a seguir utilizam o arquivo <strong>pilots.html</strong>.
+    </p>
+
+    <p class="p-styled spaced-p"><strong>Mudança não desejada — exercício</strong></p>
+
+    <p class="p-styled spaced-p">
+        Para demonstrar cada um dos cenários acima, vamos simular alterações no arquivo.
+    </p>
+
+    <img src="../../static/images/alpha.webp" alt="Alteração inicial no arquivo pilots.html" class="img-full">
+
+    <p class="p-styled spaced-p">
+        Salve a alteração e visualize no navegador para confirmar o efeito.
+    </p>
+
+    <p class="p-styled spaced-p">
+        <strong>1 — Desfazendo mudanças antes de adicioná-las ao staged</strong>
+    </p>
+
+    <p class="p-styled spaced-p">
+        Para recuperar as palavras perdidas, podemos restaurar o arquivo diretamente do último commit.
+    </p>
+
+    <!-- MERMAID 1 -->
+    <div class="mermaid">
+flowchart LR
+    A["Working Directory<br>(Diretório de Trabalho)"] --> B["Staging Area<br>(Index)"]
+    B --> C["Repository<br>(.git)"]
+    </div>
+
+    <img src="../../static/images/1-checkout.webp" alt="git checkout restaurando arquivo" class="img-full">
+
+    <p class="p-styled spaced-p">
+        Abra o arquivo <em>pilots.html</em> novamente para confirmar que foi restaurado.
+    </p>
+
+    <p class="p-styled spaced-p">
+        <strong>2 — Desfazendo mudanças depois de adicioná-las ao staged</strong>
+    </p>
+
+    <img src="../../static/images/2-add.webp" alt="Arquivo adicionado ao staged" class="img-full">
+
+    <p class="p-styled spaced-p">
+        Ao executar <code>git status</code>, vemos que o arquivo está staged.
+    </p>
+
+    <img src="../../static/images/3-reset.webp" alt="git reset removendo arquivo do staged" class="img-full">
+
+    <p class="p-styled spaced-p">
+        O comando <code>git reset</code> removeu o arquivo do index, retornando-o ao diretório de trabalho.
+    </p>
+
+    <img src="../../static/images/4-checkout.webp" alt="git checkout restaurando arquivo após reset" class="img-full">
+
+    <p class="p-styled spaced-p">
+        <strong>3 — Desfazendo mudanças comitadas</strong>
+    </p>
+
+    <img src="../../static/images/5-commit.webp" alt="Commit realizado" class="img-full">
+    <img src="../../static/images/6-log.webp" alt="git log mostrando commit" class="img-full">
+    <img src="../../static/images/7-revert.webp" alt="git revert aplicado" class="img-full">
+    <img src="../../static/images/8-log.webp" alt="git log após revert" class="img-full">
+
+    <h4>Marcando versões</h4>
+
+    <img src="../../static/images/tag.webp" alt="Criação de tag" class="img-full">
+    <img src="../../static/images/git-st.webp" alt="git status após tag" class="img-full">
+    <img src="../../static/images/git-push-st.webp" alt="git push com tag" class="img-full">
+
+    <h2>Complemento ao processo de desfazer mudanças</h2>
+
+    <p class="p-styled spaced-p">
+        O Git é um poderoso sistema de controle de versão que permite navegar entre estados do projeto com segurança.
+    </p>
+
+    <h4>Compreendendo as três seções de um projeto Git</h4>
+
+    <p class="p-styled spaced-p">
+        Você pode estar se perguntando como o Git organiza internamente essas áreas.
+    </p>
+
+    <!-- MERMAID 2 -->
+    <div class="mermaid">
+flowchart LR
+    A["Working Directory<br>(Diretório de Trabalho)"] --> B["Staging Area<br>(Index)"]
+    B --> C["Repository<br>(.git)"]
+    </div>
+
+    <p class="p-styled spaced-p">
+        O diretório Git (<code>.git</code>) armazena todo o histórico e metadados do projeto.
+    </p>
+
+    <p class="p-styled spaced-p">
+        O diretório de trabalho contém os arquivos reais que você edita.
+    </p>
+
+    <p class="p-styled spaced-p">
+        A área de staging (index) guarda as alterações que serão incluídas no próximo commit.
+    </p>
+
+    <pre class="spaced-pre"><code class="language-bash">git reset</code></pre>
+
+    <p class="p-styled spaced-p">
+        O <code>git reset</code> é usado para retroceder alterações em diferentes níveis.
+    </p>
+
+    <h4>Modos do git reset</h4>
+
+    <!-- MERMAID 3 -->
+    <div class="mermaid">
+flowchart TD
+    A["git reset"] --> B["--soft<br>Mantém staged<br>Move HEAD"]
+    A --> C["--mixed (padrão)<br>Limpa staged<br>Mantém working dir"]
+    A --> D["--hard<br>Limpa tudo<br>Descarta alterações"]
+    </div>
+
+    <p class="p-styled spaced-p">
+        Digamos que você tenha feito um commit e deseje desfazê-lo sem perder o conteúdo.
+    </p>
+
+    <div class="image-container">
+        <img src="../../static/images/commit_exemplo.webp" alt="Exemplo de commit" class="img-full">
+    </div>
+
+    <div class="image-container">
+        <img src="../../static/images/reset.webp" alt="Exemplo de git reset" class="img-full">
+    </div>
+
+    <p class="p-styled spaced-p">
+        Neste exemplo, o reset ajusta o ponteiro HEAD e redefine o estado do projeto.
+    </p>
+
+    <h4>git revert</h4>
+
+    <p class="p-styled spaced-p">
+        O <code>git revert</code> cria um novo commit que desfaz alterações anteriores sem modificar o histórico.
+    </p>
+
+    <img src="../../static/images/git-reflog.webp" alt="git reflog" class="img-full">
+    <img src="../../static/images/git-revert-head.webp" alt="git revert HEAD" class="img-full">
+
+    <h4>git reset x git revert</h4>
+
+    <div class="grid-compare">
+
+        <div class="grid-item header"></div>
+        <div class="grid-item header"><strong>git reset</strong></div>
+        <div class="grid-item header"><strong>git revert</strong></div>
+
+        <div class="grid-item title">Muda o ponteiro HEAD</div>
+        <div class="grid-item">
+            ✔ Sim
+            <div class="td-desc">Reposiciona o HEAD para um commit anterior.</div>
+        </div>
+        <div class="grid-item">
+            ✖ Não
+            <div class="td-desc">HEAD permanece no commit atual.</div>
+        </div>
+
+        <div class="grid-item title">Cria novo commit</div>
+        <div class="grid-item">
+            ✖ Não
+            <div class="td-desc">Apenas altera ponteiros e áreas internas.</div>
+        </div>
+        <div class="grid-item">
+            ✔ Sim
+            <div class="td-desc">Gera um commit que desfaz outro.</div>
+        </div>
+
+        <div class="grid-item title">Descarta mudanças</div>
+        <div class="grid-item">
+            ✔ Sim
+            <div class="td-desc">Pode descartar conteúdo dependendo do modo.</div>
+        </div>
+        <div class="grid-item">
+            ✖ Não
+            <div class="td-desc">Nenhuma alteração é perdida.</div>
+        </div>
+
+        <div class="grid-item title">Preserva histórico</div>
+        <div class="grid-item">
+            ✖ Não
+            <div class="td-desc">Pode reescrever histórico.</div>
+        </div>
+        <div class="grid-item">
+            ✔ Sim
+            <div class="td-desc">Histórico permanece intacto.</div>
+        </div>
+
+        <div class="grid-item title">Uso recomendado</div>
+        <div class="grid-item">
+            ✔ Ajustes locais
+            <div class="td-desc">Limpar staged, reorganizar commits.</div>
+        </div>
+        <div class="grid-item">
+            ✔ Repositórios remotos
+            <div class="td-desc">Reverter commits já publicados.</div>
+        </div>
+
+        <div class="grid-item title">Risco</div>
+        <div class="grid-item">
+            ⚠ Alto
+            <div class="td-desc">Pode causar perda de dados com <code>--hard</code>.</div>
+        </div>
+        <div class="grid-item">
+            🟢 Baixo
+            <div class="td-desc">Sempre seguro, nunca apaga histórico.</div>
+        </div>
+
+        <div class="grid-item title">Impacto no remoto</div>
+        <div class="grid-item">
+            ⚠ Pode exigir <code>push --force</code>
+            <div class="td-desc">Perigoso em equipes.</div>
+        </div>
+        <div class="grid-item">
+            🟢 Push normal
+            <div class="td-desc">Sem riscos para colaboradores.</div>
+        </div>
+
+    </div>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="13-git-diff.html" class="footer-link">← Voltar</a>
+            <a href="15-git-init.html" class="footer-link">Próximo: Git Init →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="14" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

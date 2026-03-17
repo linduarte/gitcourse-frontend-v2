@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Add</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    
+    <!-- PrismJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Config da API -->
+    <script src="../../static/js/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        /* --- Autenticação --- */
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        /* --- Logout --- */
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        /* --- Botão Concluído --- */
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!'
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container">
+
+    <h1>git add</h1>
+
+    <h4>Adicionando arquivos ao projeto</h4>
+
+    <p class="p-styled spaced-p">
+        Antes de usar o comando <code class="language-bash">git add</code>, é importante ter arquivos novos no seu projeto.
+        Este comando é usado para adicionar essas mudanças ao stage, preparando-as para o próximo commit.
+    </p>
+
+    <p class="p-styled spaced-p"><strong>Passos para adicionar arquivos ao repositório:</strong></p>
+
+    <ol class="p-styled spaced-p">
+        <li>Faça o download dos arquivos usando este <a href="https://github.com/robertovormittag/phonetic-website">link</a>.</li>
+        <li>Descompacte os arquivos e copie e cole no projeto "simple-website".</li>
+        <li>Verifique pelo Windows Explorer a estrutura completa do repositório.</li>
+    </ol>
+
+    <img src="../../static/images/git-add-all.webp" 
+         alt="Resultado do comando git status mostrando arquivos não rastreados" 
+         class="img-full">
+
+    <p class="image-description">
+        A imagem mostra o comando <code>git status</code> indicando arquivos não rastreados (em vermelho).
+    </p>
+
+    <pre><code class="language-bash">git add path/to/file</code></pre>
+
+    <p class="p-styled spaced-p">
+        Esse comando é usado quando você deseja preparar um arquivo específico para um commit.
+    </p>
+
+    <ul class="p-styled spaced-p">
+        <li><strong>git add:</strong> comando base para preparar arquivos para commit.</li>
+        <li><strong>path/to/file:</strong> caminho do arquivo que você deseja adicionar ao index.</li>
+    </ul>
+
+    <div class="note">
+        <strong>Nota:</strong><br>
+        O comando <code class="language-bash">git add .</code> adiciona todos os arquivos modificados.
+
+        <img src="../../static/images/git add_all.webp" 
+             alt="Exemplo do comando git add aplicado a múltiplos arquivos" 
+             class="img-full">
+
+        <p class="image-description">
+            Na imagem, vemos o comando <strong>git add</strong> aplicado à pasta <strong>style</strong>.
+        </p>
+    </div>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="7-git-status.html" class="footer-link">← Voltar</a>
+            <a href="9-git-commit.html" class="footer-link">Próximo: Git commit →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="8" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

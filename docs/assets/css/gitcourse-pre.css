@@ -1,0 +1,131 @@
+/* Fundo exclusivo do prefácio */
+body.prefacio {
+    background: url("../../static/images/waves.webp") center/cover no-repeat fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Container principal do prefácio */
+.prefacio .course-container {
+    background: rgba(255,255,255,0.75);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(31,38,135,0.25);
+    margin: 40px auto;
+    padding: 40px;
+    max-width: 900px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+    font-family: 'Victor Mono', monospace;
+}
+
+/* Header */
+.prefacio .welcome-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.prefacio .welcome-header h1 {
+    color: #f14e32;
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+}
+
+.prefacio .welcome-header p {
+    color: #5c4033;
+    font-size: 1.1rem;
+}
+
+/* Overview grid */
+.prefacio .course-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 40px 0;
+    transition: all 0.3s ease;
+}
+
+.prefacio .overview-section {
+    background: rgba(255,255,255,0.7);
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 4px solid #f14e32;
+    transition: all 0.3s ease;
+}
+
+.prefacio .overview-section h3 {
+    color: #f14e32;
+    margin-bottom: 15px;
+}
+
+.prefacio .overview-section ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.prefacio .overview-section li {
+    margin-bottom: 8px;
+    color: #5c4033;
+}
+
+/* Botão principal */
+.prefacio .start-button {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.prefacio .start-button button {
+    background: linear-gradient(135deg, #f14e32, #ff7a59);
+    color: white;
+    padding: 18px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(241, 78, 50, 0.3);
+}
+
+.prefacio .start-button button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(241, 78, 50, 0.4);
+}
+
+/* Tip box */
+.prefacio .tip-box {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 30px 0;
+    border-left: 4px solid #0d6efd;
+}
+
+.prefacio .tip-box h4 {
+    color: #0a2540;
+    margin-bottom: 10px;
+}
+
+.prefacio .tip-box p {
+    margin: 0;
+    color: #5c4033;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+
+    .prefacio .course-overview {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .prefacio .course-container {
+        margin: 20px;
+        padding: 25px;
+    }
+
+    body.prefacio {
+        background-attachment: scroll;
+    }
+}

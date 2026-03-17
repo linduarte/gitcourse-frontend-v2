@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script>
+        const API_URL = 'https://api.git-learn.com.br';
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Git Config - Git Course</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- PrismJS (CDN permanece igual) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+
+    <!-- Config da API -->
+    <script src="../../static/js/config.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // Verificação de login
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        // Logout
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        // Marcar como concluído
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: "Excelente tópico!"
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container page-large-font">
+
+    <h4>Configuração Básica do Git</h4>
+
+    <p class="p-styled spaced-p">
+        O comando <code>git config</code> permite ajustar configurações importantes do Git,
+        como identidade do usuário, editor padrão, comportamento de cores e muito mais.
+    </p>
+
+    <img src="../../static/images/git-config.webp"
+     alt="Configuração do Git"
+     class="img-full">
+
+    <h4>Configurar identidade</h4>
+
+    <pre><code class="language-bash">
+git config --global user.name "Seu Nome"
+git config --global user.email "seuemail@example.com"
+    </code></pre>
+
+    <p class="p-styled spaced-p">
+        Essas informações serão usadas para identificar seus commits.
+    </p>
+
+    <h4>Configurar editor padrão</h4>
+
+    <pre><code class="language-bash">
+git config --global core.editor "code --wait"
+    </code></pre>
+
+    <h4>Ver todas as configurações</h4>
+
+    <pre><code class="language-bash">
+git config --list
+    </code></pre>
+
+    <section class="terminal-custom-box">
+        <h2>Configurações recomendadas</h2>
+
+        <p class="p-styled">
+            Aqui estão algumas configurações úteis para melhorar sua experiência com o Git:
+        </p>
+
+        <pre><code class="language-bash">
+git config --global color.ui auto
+git config --global pull.rebase false
+git config --global init.defaultBranch main
+        </code></pre>
+    </section>
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-copyright">
+        © 2025 Curso de Git. Todos os direitos reservados.
+    </div>
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="2-introduction.html" class="footer-link">← Voltar</a>
+            <a href="4-hosting.html" class="footer-link">Próximo: Hospedagem →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="3" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>

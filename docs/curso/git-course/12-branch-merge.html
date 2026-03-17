@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Branch Merge</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+
+    <!-- Configuração global -->
+    <script src="../../static/js/config.js"></script>
+
+    <!-- Autenticação + Concluído -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '../../landing.html';
+            return;
+        }
+
+        const logoutBtn = document.getElementById('logoutButton');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                window.location.href = '../../landing.html';
+            });
+        }
+
+        const btn = document.getElementById("markCompletedButton");
+        if (btn) {
+            btn.addEventListener("click", async () => {
+                const origText = btn.innerText;
+                btn.disabled = true;
+                btn.innerText = 'Enviando...';
+
+                try {
+                    const response = await fetch(`${API_URL}/progress/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: btn.dataset.topicId,
+                            completed: true,
+                            feedback: 'Muito bom este tópico!'
+                        }),
+                    });
+
+                    if (response.ok) {
+                        btn.innerText = 'Concluído ✓';
+                        btn.classList.add('completed');
+                    } else {
+                        btn.disabled = false;
+                        btn.innerText = origText;
+                        alert('Erro ao marcar o progresso');
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerText = origText;
+                    alert('Erro de conexão ao marcar progresso');
+                }
+            });
+        }
+    });
+    </script>
+
+    <!-- Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: "default"
+        });
+    </script>
+</head>
+
+<body class="intro-page">
+<div class="container">
+
+    <h1>Branch Merge</h1>
+
+    <nav class="styled-nav" aria-label="Navegação principal do tópico">
+        <h2 class="nav-title">Navegação rápida deste tópico</h2>
+        <p class="nav-description">Explore as etapas de alternância, mesclagem e resolução de conflitos:</p>
+
+        <ul class="left-list">
+            <li><a href="#section1">🔀 Alternando ramificações sem mesclar</a></li>
+            <li><a href="#section2">🌿 Mesclando (merging)</a></li>
+            <li><a href="#section3">⚠️ Resolvendo conflitos</a></li>
+            <li><a href="#section4">📊 Git Graph</a></li>
+        </ul>
+    </nav>
+
+    <!-- ============================
+         SECTION 1
+    ============================= -->
+    <section id="section1">
+        <h2>Alternando ramificações sem mesclar</h2>
+
+        <p class="p-styled spaced-p">
+            Você pode ver a extensão das mudanças feitas na branch de teste do projeto Phonetic Website listando o conteúdo do diretório de trabalho:
+        </p>
+
+        <img src="../../static/images/ls-a.webp" alt="Arquivos do ramo test" class="img-half">
+
+        <p class="p-styled spaced-p">
+            Todos os arquivos CSS foram movidos um nível para cima e o diretório <em>style</em> não existe mais.
+        </p>
+
+        <p class="p-styled spaced-p">Agora vamos ver o poder das branches.</p>
+
+        <p class="p-styled spaced-p">
+            Vamos voltar para a branch <strong>main</strong> usando o comando <code class="language-bash">git checkout</code> e listar o conteúdo novamente:
+        </p>
+
+        <img src="../../static/images/checkout-main.webp" alt="git checkout no ramo main" class="img-half">
+
+        <p class="p-styled spaced-p">
+            Como você pode ver, o conteúdo do diretório de trabalho foi restaurado. O diretório de estilo está de volta, contendo todos os arquivos CSS.
+        </p>
+
+        <p class="p-styled spaced-p"><strong>Como isso é possível?</strong></p>
+
+        <p class="p-styled spaced-p">
+            Toda vez que você troca de branch, o Git busca no banco de dados do repositório o conteúdo do diretório de trabalho do último commit daquela branch.
+        </p>
+
+        <p class="p-styled spaced-p">
+            Quando você roda o comando <code class="language-bash">git checkout &lt;branch&gt;</code>, o ponteiro <strong>HEAD</strong> se move para o último commit da branch escolhida.
+        </p>
+
+        <p class="p-styled spaced-p">
+            Abaixo está uma ilustração gráfica do processo de troca. Na primeira imagem, a branch <strong>special2</strong> é a branch atual.
+        </p>
+
+        <img src="../../static/images/git_diagram_a.webp" alt="Diagrama mostrando a posição do HEAD" class="img-half">
+
+        <p class="p-styled spaced-p">
+            A linha representa o ramo principal <strong>main</strong>, com cada commit mostrado como um círculo.
+        </p>
+
+        <img src="../../static/images/git_diagram_b.webp" alt="Histórico de commits" class="img-full">
+
+        <p class="p-styled spaced-p">
+            Após o comando <code class="language-bash">git checkout main</code>, o ponteiro HEAD se move para o último commit da branch main.
+        </p>
+
+        <img src="../../static/images/git-branch_2.webp" alt="Histórico de commits" class="img-full">
+        <img src="../../static/images/branch_ghi_jkl.webp" alt="Branches g-h-i e j-k-l" class="img-full">
+        <img src="../../static/images/checkout-ghi.webp" alt="git checkout g-h-i" class="img-full">
+        <img src="../../static/images/added_G.webp" alt="Letra G adicionada" class="img-full">
+        <img src="../../static/images/git-log-ghi.webp" alt="git log das letras G, H e I" class="img-full">
+        <img src="../../static/images/git-st-ghi.webp" alt="git status do ramo g-h-i" class="img-full">
+        <img src="../../static/images/git_checkout_main.webp" alt="git checkout main" class="img-full">
+        <img src="../../static/images/git-merge-ghi.webp" alt="git merge g-h-i" class="img-full">
+        <img src="../../static/images/git-log-main.webp" alt="git log após merge" class="img-full">
+        <img src="../../static/images/gitgraph_view.webp" alt="Visão gitgraph após merge" class="img-full">
+    </section>
+
+    <!-- ============================
+         SECTION 3 — CONFLITOS
+    ============================= -->
+    <section id="section3">
+        <h2>Resolvendo conflitos</h2>
+
+        <img src="../../static/images/git-sw-jkl.webp" alt="git switch j-k-l" class="img-full">
+        <img src="../../static/images/git-log-jkl.webp" alt="git log j-k-l" class="img-full">
+
+        <p class="p-styled spaced-p"><strong>Exercício</strong></p>
+
+        <img src="../../static/images/pilots-add_J.webp" alt="Adição da letra J" class="img-full">
+
+        <img src="../../static/images/git-log-total.webp" alt="git log total" class="img-full">
+        <img src="../../static/images/git-st-jkl.webp" alt="git status j-k-l" class="img-full">
+
+        <img src="../../static/images/git-log-main.webp" alt="git log main" class="img-full">
+        <img src="../../static/images/git-merge-br2.webp" alt="git merge j-k-l" class="img-full">
+
+        <img src="../../static/images/git-st-conflit.webp" alt="git status com conflitos" class="img-full">
+        <img src="../../static/images/pilots_conflits.webp" alt="Conflitos no arquivo pilots.html" class="img-full">
+        <img src="../../static/images/pilots-fixed.webp" alt="Conflitos resolvidos" class="img-full">
+
+        <img src="../../static/images/git-comit-resolv.webp" alt="Commit resolvendo conflitos" class="img-full">
+        <img src="../../static/images/git-log-main-merg.webp" alt="git log após merge final" class="img-full">
+        <img src="../../static/images/git-tag-push.webp" alt="git tag e push" class="img-full">
+        <img src="../../static/images/git-st-conclus.webp" alt="git status final" class="img-full">
+    </section>
+
+    <!-- ============================
+         SECTION 4 — GIT GRAPH
+    ============================= -->
+    <section id="section4">
+        <h2>Git Graph</h2>
+
+        <p class="p-styled spaced-p">Abaixo está o diagrama Mermaid representando a evolução dos commits.</p>
+
+        <div class="mermaid">
+gitGraph
+    commit id: "Initial commit"
+    commit id: "Adicionado o código fonte"
+    commit id: "Adicionada a letra D"
+    commit id: "Adicionada a letra E"
+    commit id: "Adicionada a letra F" tag: "v0.1"
+    commit id: "mudança não desejada"
+    commit id: "Revert mudança não desejada" type: REVERSE
+    commit id: "Letra G adicionada"
+    commit id: "Letra H adicionada"
+    branch g-h-i
+    commit id: "Letra I adicionada"
+    checkout main
+    branch j-k-l
+    commit id: "Letra J adicionada"
+    commit id: "Letra K adicionada"
+    commit id: "Letra L adicionada"
+    checkout main
+    merge g-h-i
+    merge j-k-l
+    commit id: "Conflito de mesclagem j-k-l resolvido" tag: "v0.2"
+        </div>
+
+        <h3>Mermaid Code</h3>
+
+        <div class="code-box">
+<pre><code>
+gitGraph
+    commit id: "Initial commit"
+    commit id: "Adicionado o código fonte"
+    commit id: "Adicionada a letra D"
+    commit id: "Adicionada a letra E"
+    commit id: "Adicionada a letra F" tag: "v0.1"
+    commit id: "mudança não desejada"
+    commit id: "Revert mudança não desejada" type: REVERSE
+    commit id: "Letra G adicionada"
+    commit id: "Letra H adicionada"
+    branch g-h-i
+    commit id: "Letra I adicionada"
+    checkout main
+    branch j-k-l
+    commit id: "Letra J adicionada"
+    commit id: "Letra K adicionada"
+    commit id: "Letra L adicionada"
+    checkout main
+    merge g-h-i
+    merge j-k-l
+    commit id: "Conflito de mesclagem j-k-l resolvido" tag: "v0.2"
+</code></pre>
+        </div>
+    </section>
+
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+        <nav class="footer-nav">
+            <a href="11-branch.html" class="footer-link">← Voltar</a>
+            <a href="13-git-diff.html" class="footer-link">Próximo: Git Diff →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+            <button type="button" id="markCompletedButton" data-topic-id="12" class="btn-footer-primary">
+                Concluído ✓
+            </button>
+        </div>
+    </div>
+
+    <div class="footer-instruction">
+        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script src="../../static/js/git-course-functions.js"></script>
+
+</body>
+</html>
