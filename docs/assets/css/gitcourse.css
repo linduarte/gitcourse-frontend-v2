@@ -19,7 +19,7 @@
 
 /* ---------- 3. Body Global ---------- */
 body {
-    background: url('../../static/images/waves.webp') center/cover no-repeat fixed;
+    background: url('../../assets/images/waves.webp') center/cover no-repeat fixed;
     font-family: 'Victor Mono', monospace;
     font-size: 15px;
     color: #222;

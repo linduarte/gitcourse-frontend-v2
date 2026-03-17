@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Login - Git Course</title>
+
+  <!-- CSS principal do curso -->
+  <link rel="stylesheet" href="../assets/css/gitcourse.css">
+
+  <!-- CSS específico da página -->
+  <link rel="stylesheet" href="../static/css/pages/login.css">
+</head>
+
+<body>
+
+  <main>
+    <div class="container login-box">
+
+      <h1 style="text-align:center; margin-bottom:25px;">Bem-vindo ao Git Course</h1>
+
+      <div class="card" style="padding:30px;">
+
+        <h2 style="text-align:center; margin-bottom:20px;">Entrar</h2>
+
+        <form id="login-form">
+
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="username" required>
+
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" required>
+
+          <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">
+            Entrar
+          </button>
+
+        </form>
+
+        <div id="result" style="margin-top:15px;"></div>
+        <div id="login-success-banner" class="login-success-banner" aria-live="polite"></div>
+
+        <p style="text-align:center; margin-top:20px;">
+          Ainda não tem conta?
+          <a href="register.html" class="footer-link">Registre-se</a>
+        </p>
+
+      </div>
+
+      <div class="footer" style="margin-top:30px;">
+        <p>&copy; 2025 Curso de Git</p>
+
+        <div class="footer-badges">
+          <a href="https://pages.github.com/" class="github-link">
+            <span>Powered by GitHub Pages</span>
+            <img src="../static/images/github-mark-white.png"
+                 alt="GitHub Logo"
+                 class="footer-logo"
+                 width="16" height="16">
+          </a>
+
+          <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!"
+                 class="footer-logo"
+                 width="45" height="16">
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../scripts/config.js"></script>
+  <script src="../scripts/login.js"></script>
+
+
+  
+
+</body>
+</html>
