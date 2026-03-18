@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Meu Progresso - Git Course</title>
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+</head>
+<body class="intro-page">
+    <div class="container">
+        <h1>📊 Detalhes do seu Progresso</h1>
+        <div id="detailedProgress" class="card">
+            <p>Carregando cronograma de estudos...</p>
+        </div>
+        <button class="btn-footer-secondary" onclick="window.location.href='../../dashboard.html'">
+            ← Voltar ao Dashboard
+        </button>
+    </div>
+
+    <script src="../../assets/js/config.js"></script>
+    <script>
+        async function loadFullProgress() {
+            const container = document.getElementById("detailedProgress");
+            try {
+                const resp = await fetch(`${API_URL}/progress/`, {
+                    headers: { "Authorization": `Bearer ${localStorage.getItem("access_token")}` }
+                });
+                const progress = await resp.json();
+                
+                // Aqui você pode mapear os tópicos concluídos vs pendentes
+                container.innerHTML = "<ul>" + progress.map(p => `
+                    <li>Tópico ${p.topic_id}: ${p.completed ? '✅ Concluído' : '⏳ Pendente'}</li>
+                `).join('') + "</ul>";
+            } catch (e) {
+                container.innerHTML = "Erro ao conectar com a VPS.";
+            }
+        }
+        loadFullProgress();
+    </script>
+</body>
+</html>

@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 
     <!-- Configuração global -->
-    <script src="../../static/js/config.js"></script>
+    <script src="../../assets/js/config.js"></script>
 
     <!-- Autenticação + Concluído -->
     <script>
@@ -120,31 +120,31 @@
         Para iniciarmos o uso do git diff, é importante saber o status do repositório após o commit da letra “D”.
     </p>
 
-    <img src="../../static/images/status_comit_let_D.webp" alt="Status do repositório após commit da letra D" class="img-full">
+    <img src="../../assets/images/status_comit_let_D.webp" alt="Status do repositório após commit da letra D" class="img-full">
 
     <p class="p-styled spaced-p">
         Vamos implementar uma nova feature request adicionando a letra “E” aos arquivos <em>pilots.html</em>, <em>cities.html</em> e <em>names.html</em>.
     </p>
 
-    <img src="../../static/images/add_letter.webp" alt="Adição da letra E nos arquivos HTML" class="img-full">
+    <img src="../../assets/images/add_letter.webp" alt="Adição da letra E nos arquivos HTML" class="img-full">
 
     <p class="p-styled spaced-p">
         Após as alterações, adicionamos os arquivos ao index usando <code>git add</code>.
     </p>
 
-    <img src="../../static/images/git_add_let_F.webp" alt="Aplicação do git add" class="img-full">
+    <img src="../../assets/images/git_add_let_F.webp" alt="Aplicação do git add" class="img-full">
 
     <p class="p-styled spaced-p">
         Em seguida, adicionamos a letra “F” aos mesmos arquivos.
     </p>
 
-    <img src="../../static/images/git_add_let_E.webp" alt="Status após adição da letra F" class="img-full">
+    <img src="../../assets/images/git_add_let_E.webp" alt="Status após adição da letra F" class="img-full">
 
     <p class="p-styled spaced-p">
         A imagem mostra que a letra “F” ainda não foi adicionada ao index, enquanto a letra “E” já está staged.
     </p>
 
-    <img src="../../static/images/git-log-oneline.webp" alt="Log após adição da letra D" class="img-full">
+    <img src="../../assets/images/git-log-oneline.webp" alt="Log após adição da letra D" class="img-full">
 
     <p class="p-styled spaced-p">
         Temos então três situações distintas:
@@ -181,13 +181,13 @@
         Usaremos o arquivo <strong>pilots.html</strong> para demonstração.
     </p>
 
-    <img src="../../static/images/git_st_diff.webp" alt="Status do arquivo pilots.html" class="img-full">
+    <img src="../../assets/images/git_st_diff.webp" alt="Status do arquivo pilots.html" class="img-full">
 
     <p class="p-styled spaced-p">
         A seguir interpretaremos a saída do comando <code>git diff pilots.html</code>.
     </p>
 
-    <img src="../../static/images/git-diff-pilot.webp" alt="Saída do git diff" class="img-full">
+    <img src="../../assets/images/git-diff-pilot.webp" alt="Saída do git diff" class="img-full">
 
     <h4>Comando executado</h4>
 
@@ -228,7 +228,7 @@
 
     <h4>Conteúdo antes e depois</h4>
 
-    <img src="../../static/images/conteudo_diff.webp" alt="Conteúdo antes e depois" class="img-full">
+    <img src="../../assets/images/conteudo_diff.webp" alt="Conteúdo antes e depois" class="img-full">
 
     <h4>Estado do repositório</h4>
 
@@ -244,31 +244,31 @@
 
     <pre class="spaced-pre"><code class="language-bash">git diff --staged pilots.html</code></pre>
 
-    <img src="../../static/images/git-diff_staged.webp" alt="git diff --staged" class="img-full">
+    <img src="../../assets/images/git-diff_staged.webp" alt="git diff --staged" class="img-full">
 
     <h4>Alterações desde o último commit</h4>
 
     <pre class="spaced-pre"><code class="language-bash">git diff HEAD pilots.html</code></pre>
 
-    <img src="../../static/images/git-diff-head.webp" alt="git diff HEAD" class="img-full">
+    <img src="../../assets/images/git-diff-head.webp" alt="git diff HEAD" class="img-full">
 
     <h4>Comparando dois commits</h4>
 
     <pre class="spaced-pre"><code class="language-bash">git diff HEAD~1 HEAD pilots.html</code></pre>
 
-    <img src="../../static/images/git-diff-head-head.webp" alt="Comparação entre commits" class="img-full">
+    <img src="../../assets/images/git-diff-head-head.webp" alt="Comparação entre commits" class="img-full">
 
     <h4>Obtendo hashes pelo git log</h4>
 
     <pre class="spaced-pre"><code class="language-bash">git log --oneline --decorate</code></pre>
     <pre class="spaced-pre"><code class="language-bash">git diff d298f74 2dded79 pilots.html</code></pre>
 
-    <img src="../../static/images/git-log-diff.webp" alt="git log e git diff" class="img-full">
+    <img src="../../assets/images/git-log-diff.webp" alt="git log e git diff" class="img-full">
 
     <h4>Commit das pendências</h4>
 
-    <img src="../../static/images/commit_E.webp" alt="Commit letra E" class="img-full">
-    <img src="../../static/images/commit_F.webp" alt="Commit letra F" class="img-full">
+    <img src="../../assets/images/commit_E.webp" alt="Commit letra E" class="img-full">
+    <img src="../../assets/images/commit_F.webp" alt="Commit letra F" class="img-full">
 
     <p class="p-styled spaced-p">
         O commit da letra F foi precedido de <code>git add</code>.
@@ -276,7 +276,7 @@
 
     <h4>Conclusão</h4>
 
-    <img src="../../static/images/git-st-final.webp" alt="Status final" class="img-full">
+    <img src="../../assets/images/git-st-final.webp" alt="Status final" class="img-full">
 
     <section>
         <h3>Git Graph</h3>
@@ -333,7 +333,7 @@ gitGraph
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
             <img src="https://jigsaw.w3.org/css-validator/images/vcss"
@@ -348,7 +348,7 @@ gitGraph
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
-<script src="../../static/js/git-course-functions.js"></script>
+<script src="../../assets/js/git-course-functions.js"></script>
 
 </body>
 </html>

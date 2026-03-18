@@ -8,9 +8,7 @@
   <!-- CSS principal do curso -->
   <link rel="stylesheet" href="assets/css/gitcourse.css">
 
-  <!-- CSS específico da dashboard -->
-  <link rel="stylesheet" href="static/css/pages/dashboard.css">
-</head>
+  </head>
 
 <body>
 
@@ -56,11 +54,11 @@
   </main>
 
   <!-- CONFIG DA API -->
-  <script src="script/config.js"></script>
+  <script src="assets/js/config.js"></script>
 
   <!-- MÓDULO GLOBAL -->
   <script type="module">
-    import { protectRoute, getCurrentUser } from "./scripts/git-course-functions.js";
+    import { protectRoute, getCurrentUser } from "./js/git-course-functions.js";
 
     // Proteção de rota padronizada
     protectRoute();

@@ -17,7 +17,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 
     <!-- Configuração global -->
-    <script src="../../static/js/config.js"></script>
+    <script src="../../assets/js/config.js"></script>
 
     <!-- Autenticação + Concluído -->
     <script>
@@ -115,7 +115,7 @@
         Para demonstrar cada um dos cenários acima, vamos simular alterações no arquivo.
     </p>
 
-    <img src="../../static/images/alpha.webp" alt="Alteração inicial no arquivo pilots.html" class="img-full">
+    <img src="../../assets/images/alpha.webp" alt="Alteração inicial no arquivo pilots.html" class="img-full">
 
     <p class="p-styled spaced-p">
         Salve a alteração e visualize no navegador para confirmar o efeito.
@@ -136,7 +136,7 @@ flowchart LR
     B --> C["Repository<br>(.git)"]
     </div>
 
-    <img src="../../static/images/1-checkout.webp" alt="git checkout restaurando arquivo" class="img-full">
+    <img src="../../assets/images/1-checkout.webp" alt="git checkout restaurando arquivo" class="img-full">
 
     <p class="p-styled spaced-p">
         Abra o arquivo <em>pilots.html</em> novamente para confirmar que foi restaurado.
@@ -146,34 +146,34 @@ flowchart LR
         <strong>2 — Desfazendo mudanças depois de adicioná-las ao staged</strong>
     </p>
 
-    <img src="../../static/images/2-add.webp" alt="Arquivo adicionado ao staged" class="img-full">
+    <img src="../../assets/images/2-add.webp" alt="Arquivo adicionado ao staged" class="img-full">
 
     <p class="p-styled spaced-p">
         Ao executar <code>git status</code>, vemos que o arquivo está staged.
     </p>
 
-    <img src="../../static/images/3-reset.webp" alt="git reset removendo arquivo do staged" class="img-full">
+    <img src="../../assets/images/3-reset.webp" alt="git reset removendo arquivo do staged" class="img-full">
 
     <p class="p-styled spaced-p">
         O comando <code>git reset</code> removeu o arquivo do index, retornando-o ao diretório de trabalho.
     </p>
 
-    <img src="../../static/images/4-checkout.webp" alt="git checkout restaurando arquivo após reset" class="img-full">
+    <img src="../../assets/images/4-checkout.webp" alt="git checkout restaurando arquivo após reset" class="img-full">
 
     <p class="p-styled spaced-p">
         <strong>3 — Desfazendo mudanças comitadas</strong>
     </p>
 
-    <img src="../../static/images/5-commit.webp" alt="Commit realizado" class="img-full">
-    <img src="../../static/images/6-log.webp" alt="git log mostrando commit" class="img-full">
-    <img src="../../static/images/7-revert.webp" alt="git revert aplicado" class="img-full">
-    <img src="../../static/images/8-log.webp" alt="git log após revert" class="img-full">
+    <img src="../../assets/images/5-commit.webp" alt="Commit realizado" class="img-full">
+    <img src="../../assets/images/6-log.webp" alt="git log mostrando commit" class="img-full">
+    <img src="../../assets/images/7-revert.webp" alt="git revert aplicado" class="img-full">
+    <img src="../../assets/images/8-log.webp" alt="git log após revert" class="img-full">
 
     <h4>Marcando versões</h4>
 
-    <img src="../../static/images/tag.webp" alt="Criação de tag" class="img-full">
-    <img src="../../static/images/git-st.webp" alt="git status após tag" class="img-full">
-    <img src="../../static/images/git-push-st.webp" alt="git push com tag" class="img-full">
+    <img src="../../assets/images/tag.webp" alt="Criação de tag" class="img-full">
+    <img src="../../assets/images/git-st.webp" alt="git status após tag" class="img-full">
+    <img src="../../assets/images/git-push-st.webp" alt="git push com tag" class="img-full">
 
     <h2>Complemento ao processo de desfazer mudanças</h2>
 
@@ -227,11 +227,11 @@ flowchart TD
     </p>
 
     <div class="image-container">
-        <img src="../../static/images/commit_exemplo.webp" alt="Exemplo de commit" class="img-full">
+        <img src="../../assets/images/commit_exemplo.webp" alt="Exemplo de commit" class="img-full">
     </div>
 
     <div class="image-container">
-        <img src="../../static/images/reset.webp" alt="Exemplo de git reset" class="img-full">
+        <img src="../../assets/images/reset.webp" alt="Exemplo de git reset" class="img-full">
     </div>
 
     <p class="p-styled spaced-p">
@@ -244,8 +244,8 @@ flowchart TD
         O <code>git revert</code> cria um novo commit que desfaz alterações anteriores sem modificar o histórico.
     </p>
 
-    <img src="../../static/images/git-reflog.webp" alt="git reflog" class="img-full">
-    <img src="../../static/images/git-revert-head.webp" alt="git revert HEAD" class="img-full">
+    <img src="../../assets/images/git-reflog.webp" alt="git reflog" class="img-full">
+    <img src="../../assets/images/git-revert-head.webp" alt="git revert HEAD" class="img-full">
 
     <h4>git reset x git revert</h4>
 
@@ -355,7 +355,7 @@ flowchart TD
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../static/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
             <img src="https://jigsaw.w3.org/css-validator/images/vcss"
@@ -369,7 +369,7 @@ flowchart TD
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
-<script src="../../static/js/git-course-functions.js"></script>
+<script src="../../assets/js/git-course-functions.js"></script>
 
 </body>
 </html>
