@@ -29,22 +29,25 @@
 
   <main class="dashboard-container container">
     <h1>Bem-vindo ao Git Course!</h1>
-    <p id="welcomeMessage">Carregando...</p>
+    
+    <p id="welcomeMessage">Sincronizando com a VPS...</p>
 
     <section id="progressCard" class="card">
       <h3>Seu Progresso</h3>
-      <div id="progressCardContent">Carregando...</div>
+      
+      <div id="progressCardContent">Calculando progresso...</div>
+      
       <div class="progress-bar">
-        <div id="progressBarFill" class="progress-bar-fill"></div>
+        <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
       </div>
+
       <button type="button" id="btnContinueCard" class="btn-footer-primary">
         Continuar de onde parei →
       </button>
     </section>
+  </main>
 
-    <section id="nextTopicCard" class="card"></section>
-    <section id="lastTopicCard" class="card"></section>
-
+  
     <footer class="footer">
       <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
@@ -57,44 +60,49 @@
         </a>
     </div>
     </footer>
-  </main>
+  
 
   <script src="assets/js/config.js"></script>
 
   <script type="module">
-    // 1. Importamos as ferramentas que conversam com a VPS
-    import { getCurrentUser } from "./js/git-course-functions.js";
+    import { getCurrentUser, getProgress } from "./js/git-course-functions.js";
 
-    async function inicializarDashboard() {
+    async function inicializarPainel() {
         const welcome = document.getElementById('welcomeMessage');
-        const token = localStorage.getItem("access_token");
-
-        // Verificação de segurança: Se não tem token, volta pro login
-        if (!token) {
-            window.location.href = "auth/login.html";
-            return;
-        }
+        const progressContent = document.getElementById('progressCardContent');
+        const progressBar = document.getElementById('progressBarFill');
 
         try {
-            // 2. Chamada à VPS para buscar os dados da 'Ana' (ou o seu)
+            // 1. Busca os dados do usuário (Ana/Charles)
             const user = await getCurrentUser();
-
+            
             if (user && user.email) {
-                // 3. Sucesso! Substituímos o "Carregando..." pelo e-mail real
-                welcome.textContent = `Olá, ${user.email}! 🚀 Pronto para os estudos?`;
-                console.log("✅ Dashboard sincronizada com a VPS.");
+                welcome.textContent = `Olá, ${user.email}! 🚀 Pronto para continuar?`;
+                
+                // 2. Busca o progresso real desse usuário na VPS
+                const progress = await getProgress();
+                
+                if (progress) {
+                    // Atualiza o texto e a barra de progresso (ex: 45%)
+                    progressContent.textContent = `Você completou ${progress.percent}% do curso.`;
+                    progressBar.style.width = `${progress.percent}%`;
+                    console.log("✅ Dashboard sincronizada com sucesso.");
+                }
             } else {
-                welcome.textContent = "Erro: Usuário não identificado.";
+                welcome.textContent = "Sessão expirada. Redirecionando...";
+                setTimeout(() => window.location.href = "auth/login.html", 2000);
             }
         } catch (error) {
-            console.error("❌ Falha na conexão:", error);
-            welcome.textContent = "Servidor offline ou erro de rede.";
+            console.error("❌ Erro na carga de dados:", error);
+            welcome.textContent = "Erro de conexão com a VPS.";
+            progressContent.textContent = "Não foi possível carregar seu progresso.";
         }
     }
 
-    // Dispara a carga assim que a página termina de carregar
-    window.onload = inicializarDashboard;
+    // Dispara a ignição
+    window.onload = inicializarPainel;
   </script>
+  
 
 
   </body>
