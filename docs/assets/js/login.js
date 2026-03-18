@@ -2,36 +2,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form");
     const resultDiv = document.getElementById("result");
 
+    // Aguarda o HTML carregar completamente
+    document.addEventListener('DOMContentLoaded', () => {
     console.log("🔌 Circuito de Login Ativo: O script foi carregado!");
 
-    loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    console.log("🚀 Disparando carga para a VPS...");
+    // ESTA É A LINHA QUE ESTAVA FALTANDO (A DECLARAÇÃO):
+    const loginForm = document.getElementById('login-form');
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    // Verifica se o formulário existe antes de ligar o "disjuntor"
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log("🚀 Botão disparado! Iniciando requisição...");
 
-    try {
-        const response = await fetch(`${API_URL}/auth/token`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // O seu código de fetch (a chamada para a VPS) continua aqui...
+            // ...
         });
-
-        console.log("Status da Resposta:", response.status); // Ver se é 200, 401 ou 422
-
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem("access_token", data.access_token);
-            console.log("✅ Token recebido! Redirecionando...");
-            window.location.href = "../dashboard.html";
-        } else {
-            const errorData = await response.json();
-            console.error("❌ Erro na VPS:", errorData.detail || "Credenciais inválidas");
-            alert("Falha no login: " + (errorData.detail || "Verifique e-mail e senha"));
-        }
-    } catch (err) {
-        console.error("💥 Falha Crítica de Conexão:", err);
+    } else {
+        console.error("❌ Erro: Não encontrei o formulário com id 'login-form' no HTML.");
     }
 });
 });
+
