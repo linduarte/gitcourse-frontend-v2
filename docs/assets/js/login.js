@@ -25,21 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        // 2. Preparação da Carga (OAuth2 Password Flow)
-        const formData = new URLSearchParams();
-        formData.append('username', email);
-        formData.append('password', password);
+        // 2. Preparação da Carga (JSON conforme seu auth.py espera LoginData)
+        const loginData = {
+            email: email,
+            password: password
+        };
 
         try {
-            console.log(`📡 Conectando à VPS: ${API_URL}/auth/token...`);
+            console.log(`📡 Conectando à VPS: ${API_URL}/auth/login...`);
 
             // 3. Disparo da Requisição
-            const response = await fetch(`${API_URL}/auth/token`, {
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json', // Mudamos para JSON
                 },
-                body: formData
+                body: JSON.stringify(loginData) // Enviando como objeto JSON
             });
 
             // 4. Análise da Resposta do Servidor
