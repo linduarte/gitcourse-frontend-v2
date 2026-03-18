@@ -45,10 +45,8 @@
         Continuar de onde parei →
       </button>
     </section>
-  </main>
-
   
-    <footer class="footer">
+  <footer class="footer">
       <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
@@ -59,48 +57,50 @@
             <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
         </a>
     </div>
-    </footer>
+  </footer>  
+  
+  
+  </main>
+
+  
+    
   
 
   <script src="assets/js/config.js"></script>
 
   <script type="module">
-    import { getCurrentUser, getProgress } from "./js/git-course-functions.js";
+import { getCurrentUser, getProgress } from "../../assets/js/git-course-functions.js";
 
-    async function inicializarPainel() {
-        const welcome = document.getElementById('welcomeMessage');
-        const progressContent = document.getElementById('progressCardContent');
-        const progressBar = document.getElementById('progressBarFill');
+async function carregarProgresso() {
+    const userInfo = document.getElementById("userInfo");
+    const progressInfo = document.getElementById("progressInfo");
+    const bar = document.getElementById("progressBarFill");
 
-        try {
-            // 1. Busca os dados do usuário (Ana/Charles)
-            const user = await getCurrentUser();
-            
-            if (user && user.email) {
-                welcome.textContent = `Olá, ${user.email}! 🚀 Pronto para continuar?`;
-                
-                // 2. Busca o progresso real desse usuário na VPS
-                const progress = await getProgress();
-                
-                if (progress) {
-                    // Atualiza o texto e a barra de progresso (ex: 45%)
-                    progressContent.textContent = `Você completou ${progress.percent}% do curso.`;
-                    progressBar.style.width = `${progress.percent}%`;
-                    console.log("✅ Dashboard sincronizada com sucesso.");
-                }
-            } else {
-                welcome.textContent = "Sessão expirada. Redirecionando...";
-                setTimeout(() => window.location.href = "auth/login.html", 2000);
-            }
-        } catch (error) {
-            console.error("❌ Erro na carga de dados:", error);
-            welcome.textContent = "Erro de conexão com a VPS.";
-            progressContent.textContent = "Não foi possível carregar seu progresso.";
+    try {
+        const user = await getCurrentUser();
+
+        if (!user) {
+            window.location.href = "../../auth/login.html";
+            return;
         }
-    }
 
-    // Dispara a ignição
-    window.onload = inicializarPainel;
+        const nome = user.name || user.email;
+        userInfo.textContent = `Usuário: ${nome}`;
+
+        const progress = await getProgress();
+
+        if (progress) {
+            progressInfo.textContent = `Você completou ${progress.percent}% do curso.`;
+            bar.style.width = `${progress.percent}%`;
+        }
+
+    } catch (err) {
+        console.error(err);
+        progressInfo.textContent = "Erro ao carregar progresso.";
+    }
+}
+
+window.onload = carregarProgresso;
   </script>
   
 

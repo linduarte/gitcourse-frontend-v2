@@ -19,21 +19,15 @@ export function protectRoute() {
 export async function getCurrentUser() {
     const token = localStorage.getItem("access_token");
 
-    if (!token) return null;
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
 
-    try {
-        const response = await fetch(`${API_URL}/auth/me`, {
-            headers: { "Authorization": `Bearer ${token}` }
-        });
+    if (!response.ok) return null;
 
-        if (!response.ok) return null;
-
-        return await response.json();
-
-    } catch (err) {
-        console.error("Erro ao buscar usuário:", err);
-        return null;
-    }
+    return await response.json();
 }
 
 // ===============================
