@@ -4,41 +4,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("🔌 Circuito de Login Ativo: O script foi carregado!");
 
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    console.log("🚀 Disparando carga para a VPS...");
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-        resultDiv.innerText = "";
+    try {
+        const response = await fetch(`${API_URL}/auth/token`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `username=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+        });
 
-        try {
-            const response = await fetch(`${API_URL}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
+        console.log("Status da Resposta:", response.status); // Ver se é 200, 401 ou 422
 
+        if (response.ok) {
             const data = await response.json();
-
-            if (response.ok) {
             localStorage.setItem("access_token", data.access_token);
-            // Sai de /auth/ e entra na raiz onde está a dashboard
-            window.location.href = "../dashboard.html"; 
-            return;
-            }
-
-            if (Array.isArray(data.detail)) {
-                resultDiv.innerText = "Erro: " + data.detail[0].msg;
-            } else if (typeof data.detail === "string") {
-                resultDiv.innerText = "Erro: " + data.detail;
-            } else {
-                resultDiv.innerText = "Erro ao fazer login.";
-            }
-
-        } catch (error) {
-            console.error(error);
-            resultDiv.innerText = "Erro inesperado ao conectar ao servidor.";
+            console.log("✅ Token recebido! Redirecionando...");
+            window.location.href = "../dashboard.html";
+        } else {
+            const errorData = await response.json();
+            console.error("❌ Erro na VPS:", errorData.detail || "Credenciais inválidas");
+            alert("Falha no login: " + (errorData.detail || "Verifique e-mail e senha"));
         }
-    });
+    } catch (err) {
+        console.error("💥 Falha Crítica de Conexão:", err);
+    }
+});
 });

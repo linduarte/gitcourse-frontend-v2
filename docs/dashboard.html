@@ -60,5 +60,42 @@
   </main>
 
   <script src="assets/js/config.js"></script>
+
+  <script type="module">
+    // 1. Importamos as ferramentas que conversam com a VPS
+    import { getCurrentUser } from "./js/git-course-functions.js";
+
+    async function inicializarDashboard() {
+        const welcome = document.getElementById('welcomeMessage');
+        const token = localStorage.getItem("access_token");
+
+        // Verificação de segurança: Se não tem token, volta pro login
+        if (!token) {
+            window.location.href = "auth/login.html";
+            return;
+        }
+
+        try {
+            // 2. Chamada à VPS para buscar os dados da 'Ana' (ou o seu)
+            const user = await getCurrentUser();
+
+            if (user && user.email) {
+                // 3. Sucesso! Substituímos o "Carregando..." pelo e-mail real
+                welcome.textContent = `Olá, ${user.email}! 🚀 Pronto para os estudos?`;
+                console.log("✅ Dashboard sincronizada com a VPS.");
+            } else {
+                welcome.textContent = "Erro: Usuário não identificado.";
+            }
+        } catch (error) {
+            console.error("❌ Falha na conexão:", error);
+            welcome.textContent = "Servidor offline ou erro de rede.";
+        }
+    }
+
+    // Dispara a carga assim que a página termina de carregar
+    window.onload = inicializarDashboard;
+  </script>
+
+
   </body>
 </html>
