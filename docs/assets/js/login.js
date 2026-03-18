@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form");
     const resultDiv = document.getElementById("result");
 
+    console.log("🔌 Circuito de Login Ativo: O script foi carregado!");
+
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
@@ -20,9 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem("access_token", data.access_token);
-                window.location.href = "../curso/git-course/topics.html";
-                return;
+            localStorage.setItem("access_token", data.access_token);
+            // Sai de /auth/ e entra na raiz onde está a dashboard
+            window.location.href = "../dashboard.html"; 
+            return;
             }
 
             if (Array.isArray(data.detail)) {

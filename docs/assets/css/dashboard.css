@@ -1,0 +1,101 @@
+/* 1. Reset de Segurança */
+body {
+    display: block !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. Sidebar Profissional (Mantendo o que deu vida à página) */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: rgba(20, 20, 25, 0.9);
+    backdrop-filter: blur(15px);
+    padding: 30px 20px;
+    z-index: 1000;
+    color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar h2 {
+    color: var(--primary);
+    font-family: 'Victor Mono', monospace;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.sidebar ul { list-style: none; padding: 0; }
+.sidebar ul li { 
+    padding: 12px; 
+    font-family: 'Victor Mono', monospace; 
+    font-size: 14px;
+}
+.sidebar ul li a { color: #ccc; text-decoration: none; }
+
+/* 3. A Tela Principal (Recuperando os Elementos Notáveis) */
+.dashboard-container {
+    margin-left: 280px !important;
+    margin-right: 20px !important;
+    margin-top: 40px !important;
+    margin-bottom: 0px !important; /* Zera a margem de baixo para o footer encostar */
+    max-width: 1000px !important;
+    width: auto !important;
+}
+
+/* 4. O Footer "Colado" (Resolvendo a flutuação) */
+.footer.container {
+    margin-left: 280px !important;
+    margin-right: 20px !important;
+    margin-top: -10px !important; /* Ajuste cirúrgico para eliminar o vão */
+    width: auto !important;
+    max-width: 1000px !important;
+    padding: 20px !important;
+    border-top-left-radius: 0; /* Remove o arredondado superior para parecer uma peça só */
+    border-top-right-radius: 0;
+}
+
+/* Estilização do Rodapé Interno da Dashboard */
+.dashboard-footer {
+    margin-top: 50px;           /* Espaço após o último card */
+    padding: 20px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.08); /* Linha divisória sutil */
+}
+
+.footer-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-badges {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.github-link, .w3c-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--neutral);
+    font-size: 13px;
+    transition: color 0.3s;
+}
+
+.github-link:hover {
+    color: var(--primary);
+}
+
+.footer-logo {
+    height: 18px; /* Padroniza a altura dos logos */
+    width: auto;
+    opacity: 0.8;
+}

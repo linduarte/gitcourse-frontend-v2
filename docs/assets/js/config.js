@@ -1,8 +1,7 @@
 // Configuração global da API do GitCourse
 
-// Ambiente de produção
-// const API_URL = "https://prod.git-learn.com.br";
-const API_URL = "http://localhost:8000";
+// Ambiente de produção (definido pelo Github pages)
+const API_URL = "http://191.252.204.249:8000";
 
 
 // Se quiser alternar para local, basta trocar:
