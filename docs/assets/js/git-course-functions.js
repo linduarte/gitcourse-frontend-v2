@@ -1,67 +1,40 @@
-// ===============================
-// 1. Proteção de rota
-// ===============================
-export function protectRoute() {
-    const token = localStorage.getItem("access_token");
+// assets/js/git-course-functions.js
 
-    if (!token) {
-        // Caminho absoluto — funciona em qualquer página
-        window.location.href = "/auth/login.html";
-        return false;
-    }
+// assets/js/git-course-functions.js
 
-    return true;
-}
-
-// ===============================
-// 2. Buscar usuário autenticado
-// ===============================
 export async function getCurrentUser() {
     const token = localStorage.getItem("access_token");
+    if (!token) return null;
 
-    const response = await fetch(`${API_BASE_URL}/auth/me`, {
-        headers: {
-            "Authorization": `Bearer ${token}`
+    try {
+        // CORREÇÃO: A rota correta na sua VPS é /dashboard (sem o /auth/)
+        const response = await fetch(`${API_URL}/dashboard`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error("Erro na resposta da VPS:", response.status);
+            return null;
         }
-    });
 
-    if (!response.ok) return null;
+        const data = await response.json();
+        
+        // O seu backend retorna um objeto com { user_email: "..." }
+        // Vamos padronizar para retornar um objeto que o dashboard entenda
+        return { email: data.user_email };
 
-    return await response.json();
+    } catch (error) {
+        console.error("Erro de conexão com a VPS:", error);
+        return null;
+    }
 }
 
-// ===============================
-// 3. Logout
-// ===============================
+
 export function logout() {
     localStorage.removeItem("access_token");
-    window.location.href = "/auth/login.html"; // Caminho absoluto
-}
-
-// ===============================
-// 4. Carregar navbar dinâmica
-// ===============================
-export async function loadNavbar() {
-    const navbarContainer = document.getElementById("navbar");
-
-    if (!navbarContainer) return;
-
-    const user = await getCurrentUser();
-
-    navbarContainer.innerHTML = `
-        <nav class="navbar">
-            <div class="nav-left">
-                <a href="/curso/topics.html">Tópicos</a>
-                <a href="/curso/progress.html">Progresso</a>
-                <a href="/curso/program.html">Programa</a>
-            </div>
-
-            <div class="nav-right">
-                <span class="user-info">${user ? user.email : ""}</span>
-                <button id="logoutBtn" class="logout-btn">Sair</button>
-            </div>
-        </nav>
-    `;
-
-    document.getElementById("logoutBtn").addEventListener("click", logout);
+    window.location.href = "auth/login.html";
 }

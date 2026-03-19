@@ -8,24 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loginForm = document.getElementById('login-form');
 
-    // Verifica se o componente existe no painel (HTML)
     if (!loginForm) {
         console.error("❌ Erro Crítico: Formulário 'login-form' não encontrado no HTML.");
         return;
     }
 
-    console.log("✅ Formulário detectado. Aguardando ignição...");
-
-    loginForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Impede o refresh da página
+        loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); 
         
-        console.log("🚀 Botão 'Entrar' clicado. Coletando dados...");
+        console.log("🚀 Tentando realizar login...");
 
-        // 1. Coleta de Dados do Painel
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        // 2. Preparação da Carga (JSON conforme seu auth.py espera LoginData)
         const loginData = {
             email: email,
             password: password
@@ -34,36 +29,36 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log(`📡 Conectando à VPS: ${API_URL}/auth/login...`);
 
-            // 3. Disparo da Requisição
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json', // Mudamos para JSON
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(loginData) // Enviando como objeto JSON
+                body: JSON.stringify(loginData)
             });
 
-            // 4. Análise da Resposta do Servidor
             if (response.ok) {
                 const data = await response.json();
                 
-                // Grava o "Passaporte" (Token) no bolso do navegador
+                // --- AQUI ENTRA A MUDANÇA ---
+                // Salva o token retornado pela VPS
                 localStorage.setItem("access_token", data.access_token);
+                // Salva o email que o usuário acabou de digitar no formulário
+                localStorage.setItem("user_email", email); 
                 
-                console.log("✅ Autenticação bem-sucedida! Token armazenado.");
-                
-                // Redirecionamento de Rota
+                console.log("✅ Login OK! Redirecionando...");
                 window.location.href = "../dashboard.html";
+                // ----------------------------
+                
             } else {
                 const errorDetail = await response.json();
-                console.warn("⚠️ Falha na Autenticação:", errorDetail.detail);
                 alert(`Acesso negado: ${errorDetail.detail || "Usuário ou senha inválidos."}`);
             }
 
         } catch (error) {
-            // Falha de Hardware/Rede (VPS fora do ar, erro de DNS, etc)
-            console.error("💥 Falha de Conexão com a VPS:", error);
+            console.error("💥 Falha de Conexão:", error);
             alert("Erro de Rede: Não foi possível alcançar o servidor na VPS.");
         }
     });
+
 });
