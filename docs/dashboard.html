@@ -21,21 +21,23 @@
     <ul>
       <li><a href="dashboard.html">🏠 Dashboard</a></li>
       <li><a href="curso/git-course/progress.html">📊 Progresso</a></li>
-      <li id="menuContinue">⏭ Continuar</li>
-      <li id="menuLastTopic">📌 Último tópico</li>
-      <li id="menuLogout"><a href="#" id="logoutLink">🚪 Sair</a></li>
+      <li id="menuContinue" style="cursor: pointer;">⏭ Continuar</li>
+      <li id="menuLastTopic" style="cursor: pointer;">📌 Último tópico</li>
+      <li id="menuLogout">
+        <a href="#" id="logoutLink" style="text-decoration: none; color: inherit;">
+          🚪 Sair
+        </a>
+      </li>
     </ul>
   </aside>
 
   <main class="dashboard-container container">
-    <!-- Adicionamos o span para exibir o email do usuário -->
     <h1>Bem-vindo, <span id="userEmailDisplay">...</span>!</h1>
     
     <p id="welcomeMessage">Sincronizando com a VPS...</p>
 
     <section id="progressCard" class="card">
       <h3>Seu Progresso</h3>
-      
       <div id="progressCardContent">Calculando progresso...</div>
       
       <div class="progress-bar">
@@ -46,72 +48,75 @@
         Continuar de onde parei →
       </button>
     </section>
-  
-  <footer class="footer">
+
+    <footer class="footer">
       <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
-            <span>🐙 GitHub Pages</span>
-            <img src="assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+          <span>🐙 GitHub Pages</span>
+          <img src="assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
-
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+          <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
         </a>
-    </div>
-  </footer>  
-  
+      </div>
+    </footer>
   </main>
 
-  <!-- Carrega o config.js primeiro para definir API_URL -->
   <script src="assets/js/config.js"></script>
 
-      <script type="module">
-    // Não precisamos mais do import para exibir o email localmente agora
-    function inicializarDashboard() {
+  <script type="module">
+    import { logout, getCurrentUser } from "./assets/js/git-course-functions.js";
+
+    /**
+     * Função Principal de Inicialização
+     */
+    async function inicializarDashboard() {
+        console.log("🔌 Sistema Dashboard: Iniciando...");
+
         const emailDisplay = document.getElementById("userEmailDisplay");
         const welcomeMsg = document.getElementById("welcomeMessage");
+        const logoutBtn = document.getElementById("logoutLink");
 
-        // Lemos os dados que salvamos no login.js
+        // Captura dados do cache local (gerados no login.js)
         const userEmail = localStorage.getItem("user_email");
         const token = localStorage.getItem("access_token");
 
+        // Validação de Segurança (Circuit Breaker)
         if (!token || !userEmail) {
-            console.warn("Sessão não encontrada. Redirecionando...");
+            console.warn("🔒 Sessão inválida ou expirada. Redirecionando...");
             window.location.href = "auth/login.html";
             return;
         }
 
-        // EXIBE O EMAIL NA TELA IMEDIATAMENTE
+        // 1. Exibição imediata (Identificação Visual)
         if (emailDisplay) emailDisplay.textContent = userEmail;
-        welcomeMsg.textContent = "Sessão ativa (Modo Local).";
         
-        console.log("Dashboard carregado com sucesso para:", userEmail);
-    }
+        try {
+            // 2. Sincronização em tempo real com a VPS
+            const userData = await getCurrentUser();
+            
+            if (userData && userData.email) {
+                welcomeMsg.textContent = "Sessão ativa e sincronizada com a VPS.";
+                console.log("✅ Usuário validado na VPS:", userData.email);
+            } else {
+                welcomeMsg.textContent = "Aviso: Trabalhando em modo Offline.";
+                console.warn("⚠️ Não foi possível validar o token com o servidor.");
+            }
+        } catch (error) {
+            console.error("💥 Erro de conexão:", error);
+            welcomeMsg.textContent = "Servidor Offline. Usando dados locais.";
+        }
 
-    // Configura o Logout
-    document.getElementById('logoutLink')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.clear(); // Limpa token e email
-        window.location.href = "auth/login.html";
-    });
-
-    window.onload = inicializarDashboard;
-  </script>
-
-
-
-
-    // Configura o clique no link de Logout
-    const logoutLink = document.getElementById('logoutLink');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
+        // 3. Configuração do botão de Logout
+        logoutBtn?.addEventListener('click', (e) => {
             e.preventDefault();
+            console.log("🚪 Encerrando sessão...");
             logout();
         });
     }
 
-    // Garante que a função rode ao carregar a página
-    window.onload = inicializarDashboard;
+    // Dispara a carga assim que o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', inicializarDashboard);
   </script>
 
 </body>
