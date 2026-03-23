@@ -63,60 +63,20 @@
   </main>
 
   <script src="assets/js/config.js"></script>
-
+  
   <script type="module">
-    import { logout, getCurrentUser } from "./assets/js/git-course-functions.js";
+    import { inicializarDashboard } from "./assets/js/dashboard-logic.js";
+    import { logout } from "./assets/js/git-course-functions.js";
 
-    /**
-     * Função Principal de Inicialização
-     */
-    async function inicializarDashboard() {
-        console.log("🔌 Sistema Dashboard: Iniciando...");
+    document.addEventListener('DOMContentLoaded', () => {
+        inicializarDashboard();
 
-        const emailDisplay = document.getElementById("userEmailDisplay");
-        const welcomeMsg = document.getElementById("welcomeMessage");
-        const logoutBtn = document.getElementById("logoutLink");
-
-        // Captura dados do cache local (gerados no login.js)
-        const userEmail = localStorage.getItem("user_email");
-        const token = localStorage.getItem("access_token");
-
-        // Validação de Segurança (Circuit Breaker)
-        if (!token || !userEmail) {
-            console.warn("🔒 Sessão inválida ou expirada. Redirecionando...");
-            window.location.href = "auth/login.html";
-            return;
-        }
-
-        // 1. Exibição imediata (Identificação Visual)
-        if (emailDisplay) emailDisplay.textContent = userEmail;
-        
-        try {
-            // 2. Sincronização em tempo real com a VPS
-            const userData = await getCurrentUser();
-            
-            if (userData && userData.email) {
-                welcomeMsg.textContent = "Sessão ativa e sincronizada com a VPS.";
-                console.log("✅ Usuário validado na VPS:", userData.email);
-            } else {
-                welcomeMsg.textContent = "Aviso: Trabalhando em modo Offline.";
-                console.warn("⚠️ Não foi possível validar o token com o servidor.");
-            }
-        } catch (error) {
-            console.error("💥 Erro de conexão:", error);
-            welcomeMsg.textContent = "Servidor Offline. Usando dados locais.";
-        }
-
-        // 3. Configuração do botão de Logout
-        logoutBtn?.addEventListener('click', (e) => {
+        // Logout continua simples aqui ou pode ir para o dashboard-logic também
+        document.getElementById("logoutLink")?.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log("🚪 Encerrando sessão...");
             logout();
         });
-    }
-
-    // Dispara a carga assim que o DOM estiver pronto
-    document.addEventListener('DOMContentLoaded', inicializarDashboard);
+    });
   </script>
 
 </body>
