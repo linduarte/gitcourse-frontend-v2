@@ -1,8 +1,11 @@
 // assets/js/dashboard-logic.js
 import { getCurrentUser } from "./git-course-functions.js";
 
+/**
+ * Inicializa os componentes do Dashboard consumindo a API da VPS
+ */
 export async function inicializarDashboard() {
-    // Seleção de Elementos da UI
+    // Seletores de UI
     const emailDisplay = document.getElementById("userEmailDisplay");
     const welcomeMsg = document.getElementById("welcomeMessage");
     const btnContinue = document.getElementById("btnContinueCard");
@@ -12,9 +15,8 @@ export async function inicializarDashboard() {
 
     const token = localStorage.getItem("access_token");
     const userEmail = localStorage.getItem("user_email");
-    const TOTAL_TOPICOS = 17;
 
-    // 1. Verificação de Segurança
+    // 1. Validação de Sessão
     if (!token || !userEmail) {
         window.location.href = "auth/login.html";
         return;
@@ -22,7 +24,7 @@ export async function inicializarDashboard() {
 
     if (emailDisplay) emailDisplay.textContent = userEmail;
 
-    // 2. Lógica de Navegação (Continuar de onde parou)
+    // 2. Lógica de Navegação: "Continuar de onde parei"
     const navegarParaUltimoProgresso = async () => {
         try {
             const response = await fetch(`${API_URL}/progress/latest`, {
@@ -31,6 +33,7 @@ export async function inicializarDashboard() {
 
             if (response.ok) {
                 const data = await response.json();
+                // Se a API retornar um slug válido, navega. Senão, vai para a Aula 1.
                 if (data && data.topic_slug) {
                     window.location.href = `curso/git-course/${data.topic_slug}.html`;
                     return;
@@ -46,34 +49,36 @@ export async function inicializarDashboard() {
     btnContinue?.addEventListener('click', navegarParaUltimoProgresso);
     menuContinue?.addEventListener('click', navegarParaUltimoProgresso);
 
-    // 3. Atualização de Progresso e Sincronização
+    // 3. Sincronização de Progresso (Baseado no seu JSON da VPS)
     try {
-        // Buscamos o progresso total do utilizador na API
         const response = await fetch(`${API_URL}/progress/summary`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (response.ok) {
-            const data = await response.json(); // Espera-se { "completed_count": X }
-            const concluido = data.completed_count || 0;
-            const percentagem = Math.round((concluido / TOTAL_TOPICOS) * 100);
+            const data = await response.json(); 
+            
+            // Extração baseada no seu teste de HTTPie: { "completed": 0, "percentage": 0.0, "total": 17 }
+            const concluido = data.completed ?? 0;
+            const total = data.total ?? 17;
+            const percentagem = data.percentage ?? 0;
 
-            // Atualiza a Barra de Progresso Visual
+            // Atualização da Barra Visual
             if (progressBarFill) {
                 progressBarFill.style.width = `${percentagem}%`;
             }
 
-            // Atualiza o Texto descritivo
+            // Atualização do Texto de Progresso
             if (progressText) {
-                progressText.innerHTML = `Tens <strong>${concluido}</strong> de <strong>${TOTAL_TOPICOS}</strong> tópicos concluídos (${percentagem}%).`;
+                progressText.innerHTML = `Concluíste <strong>${concluido}</strong> de <strong>${total}</strong> tópicos (${percentagem}%).`;
             }
             
-            welcomeMsg.textContent = "Sessão sincronizada. O teu progresso está atualizado.";
+            welcomeMsg.textContent = "Sincronizado com a VPS.";
         } else {
-            welcomeMsg.textContent = "Aviso: Não foi possível carregar o teu progresso real.";
+            welcomeMsg.textContent = "Aviso: Sessão expirada ou erro no servidor.";
         }
     } catch (error) {
         console.error("Erro ao sincronizar progresso:", error);
-        welcomeMsg.textContent = "Servidor Offline. Mostrando dados em cache.";
+        welcomeMsg.textContent = "Modo Offline: Verifique sua conexão.";
     }
 }
