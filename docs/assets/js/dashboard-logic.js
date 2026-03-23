@@ -39,10 +39,10 @@ export async function inicializarDashboard() {
                     return;
                 }
             }
-            window.location.href = "curso/git-course/1-introducao.html";
+            window.location.href = "curso/git-course/2-introducao.html";
         } catch (error) {
             console.error("Erro na navegação:", error);
-            window.location.href = "curso/git-course/1-introducao.html";
+            window.location.href = "curso/git-course/2-introducao.html";
         }
     };
 
