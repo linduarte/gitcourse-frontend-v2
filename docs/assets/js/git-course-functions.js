@@ -2,7 +2,7 @@
 
 // assets/js/git-course-functions.js
 
- async function getCurrentUser() {
+async function getCurrentUser() {
     const token = localStorage.getItem("access_token");
     if (!token) return null;
 
@@ -34,7 +34,7 @@
 }
 
 
-export function logout() {
+function logout() {
     localStorage.removeItem("access_token");
     window.location.href = "auth/login.html";
 }
