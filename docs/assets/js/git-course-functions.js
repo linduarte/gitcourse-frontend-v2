@@ -38,3 +38,29 @@ export function logout() {
     localStorage.removeItem("access_token");
     window.location.href = "auth/login.html";
 }
+
+
+async function registrarEAvancar(proximaAulaSlug) {
+    const token = localStorage.getItem('access_token');
+    const API_URL = 'https://charles-gitcourse.duckdns.org';
+
+    // 1. Tenta avisar a VPS (Sincronização)
+    if (token) {
+        try {
+            await fetch(`${API_URL}/users/me/progress`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ last_lesson: proximaAulaSlug })
+            });
+            console.log("Progresso sincronizado com a VPS!");
+        } catch (error) {
+            console.error("VPS offline, mas vamos seguir viagem:", error);
+        }
+    }
+
+    // 2. Navegação (O destino que você já tinha: 2-introduction.html)
+    window.location.href = proximaAulaSlug;
+}
