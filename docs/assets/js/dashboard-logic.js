@@ -1,13 +1,13 @@
 // assets/js/dashboard-logic.js
-import { getCurrentUser } from "./git-course-functions.js";
+
 
 // [Ajuste] Certifique-se de que a API_URL está definida (ou importada)
-const API_URL = 'https://charles-gitcourse.duckdns.org';
+// const API_URL = 'https://charles-gitcourse.duckdns.org';
 
 /**
  * Inicializa os componentes do Dashboard consumindo a API da VPS
  */
-export async function inicializarDashboard() {
+async function inicializarDashboard() {
     // Seletores de UI
     const emailDisplay = document.getElementById("userEmailDisplay");
     const welcomeMsg = document.getElementById("welcomeMessage");
@@ -90,3 +90,6 @@ export async function inicializarDashboard() {
         welcomeMsg.textContent = "Aviso: VPS indisponível no momento.";
     }
 }
+
+// Adicione isso na última linha para o motor dar a partida:
+document.addEventListener('DOMContentLoaded', inicializarDashboard);
