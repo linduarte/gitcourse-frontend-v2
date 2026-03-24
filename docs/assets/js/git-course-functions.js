@@ -2,7 +2,7 @@
 
 // assets/js/git-course-functions.js
 
-export async function getCurrentUser() {
+ async function getCurrentUser() {
     const token = localStorage.getItem("access_token");
     if (!token) return null;
 
@@ -42,7 +42,7 @@ export function logout() {
 
 async function registrarEAvancar(proximaAulaSlug) {
     const token = localStorage.getItem('access_token');
-    const API_URL = 'https://charles-gitcourse.duckdns.org';
+    // const API_URL = 'https://charles-gitcourse.duckdns.org';
 
     // 1. Tenta avisar a VPS (Sincronização)
     if (token) {
@@ -64,3 +64,6 @@ async function registrarEAvancar(proximaAulaSlug) {
     // 2. Navegação (O destino que você já tinha: 2-introduction.html)
     window.location.href = proximaAulaSlug;
 }
+
+// Adicione isso na última linha do arquivo git-course-functions.js
+window.registrarEAvancar = registrarEAvancar;
