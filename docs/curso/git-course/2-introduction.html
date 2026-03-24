@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <script>
-        const API_URL = 'https://api.git-learn.com.br';
-    </script>
-
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Introdução - Git Course</title>
@@ -22,65 +19,7 @@
 
     <!-- REMOVIDO: config.js (não deve estar em páginas do curso) -->
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // Verificação de login
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-            window.location.href = '/landing.html';  // Caminho corrigido
-            return;
-        }
-
-        // Logout
-        const logoutBtn = document.getElementById('logoutButton');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('access_token');
-                window.location.href = '/landing.html'; // Caminho corrigido
-            });
-        }
-
-        // Marcar como concluído
-        const btn = document.getElementById("markCompletedButton");
-        if (btn) {
-            btn.addEventListener("click", async () => {
-                const origText = btn.innerText;
-                btn.disabled = true;
-                btn.innerText = 'Enviando...';
-
-                try {
-                    const response = await fetch(`${API_URL}/progress/`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            topic_id: btn.dataset.topicId,
-                            completed: true,
-                            feedback: "Muito bom este tópico!"
-                        }),
-                    });
-
-                    if (response.ok) {
-                        btn.innerText = 'Concluído ✓';
-                        btn.classList.add('completed');
-                    } else {
-                        btn.disabled = false;
-                        btn.innerText = origText;
-                        alert('Erro ao marcar o progresso');
-                    }
-                } catch (err) {
-                    btn.disabled = false;
-                    btn.innerText = origText;
-                    alert('Erro de conexão ao marcar progresso');
-                }
-            });
-        }
-    });
-    </script>
+    
 </head>
 
 <body class="intro-page">
@@ -209,14 +148,12 @@
             <a href="3-git-config.html" class="footer-link">Próximo: git config →</a>
         </nav>
 
-        <div class="footer-buttons">
-        <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
-        <button type="button" id="markCompletedButton" 
-                class="btn-footer-primary" 
-                onclick="registrarEAvancar('3-git-config.html')">
-            Concluído ✓
-        </button>
-        </div>
+    <div class="footer-buttons">
+    <button id="logoutButton" type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
+    <button type="button" class="btn-footer-primary" onclick="registrarEAvancar('3-git-config.html')">
+        Concluído ✓
+    </button>
+    </div>
 
     </div>
 
@@ -242,7 +179,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
+<script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/git-course-functions.js"></script>
+
 
 </body>
 </html>

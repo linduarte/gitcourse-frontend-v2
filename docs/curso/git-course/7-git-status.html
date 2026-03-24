@@ -16,68 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 
-    <!-- Config da API -->
-    <script src="../../assets/js/config.js"></script>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        /* --- Autenticação --- */
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-            window.location.href = '../../landing.html';
-            return;
-        }
-
-        /* --- Logout --- */
-        const logoutBtn = document.getElementById('logoutButton');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('access_token');
-                window.location.href = '../../landing.html';
-            });
-        }
-
-        /* --- Botão Concluído --- */
-        const btn = document.getElementById("markCompletedButton");
-        if (btn) {
-            btn.addEventListener("click", async () => {
-                const origText = btn.innerText;
-                btn.disabled = true;
-                btn.innerText = 'Enviando...';
-
-                try {
-                    const response = await fetch(`${API_URL}/progress/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            topic_id: btn.dataset.topicId,
-                            completed: true,
-                            feedback: 'Muito bom este tópico!'
-                        }),
-                    });
-
-                    if (response.ok) {
-                        btn.innerText = 'Concluído ✓';
-                        btn.classList.add('completed');
-                    } else {
-                        btn.disabled = false;
-                        btn.innerText = origText;
-                        alert('Erro ao marcar o progresso');
-                    }
-                } catch (err) {
-                    btn.disabled = false;
-                    btn.innerText = origText;
-                    alert('Erro de conexão ao marcar progresso');
-                }
-            });
-        }
-    });
-    </script>
+    
 </head>
 
 <body class="intro-page">
@@ -160,7 +99,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
+<script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/git-course-functions.js"></script>
+
 
 </body>
 </html>
