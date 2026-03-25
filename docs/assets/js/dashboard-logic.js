@@ -1,25 +1,22 @@
 // assets/js/dashboard-logic.js
 
-
-// [Ajuste] Certifique-se de que a API_URL está definida (ou importada)
-// const API_URL = 'https://charles-gitcourse.duckdns.org';
-
 /**
  * Inicializa os componentes do Dashboard consumindo a API da VPS
  */
 async function inicializarDashboard() {
-    // Seletores de UI
+    // 1. Seletores de UI
     const emailDisplay = document.getElementById("userEmailDisplay");
     const welcomeMsg = document.getElementById("welcomeMessage");
     const btnContinue = document.getElementById("btnContinueCard");
     const menuContinue = document.getElementById("menuContinue");
     const progressBarFill = document.getElementById("progressBarFill");
     const progressText = document.getElementById("progressCardContent");
+    const statusContainer = document.getElementById("status-container"); // Para a mensagem de parabéns
 
     const token = localStorage.getItem("access_token");
     const userEmail = localStorage.getItem("user_email");
 
-    // 1. Validação de Sessão
+    // 2. Validação de Sessão
     if (!token || !userEmail) {
         window.location.href = "auth/login.html";
         return;
@@ -27,40 +24,58 @@ async function inicializarDashboard() {
 
     if (emailDisplay) emailDisplay.textContent = userEmail;
 
-    // 2. Lógica de Navegação: "Continuar de onde parei"
+    // 3. O Catálogo de Peças (Mapeamento de IDs para Arquivos)
+    const mapaAulas = {
+        0: "1a-prefacio.html",
+        1: "2-introduction.html",
+        2: "3-git-config.html",
+        3: "4-hosting.html",
+        4: "5-connect.html",
+        5: "6-git-clone.html",
+        6: "7-git-status.html",
+        7: "8-git-add.html",
+        8: "9-git-commit.html",
+        9: "10-feature_req.html",
+        10: "11-branch.html",
+        11: "12-branch-merge.html",
+        12: "13-git-diff.html",
+        13: "14-undo-changes.html",
+        14: "15-git-init.html",
+        15: "16-git-workflows.html",
+        16: "17-terminal-customization.html",
+        17: "../../dashboard.html" // Ciclo completo: volta para o dashboard
+    };
+
+    /**
+     * Lógica de Navegação: "Continuar de onde parei"
+     */
     const navegarParaUltimoProgresso = async (e) => {
-        if (e) e.preventDefault(); // [Ajuste] Evita comportamento padrão se for um link
+        if (e) e.preventDefault();
         
         try {
-            // Chamamos a rota que retorna os dados do usuário logado (incluindo last_lesson)
-            const response = await fetch(`${API_URL}/users/me`, {
+            const response = await fetch(`${API_URL}/progress/summary`, { 
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
                 const data = await response.json();
+                const aulasCompletas = data.completed || 0;
                 
-                // [Ajuste] Se a API retornar a coluna last_lesson do Postgres
-                if (data && data.last_lesson) {
-                    const slug = data.last_lesson;
-                    // Garante que o link aponte para a pasta correta no GitHub Pages
-                    window.location.href = `curso/git-course/${slug}`;
-                    return;
-                }
+                // Define o próximo arquivo com base no progresso atual
+                const arquivoDestino = mapaAulas[aulasCompletas] || "1a-prefacio.html";
+
+                console.log(`Progresso: ${aulasCompletas}. Destino: ${arquivoDestino}`);
+                window.location.href = `curso/git-course/${arquivoDestino}`;
+            } else {
+                window.location.href = "curso/git-course/1a-prefacio.html";
             }
-            // Fallback se não houver progresso: vai para o prefácio (Aula 0)
-            window.location.href = "curso/git-course/1a-prefacio.html";
         } catch (error) {
             console.error("Erro na navegação:", error);
             window.location.href = "curso/git-course/1a-prefacio.html";
         }
     };
 
-    // [Ajuste] Adicionando os ouvintes de clique
-    btnContinue?.addEventListener('click', navegarParaUltimoProgresso);
-    menuContinue?.addEventListener('click', navegarParaUltimoProgresso);
-
-    // 3. Sincronização de Progresso (Barra de 1 a 17)
+    // 4. Sincronização de Progresso e Estilização de "Vitória"
     try {
         const response = await fetch(`${API_URL}/progress/summary`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -68,17 +83,35 @@ async function inicializarDashboard() {
 
         if (response.ok) {
             const data = await response.json(); 
-            
             const concluido = data.completed ?? 0;
             const total = data.total ?? 17;
             const percentagem = data.percentage ?? 0;
 
+            // Atualiza a Barra de Progresso
             if (progressBarFill) {
                 progressBarFill.style.width = `${percentagem}%`;
+                
+                // Se chegou em 100%, douramos a pílula!
+                if (percentagem >= 100) {
+                    progressBarFill.style.backgroundColor = "#FFD700"; // Cor Ouro
+                    progressBarFill.style.boxShadow = "0 0 10px #FFD700";
+                }
             }
 
+            // Atualiza o Texto de Progresso
             if (progressText) {
-                progressText.innerHTML = `Concluíste <strong>${concluido}</strong> de <strong>${total}</strong> tópicos (${percentagem}%).`;
+                if (percentagem >= 100) {
+                    progressText.innerHTML = `
+                        <div style="color: #b8860b; font-weight: bold; margin-top: 10px;">
+                            🎊 PARABÉNS, ENGENHEIRO! 🎊 <br>
+                            Você completou 100% do treinamento Git.
+                        </div>
+                    `;
+                    // Muda o texto do botão principal
+                    if (btnContinue) btnContinue.innerHTML = "Revisar Conteúdo 📚";
+                } else {
+                    progressText.innerHTML = `Concluíste <strong>${concluido}</strong> de <strong>${total}</strong> tópicos (${percentagem}%).`;
+                }
             }
             
             welcomeMsg.textContent = "Sincronizado com a VPS.";
@@ -89,7 +122,11 @@ async function inicializarDashboard() {
         console.error("Erro ao sincronizar progresso:", error);
         welcomeMsg.textContent = "Aviso: VPS indisponível no momento.";
     }
+
+    // 5. Adicionando os ouvintes de clique
+    btnContinue?.addEventListener('click', navegarParaUltimoProgresso);
+    menuContinue?.addEventListener('click', navegarParaUltimoProgresso);
 }
 
-// Adicione isso na última linha para o motor dar a partida:
+// Inicializa quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', inicializarDashboard);
