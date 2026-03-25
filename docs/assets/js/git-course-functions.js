@@ -36,32 +36,37 @@ async function getCurrentUser() {
 
 function logout() {
     localStorage.removeItem("access_token");
-    window.location.href = "auth/login.html";
+    localStorage.removeItem("user_email");
+    // Se você está na pasta /curso/git-course/, precisa subir dois níveis:
+    window.location.href = "../../index.html"; 
 }
 
 
 async function registrarEAvancar(proximaAulaSlug) {
     const token = localStorage.getItem('access_token');
-    // const API_URL = 'https://charles-gitcourse.duckdns.org';
+    
+    // Mapeamento simples: se a Aula 2 foi concluída, o topic_id é 2
+    // Extraímos o número do nome do arquivo (ex: "2-introduction.html" -> 2)
+    const topicId = parseInt(window.location.pathname.split('/').pop()) || 0;
 
-    // 1. Tenta avisar a VPS (Sincronização)
-    if (token) {
+    if (token && topicId > 0) {
         try {
-            await fetch(`${API_URL}/users/me/progress`, {
-                method: 'PUT',
+            await fetch(`${API_URL}/progress/complete`, {
+                method: 'POST', // O HTTPie provou que é POST
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ last_lesson: proximaAulaSlug })
+                body: JSON.stringify({ 
+                    topic_id: topicId, // O HTTPie provou que o banco quer o ID
+                    completed: true 
+                })
             });
-            console.log("Progresso sincronizado com a VPS!");
         } catch (error) {
-            console.error("VPS offline, mas vamos seguir viagem:", error);
+            console.error("Erro na telemetria:", error);
         }
     }
-
-    // 2. Navegação (O destino que você já tinha: 2-introduction.html)
+    // Segue para a próxima página
     window.location.href = proximaAulaSlug;
 }
 
