@@ -42,8 +42,8 @@ async function inicializarDashboard() {
         13: "14-undo-changes.html",
         14: "15-git-init.html",
         15: "16-git-workflows.html",
-        16: "17-terminal-customization.html",
-        17: "../../dashboard.html" // O "../../" sobe de 'git-course' para 'curso' e depois para a 'raiz'
+        16: "../../dashboard.html" // O "../../" sobe de 'git-course' para 'curso' e depois para a 'raiz'
+        
     };
 
     /**
