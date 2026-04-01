@@ -1,51 +1,35 @@
 import { inicializarDashboard } from "./dashboard-logic.js";
-import { logout } from "./git-course-functions.js";
 
 /**
- * GitCourse - Controle de Navegação Modular
+ * GitCourse - Controle de Navegação Modular Refatorado
  * Engenheiro: Charles Duarte
- * Data: Abril/2026
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicia a comunicação com a VPS e renderiza o progresso
+    // 1. Inicia a sincronização com a VPS
     inicializarDashboard();
 
-    // 2. Tabela de Roteamento (Fácil de expandir para o módulo Jujutsu)
-    const routes = {
-        continue: "curso/git-course/aula-atual.html",
-        home: "dashboard.html",
-        progress: "curso/git-course/progress.html",
-        jj_news: "novidades/jujutsu-google.html" // Exemplo de nova rota
+    // 2. Função de Logout (Centralizada para evitar erros de import)
+    const executarLogout = (e) => {
+        if (e) e.preventDefault();
+        console.log("🔐 Encerrando sessão...");
+        localStorage.clear();
+        window.location.href = "index.html"; // Volta para a Landing Page (com o texto do jj!)
     };
 
-    // 3. Lógica de Navegação Baseada em Estado
-    const navegarPara = (destino) => {
-        let url;
-        if (destino === 'continue') {
-            url = localStorage.getItem('current_lesson_url') || routes.continue;
-        } else if (destino === 'last') {
-            url = localStorage.getItem('last_topic') || routes.home;
-        } else {
-            url = routes[destino] || routes.home;
-        }
-        
-        console.log(`🚀 Navegando para: ${url}`);
-        window.location.href = url;
-    };
-
-    // 4. Mapeamento de Cliques (IDs do HTML -> Funções JS)
-    const clickMap = [
-        { id: "menuContinue",    action: () => navegarPara('continue') },
-        { id: "btnContinueCard", action: () => navegarPara('continue') },
-        { id: "menuLastTopic",   action: () => navegarPara('last')     },
-        { id: "logoutLink",      action: (e) => { e.preventDefault(); logout(); } }
+    // 3. Mapeamento Direto (ID do HTML -> Ação)
+    // DICA: Verifique se os IDs no seu index.html/dashboard.html são esses mesmos!
+    const acoes = [
+        { id: "menuSair",       action: executarLogout },
+        { id: "logoutLink",     action: executarLogout },
+        { id: "menuDashboard",  action: () => window.location.href = "dashboard.html" },
+        { id: "menuHome",       action: () => window.location.href = "dashboard.html" },
+        // O "Continuar" e "Progresso" o dashboard-logic.js já cuida dos cliques
     ];
 
-    // 5. Atribuição de Eventos com Verificação de Existência
-    clickMap.forEach(({ id, action }) => {
+    // 4. Atribuição de Eventos
+    acoes.forEach(({ id, action }) => {
         const elemento = document.getElementById(id);
         if (elemento) {
-            elemento.style.cursor = "pointer"; // Garante o feedback visual de clique
             elemento.addEventListener('click', action);
         }
     });
