@@ -88,8 +88,8 @@ async function inicializarDashboard() {
             if (percentagem >= 100) {
                 progressText.innerHTML = `
                     <div style="color: #b8860b; font-weight: bold; margin-top: 10px;">
-                        🎊 PARABÉNS, ENGENHEIRO! 🎊 <br>
-                        Você completou 100% do treinamento Git & Jujutsu.
+                        🎊 PARABÉNS! 🎊 <br>
+                        Você completou 100% do treinamento Git! .
                     </div>`;
                 if (btnContinue) btnContinue.innerHTML = "Revisar Conteúdo 📚";
             } else {
