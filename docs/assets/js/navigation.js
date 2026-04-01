@@ -1,36 +1,35 @@
 import { inicializarDashboard } from "./dashboard-logic.js";
 
-/**
- * GitCourse - Controle de Navegação Modular Refatorado
- * Engenheiro: Charles Duarte
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicia a sincronização com a VPS
+    // 1. Inicia o Dashboard (E-mail e Barra de Progresso)
     inicializarDashboard();
 
-    // 2. Função de Logout (Centralizada para evitar erros de import)
-    const executarLogout = (e) => {
-        if (e) e.preventDefault();
-        console.log("🔐 Encerrando sessão...");
+    // 2. Função de Logout
+    const logoutCharles = (e) => {
+        if(e) e.preventDefault();
+        console.log("Sinal de Logout recebido");
         localStorage.clear();
-        window.location.href = "index.html"; // Volta para a Landing Page (com o texto do jj!)
+        window.location.href = "index.html"; 
     };
 
-    // 3. Mapeamento Direto (ID do HTML -> Ação)
-    // DICA: Verifique se os IDs no seu index.html/dashboard.html são esses mesmos!
-    const acoes = [
-        { id: "menuSair",       action: executarLogout },
-        { id: "logoutLink",     action: executarLogout },
-        { id: "menuDashboard",  action: () => window.location.href = "dashboard.html" },
-        { id: "menuHome",       action: () => window.location.href = "dashboard.html" },
-        // O "Continuar" e "Progresso" o dashboard-logic.js já cuida dos cliques
+    // 3. Mapeamento de IDs (VERIFIQUE SE ESTES IDs ESTÃO NO SEU HTML)
+    const botoesMenu = [
+        { id: "menuDashboard", action: () => window.location.reload() },
+        { id: "menuProgresso", action: () => window.location.reload() }, // Recarrega para sincronizar
+        { id: "menuSair",      action: logoutCharles },
+        { id: "logoutLink",    action: logoutCharles },
+        { id: "menuContinue",  action: () => document.getElementById("btnContinueCard")?.click() },
+        { id: "menuLastTopic", action: () => document.getElementById("btnContinueCard")?.click() }
     ];
 
-    // 4. Atribuição de Eventos
-    acoes.forEach(({ id, action }) => {
-        const elemento = document.getElementById(id);
-        if (elemento) {
-            elemento.addEventListener('click', action);
+    // 4. Atribuição com Log de Debug
+    botoesMenu.forEach(botao => {
+        const el = document.getElementById(botao.id);
+        if (el) {
+            console.log(`✅ Conectado: Botão ${botao.id}`);
+            el.addEventListener('click', botao.action);
+        } else {
+            console.warn(`❌ Falha de conexão: ID "${botao.id}" não encontrado no HTML.`);
         }
     });
 });
