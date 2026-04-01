@@ -1,10 +1,10 @@
-// assets/js/dashboard-logic.js
-
 /**
- * Inicializa os componentes do Dashboard consumindo a API da VPS
+ * GitCourse Dashboard - Lógica de Integração com VPS
+ * Desenvolvido por: Charles Duarte
  */
+
 async function inicializarDashboard() {
-    // 1. Seletores de UI
+    // 1. Configuração de Seletores
     const emailDisplay = document.getElementById("userEmailDisplay");
     const welcomeMsg = document.getElementById("welcomeMessage");
     const btnContinue = document.getElementById("btnContinueCard");
@@ -12,153 +12,120 @@ async function inicializarDashboard() {
     const progressBarFill = document.getElementById("progressBarFill");
     const progressText = document.getElementById("progressCardContent");
 
+    // 2. Gestão de Sessão
     const token = localStorage.getItem("access_token");
 
-    // 2. Validação de Sessão (Apenas Token é obrigatório agora)
     if (!token) {
+        console.warn("Acesso negado: Token não encontrado.");
         window.location.href = "auth/login.html";
         return;
     }
 
     /**
-     * NOVA FUNÇÃO: Busca dados reais do usuário na VPS
+     * FUNÇÃO: Busca Identidade do Usuário (E-mail Real)
+     * Rota: /auth/me (conforme definido no main.py)
      */
-    const buscarDadosUsuario = async () => {
+    const carregarPerfilUsuario = async () => {
         try {
-            // Chamada para o endpoint de segurança da sua VPS
-            const response = await fetch(`${API_URL}/users/me`, {
+            const response = await fetch(`${API_URL}/auth/me`, {
+                method: 'GET',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
                 const userData = await response.json();
-                // Aqui está a mágica: pegamos o e-mail vindo direto do banco de dados da VPS
                 if (emailDisplay) emailDisplay.textContent = userData.email;
-                welcomeMsg.textContent = "Sincronizado com a VPS.";
-                
-                // Atualizamos o localStorage para manter a consistência
+                if (welcomeMsg) welcomeMsg.textContent = "Sincronizado com a VPS.";
                 localStorage.setItem("user_email", userData.email);
             } else {
-                // Se o token expirou ou é inválido, mandamos para o login
-                console.warn("Token inválido ou expirado.");
-                localStorage.clear();
-                window.location.href = "auth/login.html";
+                throw new Error("Sessão inválida ou expirada");
             }
         } catch (error) {
-            console.error("Erro ao buscar dados do usuário:", error);
-            // Se a VPS cair, tentamos usar o que sobrou no localStorage como fallback
-            const emailFallback = localStorage.getItem("user_email");
-            if (emailDisplay) emailDisplay.textContent = emailFallback || "Usuário Offline";
-            welcomeMsg.textContent = "Aviso: VPS indisponível.";
+            console.error("Erro no Perfil:", error);
+            localStorage.clear();
+            window.location.href = "auth/login.html";
         }
     };
 
-    // Executa a busca do e-mail imediatamente
-    await buscarDadosUsuario();
-
-    // 3. O Catálogo de Peças (Mapeamento de IDs para Arquivos)
-    const mapaAulas = {
-        0: "1a-prefacio.html",
-        1: "2-introduction.html",
-        2: "3-git-config.html",
-        3: "4-hosting.html",
-        4: "5-connect.html",
-        5: "6-git-clone.html",
-        6: "7-git-status.html",
-        7: "8-git-add.html",
-        8: "9-git-commit.html",
-        9: "10-feature_req.html",
-        10: "11-branch.html",
-        11: "12-branch-merge.html",
-        12: "13-git-diff.html",
-        13: "14-undo-changes.html",
-        14: "15-git-init.html",
-        15: "16-git-workflows.html",
-        16: "../../dashboard.html" // O "../../" sobe de 'git-course' para 'curso' e depois para a 'raiz'
-        
-    };
-
     /**
-     * Lógica de Navegação: "Continuar de onde parei"
+     * FUNÇÃO: Sincroniza Progresso do Aluno
      */
-    const navegarParaUltimoProgresso = async (e) => {
-        if (e) e.preventDefault();
-        
+    const sincronizarProgresso = async () => {
         try {
-            const response = await fetch(`${API_URL}/progress/summary`, { 
+            const response = await fetch(`${API_URL}/progress/summary`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
                 const data = await response.json();
-                const aulasCompletas = data.completed || 0;
-                
-                // Define o próximo arquivo com base no progresso atual
-                const arquivoDestino = mapaAulas[aulasCompletas] || "1a-prefacio.html";
+                const concluido = data.completed ?? 0;
+                const total = data.total ?? 17;
+                const percentagem = data.percentage ?? 0;
 
-                console.log(`Progresso: ${aulasCompletas}. Destino: ${arquivoDestino}`);
-                window.location.href = `curso/git-course/${arquivoDestino}`;
-            } else {
-                window.location.href = "curso/git-course/1a-prefacio.html";
+                atualizarInterfaceProgresso(concluido, total, percentagem);
+                return concluido;
             }
         } catch (error) {
-            console.error("Erro na navegação:", error);
-            window.location.href = "curso/git-course/1a-prefacio.html";
+            console.error("Erro ao sincronizar progresso:", error);
+            if (welcomeMsg) welcomeMsg.textContent = "Aviso: Modo Offline.";
         }
+        return 0;
     };
 
-    // 4. Sincronização de Progresso e Estilização de "Vitória"
-    try {
-        const response = await fetch(`${API_URL}/progress/summary`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-            const data = await response.json(); 
-            const concluido = data.completed ?? 0;
-            const total = data.total ?? 17;
-            const percentagem = data.percentage ?? 0;
-
-            // Atualiza a Barra de Progresso
-            if (progressBarFill) {
-                progressBarFill.style.width = `${percentagem}%`;
-                
-                // Se chegou em 100%, douramos a pílula!
-                if (percentagem >= 100) {
-                    progressBarFill.style.backgroundColor = "#FFD700"; // Cor Ouro
-                    progressBarFill.style.boxShadow = "0 0 10px #FFD700";
-                }
+    /**
+     * FUNÇÃO AUXILIAR: Atualiza Elementos Visuais
+     */
+    function atualizarInterfaceProgresso(concluido, total, percentagem) {
+        if (progressBarFill) {
+            progressBarFill.style.width = `${percentagem}%`;
+            if (percentagem >= 100) {
+                progressBarFill.style.backgroundColor = "#FFD700";
+                progressBarFill.style.boxShadow = "0 0 10px #FFD700";
             }
-
-            // Atualiza o Texto de Progresso
-            if (progressText) {
-                if (percentagem >= 100) {
-                    progressText.innerHTML = `
-                        <div style="color: #b8860b; font-weight: bold; margin-top: 10px;">
-                            🎊 PARABÉNS, ENGENHEIRO! 🎊 <br>
-                            Você completou 100% do treinamento Git.
-                        </div>
-                    `;
-                    // Muda o texto do botão principal
-                    if (btnContinue) btnContinue.innerHTML = "Revisar Conteúdo 📚";
-                } else {
-                    progressText.innerHTML = `Concluíste <strong>${concluido}</strong> de <strong>${total}</strong> tópicos (${percentagem}%).`;
-                }
-            }
-            
-            welcomeMsg.textContent = "Sincronizado com a VPS.";
-        } else {
-            welcomeMsg.textContent = "Sessão ativa, mas sem dados de progresso.";
         }
-    } catch (error) {
-        console.error("Erro ao sincronizar progresso:", error);
-        welcomeMsg.textContent = "Aviso: VPS indisponível no momento.";
+
+        if (progressText) {
+            if (percentagem >= 100) {
+                progressText.innerHTML = `
+                    <div style="color: #b8860b; font-weight: bold; margin-top: 10px;">
+                        🎊 PARABÉNS, ENGENHEIRO! 🎊 <br>
+                        Você completou 100% do treinamento Git & Jujutsu.
+                    </div>`;
+                if (btnContinue) btnContinue.innerHTML = "Revisar Conteúdo 📚";
+            } else {
+                progressText.innerHTML = `Concluíste <strong>${concluido}</strong> de <strong>${total}</strong> tópicos (${percentagem}%).`;
+            }
+        }
     }
 
-    // 5. Adicionando os ouvintes de clique
+    /**
+     * FUNÇÃO: Navegação Inteligente (Mapa de Aulas)
+     */
+    const navegarParaUltimoProgresso = async (e) => {
+        if (e) e.preventDefault();
+        
+        const mapaAulas = {
+            0: "1a-prefacio.html", 1: "2-introduction.html", 2: "3-git-config.html",
+            3: "4-hosting.html", 4: "5-connect.html", 5: "6-git-clone.html",
+            6: "7-git-status.html", 7: "8-git-add.html", 8: "9-git-commit.html",
+            9: "10-feature_req.html", 10: "11-branch.html", 11: "12-branch-merge.html",
+            12: "13-git-diff.html", 13: "14-undo-changes.html", 14: "15-git-init.html",
+            15: "16-git-workflows.html", 16: "../../dashboard.html"
+        };
+
+        const aulasCompletas = await sincronizarProgresso();
+        const arquivoDestino = mapaAulas[aulasCompletas] || "1a-prefacio.html";
+        window.location.href = `curso/git-course/${arquivoDestino}`;
+    };
+
+    // --- Execução Inicial ---
+    await carregarPerfilUsuario();
+    await sincronizarProgresso();
+
+    // Eventos
     btnContinue?.addEventListener('click', navegarParaUltimoProgresso);
     menuContinue?.addEventListener('click', navegarParaUltimoProgresso);
 }
 
-// Inicializa quando o DOM estiver pronto
+// Inicialização
 document.addEventListener('DOMContentLoaded', inicializarDashboard);
