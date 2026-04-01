@@ -11,18 +11,50 @@ async function inicializarDashboard() {
     const menuContinue = document.getElementById("menuContinue");
     const progressBarFill = document.getElementById("progressBarFill");
     const progressText = document.getElementById("progressCardContent");
-    const statusContainer = document.getElementById("status-container"); // Para a mensagem de parabéns
 
     const token = localStorage.getItem("access_token");
-    const userEmail = localStorage.getItem("user_email");
 
-    // 2. Validação de Sessão
-    if (!token || !userEmail) {
+    // 2. Validação de Sessão (Apenas Token é obrigatório agora)
+    if (!token) {
         window.location.href = "auth/login.html";
         return;
     }
 
-    if (emailDisplay) emailDisplay.textContent = userEmail;
+    /**
+     * NOVA FUNÇÃO: Busca dados reais do usuário na VPS
+     */
+    const buscarDadosUsuario = async () => {
+        try {
+            // Chamada para o endpoint de segurança da sua VPS
+            const response = await fetch(`${API_URL}/users/me`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const userData = await response.json();
+                // Aqui está a mágica: pegamos o e-mail vindo direto do banco de dados da VPS
+                if (emailDisplay) emailDisplay.textContent = userData.email;
+                welcomeMsg.textContent = "Sincronizado com a VPS.";
+                
+                // Atualizamos o localStorage para manter a consistência
+                localStorage.setItem("user_email", userData.email);
+            } else {
+                // Se o token expirou ou é inválido, mandamos para o login
+                console.warn("Token inválido ou expirado.");
+                localStorage.clear();
+                window.location.href = "auth/login.html";
+            }
+        } catch (error) {
+            console.error("Erro ao buscar dados do usuário:", error);
+            // Se a VPS cair, tentamos usar o que sobrou no localStorage como fallback
+            const emailFallback = localStorage.getItem("user_email");
+            if (emailDisplay) emailDisplay.textContent = emailFallback || "Usuário Offline";
+            welcomeMsg.textContent = "Aviso: VPS indisponível.";
+        }
+    };
+
+    // Executa a busca do e-mail imediatamente
+    await buscarDadosUsuario();
 
     // 3. O Catálogo de Peças (Mapeamento de IDs para Arquivos)
     const mapaAulas = {
