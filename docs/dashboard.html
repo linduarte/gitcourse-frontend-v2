@@ -21,8 +21,8 @@
     <ul>
       <li><a href="dashboard.html">🏠 Dashboard</a></li>
       <li><a href="curso/git-course/progress.html">📊 Progresso</a></li>
-      <li id="menuContinue" style="cursor: pointer;">⏭ Continuar</li>
-      <li id="menuLastTopic" style="cursor: pointer;">📌 Último tópico</li>
+      <li><a href="#" id="menuContinue">⏭ Continuar</a></li>
+      <li><a href="#" id="menuLastTopic">📌 Último tópico</a></li>
       <li id="menuLogout">
         <a href="#" id="logoutLink" style="text-decoration: none; color: inherit;">
           🚪 Sair
@@ -65,22 +65,8 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/git-course-functions.js"></script>
   <script src="assets/js/dashboard-logic.js"></script>
-
-
-  <script type="module">
-    import { inicializarDashboard } from "./assets/js/dashboard-logic.js";
-    import { logout } from "./assets/js/git-course-functions.js";
-
-    document.addEventListener('DOMContentLoaded', () => {
-        inicializarDashboard();
-
-        // Logout continua simples aqui ou pode ir para o dashboard-logic também
-        document.getElementById("logoutLink")?.addEventListener('click', (e) => {
-            e.preventDefault();
-            logout();
-        });
-    });
-  </script>
+  <script type="module" src="assets/js/navigation.js"></script>
+  
 
 </body>
 </html>
