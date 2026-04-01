@@ -1,35 +1,40 @@
+// 1. Importações Necessárias (Conectando os fios)
+import { API_URL } from "./config.js";
 import { inicializarDashboard } from "./dashboard-logic.js";
+import { logout } from "./git-course-functions.js";
 
+/**
+ * GitCourse - Controle de Navegação Refatorado
+ */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Inicia o Dashboard (E-mail e Barra de Progresso)
+    // 2. Inicializa o Dashboard (E-mail e Progresso)
     inicializarDashboard();
 
-    // 2. Função de Logout
-    const logoutCharles = (e) => {
-        if(e) e.preventDefault();
-        console.log("Sinal de Logout recebido");
-        localStorage.clear();
-        window.location.href = "index.html"; 
-    };
+    // 3. Ouvinte de Clique na Sidebar (Menu Lateral)
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        sidebar.addEventListener('click', (e) => {
+            const alvo = e.target;
 
-    // 3. Mapeamento de IDs (VERIFIQUE SE ESTES IDs ESTÃO NO SEU HTML)
-    const botoesMenu = [
-        { id: "menuDashboard", action: () => window.location.reload() },
-        { id: "menuProgresso", action: () => window.location.reload() }, // Recarrega para sincronizar
-        { id: "menuSair",      action: logoutCharles },
-        { id: "logoutLink",    action: logoutCharles },
-        { id: "menuContinue",  action: () => document.getElementById("btnContinueCard")?.click() },
-        { id: "menuLastTopic", action: () => document.getElementById("btnContinueCard")?.click() }
-    ];
+            // Comando SAIR
+            if (alvo.id === 'menuSair') {
+                e.preventDefault();
+                console.log("Sinal de Logout enviado para a VPS...");
+                logout(); // Agora a função será reconhecida!
+            }
 
-    // 4. Atribuição com Log de Debug
-    botoesMenu.forEach(botao => {
-        const el = document.getElementById(botao.id);
-        if (el) {
-            console.log(`✅ Conectado: Botão ${botao.id}`);
-            el.addEventListener('click', botao.action);
-        } else {
-            console.warn(`❌ Falha de conexão: ID "${botao.id}" não encontrado no HTML.`);
-        }
-    });
+            // Comando DASHBOARD
+            if (alvo.id === 'menuDashboard') {
+                e.preventDefault();
+                window.location.href = "dashboard.html";
+            }
+
+            // Comando CONTINUAR
+            if (alvo.id === 'menuContinue') {
+                e.preventDefault();
+                // Aciona o clique no botão principal que já tem a lógica da VPS
+                document.getElementById("btnContinueCard")?.click();
+            }
+        });
+    }
 });
