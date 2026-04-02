@@ -1,40 +1,41 @@
-// 1. Importações Necessárias (Conectando os fios)
-import { API_URL } from "./config.js";
-import { inicializarDashboard } from "./dashboard-logic.js";
+import { inicializarDashboard, navegarParaUltimoProgresso } from "./dashboard-logic.js";
 import { logout } from "./git-course-functions.js";
 
-/**
- * GitCourse - Controle de Navegação Refatorado
- */
 document.addEventListener('DOMContentLoaded', () => {
-    // 2. Inicializa o Dashboard (E-mail e Progresso)
+
+    // ✅ Inicialização única
     inicializarDashboard();
 
-    // 3. Ouvinte de Clique na Sidebar (Menu Lateral)
+    // ✅ Sidebar (delegação robusta)
     const sidebar = document.querySelector('.sidebar');
-    if (sidebar) {
-        sidebar.addEventListener('click', (e) => {
-            const alvo = e.target;
 
-            // Comando SAIR
-            if (alvo.id === 'menuSair') {
-                e.preventDefault();
-                console.log("Sinal de Logout enviado para a VPS...");
-                logout(); // Agora a função será reconhecida!
-            }
+    if (!sidebar) return;
 
-            // Comando DASHBOARD
-            if (alvo.id === 'menuDashboard') {
-                e.preventDefault();
+    sidebar.addEventListener('click', (e) => {
+        const alvo = e.target.closest('a');
+        if (!alvo) return;
+
+        e.preventDefault();
+
+        switch (alvo.id) {
+
+            case 'menuSair':
+                console.log("Logout acionado...");
+                logout();
+                break;
+
+            case 'menuDashboard':
                 window.location.href = "dashboard.html";
-            }
+                break;
 
-            // Comando CONTINUAR
-            if (alvo.id === 'menuContinue') {
-                e.preventDefault();
-                // Aciona o clique no botão principal que já tem a lógica da VPS
-                document.getElementById("btnContinueCard")?.click();
-            }
-        });
-    }
+            case 'menuContinue':
+                navegarParaUltimoProgresso();
+                break;
+
+            case 'menuProgresso':
+                document.getElementById("progressCard")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                break;
+        }
+    });
 });
