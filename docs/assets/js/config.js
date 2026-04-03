@@ -1,7 +1,2 @@
-// assets/js/config.js
-
-// ANTES estava assim:
-// const API_URL = "https://charles-gitcourse.duckdns.org";
-
-// DEVE FICAR ASSIM (Adicione o export):
+// docs/assets/js/config.js
 export const API_URL = "https://charles-gitcourse.duckdns.org";

@@ -1,8 +1,6 @@
-/**
- * SISTEMA DE AUTENTICAÇÃO - GIT COURSE
- * Desenvolvedor: Charles Duarte
- */
-import { API_URL } from './config.js';
+// docs/assets/js/login.js
+// //import { API_URL } from './config.js'; // O './' é obrigatório para arquivos na mesma pasta
+const API_URL = "https://charles-gitcourse.duckdns.org"; // <-- Defina direto aqui
 
 
 document.addEventListener('DOMContentLoaded', () => {
