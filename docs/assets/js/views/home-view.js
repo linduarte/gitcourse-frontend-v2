@@ -110,14 +110,14 @@ export const HomeView = {
                     // Como a Dashboard está na raiz, e as aulas provavelmente 
                     // estão em uma pasta (ou na mesma raiz), usamos o nome do arquivo:
                     // Se o arquivo 2-introduction.html estiver na mesma pasta da dashboard:
-                    window.location.href = "2-introduction.html"; 
+                    window.location.href = "curso/git-course/2-introduction.html"; 
                 };
             } else {
-                btn.innerText = "Continuar de onde parei →";
-                btn.style.backgroundColor = "#5f9ea0";
                 btn.onclick = (e) => {
                     e.preventDefault();
-                    window.location.hash = `#/aula/${concluidas + 1}`;
+                    // Para quem ainda não terminou, o próximo passo também deve incluir o caminho da pasta:
+                    const arquivoMapa = "2-introduction.html"; // Exemplo baseado no seu mapa
+                    window.location.href = `curso/git-course/${arquivoMapa}`;
                 };
             }
         }
