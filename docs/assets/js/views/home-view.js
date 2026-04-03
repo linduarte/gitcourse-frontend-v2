@@ -60,42 +60,63 @@ export const HomeView = {
     },
 
     atualizarInterface: function(dados) {
-        // MAPEAMENTO DOS DADOS DO POSTGRES {completed: 16, total: 16, percentage: 100}
+        // Mapeamento dos dados do Postgres
         const concluidas = dados.completed !== undefined ? dados.completed : 0;
-        const totalAulas = dados.total !== undefined ? dados.total : 15;
+        const totalAulas = dados.total !== undefined ? dados.total : 16;
         const percentual = dados.percentage !== undefined ? dados.percentage : 0;
 
         const content = document.getElementById('progressCardContent');
         const fill = document.getElementById('progressBarFill');
         const btn = document.getElementById('btnContinueCard');
 
-        // 1. Atualiza o texto descritivo
+        // 1. Atualiza o texto e a mensagem de parabéns
         if (content) {
-            content.innerHTML = `Você concluiu <strong>${concluidas}</strong> de ${totalAulas} aulas (<strong>${percentual}%</strong>).`;
+            if (percentual >= 100) {
+                content.innerHTML = `<span style="color: #B8860B; font-weight: bold; font-size: 1.2rem;">🎊 PARABÉNS! Curso concluído!</span>`;
+            } else {
+                content.innerHTML = `Concluíste <strong>${concluidas}</strong> de <strong>${totalAulas}</strong> (<strong>${percentual}%</strong>)`;
+            }
         }
         
-        // 2. Anima a barra de progresso
+        // 2. Anima a barra com o efeito "Dourado"
         if (fill) {
-            // Pequeno delay para garantir que o DOM renderizou antes da animação
             setTimeout(() => {
                 fill.style.width = `${percentual}%`;
+                
+                if (percentual >= 100) {
+                    // O efeito Dourado que você criou:
+                    fill.style.backgroundColor = "#FFD700";
+                    fill.style.boxShadow = "0 0 15px #FFD700";
+                    fill.style.border = "1px solid #B8860B";
+                } else {
+                    fill.style.backgroundColor = "#5f9ea0";
+                    fill.style.boxShadow = "none";
+                }
             }, 100);
         }
         
-        // 3. Configura o botão de ação
+        // 3. Configura o botão de ação (Link de Revisão)
         if (btn) {
             btn.style.display = "block";
             
             if (percentual >= 100) {
-                btn.innerText = "🎉 Curso Concluído! Revisar Aulas →";
-                btn.onclick = () => { window.location.hash = `#/aula/1`; };
+                btn.innerHTML = "🏆 Revisar o Curso Agora →";
+                btn.style.backgroundColor = "#B8860B"; // Botão em tom bronze/dourado
+                
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    console.log("🚀 Reiniciando jornada para revisão...");
+                    window.location.hash = "#/aula/1"; 
+                };
             } else {
                 btn.innerText = "Continuar de onde parei →";
-                btn.onclick = () => { 
-                    // Se concluiu 5, vai para a 6
-                    window.location.hash = `#/aula/${concluidas + 1}`; 
+                btn.style.backgroundColor = "#5f9ea0";
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    window.location.hash = `#/aula/${concluidas + 1}`;
                 };
             }
         }
+    
     }
 };
