@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard - Git Course</title>
+  <title>Dashboard - Git Course (SPA)</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,22 +27,19 @@
   </aside>
 
   <main class="dashboard-container container">
-    <h1>Bem-vindo, <span id="userEmailDisplay">...</span>!</h1>
     
-    <p id="welcomeMessage">Sincronizando com a VPS...</p>
+    <header class="dashboard-header">
+        <h1>Bem-vindo, <span id="userEmailDisplay">...</span>!</h1>
+        <p id="welcomeMessage">Iniciando sistema...</p>
+    </header>
+    
+    <hr>
 
-    <section id="progressCard" class="card">
-      <h3>Seu Progresso</h3>
-      <div id="progressCardContent">Calculando progresso...</div>
-      
-      <div class="progress-bar">
-        <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
-      </div>
-
-      <button type="button" id="btnContinueCard" class="btn-footer-primary">
-        Continuar de onde parei →
-      </button>
-    </section>
+    <div id="spa-content">
+        <p style="text-align: center; margin-top: 50px; font-style: italic; color: #888;">
+            Carregando sua jornada técnica...
+        </p>
+    </div>
 
     <footer class="footer">
       <div class="footer-badges">
@@ -57,8 +54,7 @@
     </footer>
   </main>
 
-  <!-- PONTO ÚNICO DE ENTRADA -->
-  <script type="module" src="assets/js/navigation.js"></script>
+  <script type="module" src="assets/js/dashboard-app.js"></script>
 
 </body>
 </html>
