@@ -105,8 +105,12 @@ export const HomeView = {
                 
                 btn.onclick = (e) => {
                     e.preventDefault();
-                    console.log("🚀 Reiniciando jornada para revisão...");
-                    window.location.hash = "#/aula/1"; 
+                    console.log("🚀 Redirecionando para a Introdução (Arquivo Físico)...");
+                    
+                    // Como a Dashboard está na raiz, e as aulas provavelmente 
+                    // estão em uma pasta (ou na mesma raiz), usamos o nome do arquivo:
+                    // Se o arquivo 2-introduction.html estiver na mesma pasta da dashboard:
+                    window.location.href = "2-introduction.html"; 
                 };
             } else {
                 btn.innerText = "Continuar de onde parei →";
