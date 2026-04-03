@@ -1,5 +1,7 @@
-// Configuração global da API do GitCourse
+// assets/js/config.js
 
-// Ambiente de produção (definido pelo Github pages)
-const API_URL = "https://charles-gitcourse.duckdns.org"; 
+// ANTES estava assim:
+// const API_URL = "https://charles-gitcourse.duckdns.org";
 
+// DEVE FICAR ASSIM (Adicione o export):
+export const API_URL = "https://charles-gitcourse.duckdns.org";
