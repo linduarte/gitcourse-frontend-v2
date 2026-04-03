@@ -2,6 +2,8 @@
  * SISTEMA DE AUTENTICAÇÃO - GIT COURSE
  * Desenvolvedor: Charles Duarte
  */
+import { API_URL } from './config.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🔌 Sistema de Login: Inicializado.");
