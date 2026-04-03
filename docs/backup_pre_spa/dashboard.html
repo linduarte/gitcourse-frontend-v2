@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Git Course</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+  <link rel="stylesheet" href="assets/css/gitcourse.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+
+<body>
+
+  <aside class="sidebar">
+    <h2>Git Course</h2>
+    <ul>
+      <li><a href="#" id="menuDashboard">Dashboard</a></li>
+      <li><a href="#" id="menuProgresso">Progresso</a></li>
+      <li><a href="#" id="menuContinue">Continuar</a></li>
+      <li><a href="#" id="menuSair">Sair</a></li>
+    </ul>
+  </aside>
+
+  <main class="dashboard-container container">
+    <h1>Bem-vindo, <span id="userEmailDisplay">...</span>!</h1>
+    
+    <p id="welcomeMessage">Sincronizando com a VPS...</p>
+
+    <section id="progressCard" class="card">
+      <h3>Seu Progresso</h3>
+      <div id="progressCardContent">Calculando progresso...</div>
+      
+      <div class="progress-bar">
+        <div id="progressBarFill" class="progress-bar-fill" style="width: 0%;"></div>
+      </div>
+
+      <button type="button" id="btnContinueCard" class="btn-footer-primary">
+        Continuar de onde parei →
+      </button>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+          <span>🐙 GitHub Pages</span>
+          <img src="assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+          <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- PONTO ÚNICO DE ENTRADA -->
+  <script type="module" src="assets/js/navigation.js"></script>
+
+</body>
+</html>
