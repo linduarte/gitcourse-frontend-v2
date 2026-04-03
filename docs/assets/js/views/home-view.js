@@ -109,8 +109,8 @@ export const HomeView = {
                     
                     // Como a Dashboard está na raiz, e as aulas provavelmente 
                     // estão em uma pasta (ou na mesma raiz), usamos o nome do arquivo:
-                    // Se o arquivo 2-introduction.html estiver na mesma pasta da dashboard:
-                    window.location.href = "curso/git-course/2-introduction.html"; 
+                    // Usamos o nome do repositório para garantir que o GitHub Pages não se perca
+                window.location.href = "/gitcourse-frontend-v2/curso/git-course/2-introduction.html"; 
                 };
             } else {
                 btn.onclick = (e) => {
