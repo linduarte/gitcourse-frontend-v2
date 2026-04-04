@@ -40,20 +40,28 @@ async function registrarConclusao() {
     }
 }
 
-// Escutador inteligente para a classe 'footer-link'
+// Escutador Seletivo: Apenas para o botão de "Próximo"
 document.addEventListener('DOMContentLoaded', () => {
-    // Procuramos o botão pela CLASSE que você já usa no HTML
-    const btnProximo = document.querySelector('.footer-link');
-    
+    // Pegamos todos os links com a classe footer-link
+    const links = document.querySelectorAll('.footer-link');
+    let btnProximo = null;
+
+    // Filtramos para encontrar o que contém a seta para a direita (→) ou a palavra "Próximo"
+    links.forEach(link => {
+        if (link.innerText.includes('→') || link.innerText.toLowerCase().includes('próximo')) {
+            btnProximo = link;
+        }
+    });
+
     if (btnProximo) {
-        console.log("🎯 Sensor acoplado ao botão: " + btnProximo.innerText);
+        console.log("🎯 Sensor acoplado corretamente ao botão de AVANÇAR: " + btnProximo.innerText);
         
         btnProximo.addEventListener('click', async (event) => {
-            // Executa o registro no Postgres antes de mudar de página
+            // Sincroniza com o Postgres antes de mudar de página
             await registrarConclusao();
-            console.log("🚀 Sinal enviado. Navegando...");
+            console.log("🚀 Sinal de conclusão enviado. Avançando...");
         });
     } else {
-        console.warn("⚠️ Botão '.footer-link' não encontrado nesta página.");
+        console.warn("⚠️ Botão de avanço (→) não encontrado nesta página.");
     }
 });
