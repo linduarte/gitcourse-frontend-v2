@@ -341,6 +341,23 @@
 <script src="../../assets/js/config.js"></script>
 <script src="../../assets/js/git-course-functions.js"></script>
 
+<script src="../../assets/js/sensor-progresso.js"></script>
 
+<script>
+    async function registrarEAvancar(urlDestino) {
+        console.log("🏁 Finalizando o curso e enviando último sinal...");
+        
+        // Chama a função registrarConclusao que está dentro do sensor-progresso.js
+        try {
+            await registrarConclusao(); 
+            console.log("✅ Último registro salvo! Redirecionando para a Dashboard...");
+        } catch (error) {
+            console.error("⚠️ Falha no registro final, mas prosseguindo...", error);
+        }
+        
+        // Redireciona para a Dashboard
+        window.location.href = urlDestino;
+    }
+</script>
 </body>
 </html>
