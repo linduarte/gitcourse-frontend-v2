@@ -49,11 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const progresso = resProg.ok ? await resProg.json() : { completed: 0 };
 
+            // No bloco de decisão do login.js, altere para:
+
             if (!progresso || progresso.completed === 0) {
-                console.log("🆕 Usuário Novato: Direcionando para o Prefácio.");
-                window.location.href = "auth/1a-prefacio.html";
+                console.log("🆕 Direcionando para o Prefácio...");
+                // Remova o 'auth/' se o arquivo já estiver na raiz ou ajuste o caminho:
+                window.location.href = "auth/1a-prefacio.html"; 
+                // Se continuar dando erro, tente: window.location.href = "./auth/1a-prefacio.html";
             } else {
-                console.log(`📈 Usuário Veterano (${progresso.completed} aulas): Direcionando para Dashboard.`);
+                console.log("📈 Direcionando para a Dashboard...");
                 window.location.href = "dashboard.html";
             }
 
