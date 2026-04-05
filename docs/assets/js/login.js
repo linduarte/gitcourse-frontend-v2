@@ -51,14 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // No bloco de decisão do login.js, altere para:
 
+            // No seu login.js, dentro da lógica de decisão:
+
             if (!progresso || progresso.completed === 0) {
                 console.log("🆕 Direcionando para o Prefácio...");
-                // Remova o 'auth/' se o arquivo já estiver na raiz ou ajuste o caminho:
-                window.location.href = "1a-prefacio.html"; 
-                // Se continuar dando erro, tente: window.location.href = "./auth/1a-prefacio.html";
+                // O caminho correto conforme a sua estrutura de pastas:
+                window.location.href = "curso/git-course/1a-prefacio.html";
             } else {
                 console.log("📈 Direcionando para a Dashboard...");
-                window.location.href = "../dashboard.html";
+                window.location.href = "dashboard.html";
             }
 
         } catch (error) {
