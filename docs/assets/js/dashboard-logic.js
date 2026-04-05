@@ -50,36 +50,39 @@ async function buscarDadosGlobais() {
  * 3. MÓDULO DE INTERFACE: Atualiza o painel e os botões
  */
 function atualizarInterface(dados) {
-    if (!dados) {
-        localStorage.clear();
-        window.location.href = "auth/login.html";
-        return;
-    }
+    if (!dados) return; // Segurança contra dados nulos
 
-    const { user, progresso } = dados;
-
-    // Atualiza Displays de Texto
-    const emailDisplay = document.getElementById("userEmailDisplay");
-    const welcomeMsg = document.getElementById("welcomeMessage");
-    if (emailDisplay) emailDisplay.textContent = user.email;
-    if (welcomeMsg) welcomeMsg.textContent = "Sistema Sincronizado.";
-
-    // Lógica do Botão de Navegação Principal
+    const { progresso } = dados;
     const btnAcao = document.getElementById("btn-continuar");
+
     if (btnAcao) {
-        // Se não concluiu nenhuma aula, é o primeiro acesso real
+        // CONDIÇÃO PARA USUÁRIO NOVATO (Zero progresso)
         if (!progresso || progresso.completed === 0) {
-            btnAcao.textContent = "Começar do Início (Prefácio)";
-            btnAcao.className = "btn btn-primary btn-lg w-100 fw-bold"; // Garante estilo de destaque
-            btnAcao.onclick = () => window.location.href = "auth/1a-prefacio.html";
-        } else {
-            btnAcao.textContent = `Continuar (${progresso.percentage}% concluído)`;
-            btnAcao.className = "btn btn-success btn-lg w-100 fw-bold";
-            // Direciona para a última aula ou para a Dashboard interna
-            btnAcao.onclick = () => window.location.href = progresso.last_lesson_url || "auth/1a-prefacio.html";
+            console.log("🆕 Usuário novato detectado. Configurando início...");
+            
+            btnAcao.textContent = "Começar do Início (Prefácio) 🚀";
+            btnAcao.className = "btn btn-primary btn-lg w-100 fw-bold"; // Cor de destaque (Azul)
+            
+            // O caminho precisa subir um nível se a dashboard estiver em /auth/
+            btnAcao.onclick = () => {
+                window.location.href = "auth/1a-prefacio.html";
+            };
+        } 
+        // CONDIÇÃO PARA USUÁRIO VETERANO (Já tem progresso)
+        else {
+            console.log(`📈 Usuário com ${progresso.completed} aulas concluídas.`);
+            
+            btnAcao.textContent = `Continuar de onde parei (${progresso.percentage}%)`;
+            btnAcao.className = "btn btn-success btn-lg w-100 fw-bold"; // Cor de progresso (Verde)
+            
+            // Usa a URL salva pela VPS ou volta para a introdução por segurança
+            btnAcao.onclick = () => {
+                window.location.href = progresso.last_lesson_url || "auth/2-introduction.html";
+            };
         }
     }
 }
+
 
 /**
  * FUNÇÃO MESTRA (EXPORTADA): Orquestra a inicialização
