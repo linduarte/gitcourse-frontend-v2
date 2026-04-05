@@ -192,19 +192,14 @@
 
 </div> <!-- /container -->
 
-<script src="../../assets/js/config.js"></script>
+<script src="../../static/js/config.js"></script>
+<script src="../../static/js/git-course-functions.js"></script>
+
+
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-function.js";
-    
-    // Conecta as funções aos botões físicos
+    import { logout, registrarEAvancar } from "../../js/git-course-function.js";
     window.logout = logout;
     window.registrarEAvancar = registrarEAvancar;
-
-    // Se quiser manter o Logout pelo ID específico do botão 'Sair' lá de baixo:
-    const logoutBtn = document.getElementById('logoutButton');
-    if (logoutBtn) {
-        logoutBtn.onclick = logout;
-    }
 </script>
 </body>
 </html>
