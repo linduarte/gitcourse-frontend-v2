@@ -192,14 +192,18 @@
 
 </div> <!-- /container -->
 
-<script src="../../static/js/config.js"></script>
-<script src="../../static/js/git-course-functions.js"></script>
-
-
 <script type="module">
-    import { logout, registrarEAvancar } from "../../js/git-course-function.js";
+    // O caminho correto para subir da pasta curso/git-course/ até assets/js/
+    import { logout, registrarEAvancar } from "../../assets/js/git-course-function.js";
+    
+    // Tornando as funções globais para que o 'onclick' do HTML as encontre
     window.logout = logout;
     window.registrarEAvancar = registrarEAvancar;
+    
+    console.log("✅ Sistema de navegação do Prefácio carregado.");
 </script>
+
+</body>
+</html>
 </body>
 </html>
