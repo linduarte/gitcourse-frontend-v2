@@ -51,17 +51,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // No bloco de decisão do login.js, altere para:
 
-            // No seu login.js, dentro da lógica de decisão:
+            // Dentro da lógica de decisão do login.js:
 
             if (!progresso || progresso.completed === 0) {
                 console.log("🆕 Direcionando para o Prefácio...");
-                // O caminho correto conforme a sua estrutura de pastas:
-                window.location.href = "curso/git-course/1a-prefacio.html";
+                // 1. Sobe um nível (../)
+                // 2. Entra em curso/git-course/
+                window.location.href = "../curso/git-course/1a-prefacio.html";
             } else {
                 console.log("📈 Direcionando para a Dashboard...");
-                window.location.href = "dashboard.html";
+                // 1. Sobe um nível (../)
+                // 2. Acha o dashboard.html que está na raiz
+                window.location.href = "../dashboard.html";
             }
-
         } catch (error) {
             console.error("❌ Curto-circuito no Login:", error);
             alert("Erro de conexão com o servidor. Verifique se a VPS está online.");
