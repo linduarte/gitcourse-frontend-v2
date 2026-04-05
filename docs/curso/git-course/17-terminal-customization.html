@@ -246,22 +246,29 @@
     </div>
 
     <div class="footer-flex">
-        <nav class="footer-nav">
-            <a href="2-introduction.html" class="footer-link">← Voltar</a>
-        </nav>
+    <nav class="footer-nav">
+        <a href="2-introduction.html" class="footer-link">← Voltar</a>
+    </nav>
 
-        <div class="footer-buttons">
-            <button id="logoutButton" type="button" class="btn-footer-primary">Logout</button>
+    <div class="footer-buttons">
+        <button id="logoutButton" type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
 
-            <button type="button" class="btn-footer-primary" onclick="window.location.href='2-introduction.html'">
+        <button type="button" class="btn-footer-primary" 
+                onclick="registrarEAvancar('2-introduction.html')">
             Concluído! Voltar para a Aula 2 ✓
-            </button>
-        </div>
+        </button>
     </div>
+</div>
 
-    <div class="footer-instruction">
-        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
-    </div>
+<div class="footer-instruction">
+    Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+</div>
+
+<script type="module">
+    import { logout, registrarEAvancar } from "../js/git-course-function.js";
+    window.logout = logout;
+    window.registrarEAvancar = registrarEAvancar;
+</script>
 
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">

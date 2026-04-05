@@ -149,10 +149,17 @@
         </nav>
 
     <div class="footer-buttons">
-    <button id="logoutButton" type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
+    <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
     <button type="button" class="btn-footer-primary" onclick="registrarEAvancar('3-git-config.html')">
         Concluído ✓
     </button>
+
+    <script type="module">
+            import { logout, registrarEAvancar } from "../js/git-course-function.js";
+            window.logout = logout;
+            window.registrarEAvancar = registrarEAvancar;
+    </script>
+
     </div>
 
     </div>
