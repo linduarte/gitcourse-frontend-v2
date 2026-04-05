@@ -10,11 +10,12 @@
 export function logout() {
     console.log("🔐 Encerrando sessão do usuário...");
     
-    // 1. Limpa os dados de navegação e tokens
+    // 1. Limpa tudo (Token, progresso, etc)
     localStorage.clear();
     
-    // 2. Redireciona para a Landing Page (onde está o seu texto do jj!)
-    window.location.href = "index.html";
+    // 2. Redireciona para a raiz (Onde está o index.html)
+    // O "/" garante que ele volte para o início do domínio, não importa a pasta
+    window.location.href = "/gitcourse-frontend-v2/index.html"; 
 }
 
 /**
