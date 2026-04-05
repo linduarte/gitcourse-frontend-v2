@@ -1,5 +1,4 @@
-// docs/assets/js/login.js
-
+// Configuração da Central de Comando
 const API_URL = "https://charles-gitcourse.duckdns.org";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,40 +13,51 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
-        try {
-            // Confirmado via Swagger: o endpoint TEM o prefixo /auth
-            const endpoint = `${API_URL}/auth/login`;
-            console.log(`📡 Transmitindo para: ${endpoint}`);
+        console.log("📡 Tentando conexão com a VPS...");
 
-            const response = await fetch(endpoint, {
+        try {
+            // 1. DISPARO DO LOGIN (O Acionamento)
+            const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
-                mode: 'cors', // Força o modo Cross-Origin
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    'username': email,
+                    'password': password
+                })
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                
-                // Grava os dados para o Dashboard buscar no Postgres
-                localStorage.setItem("access_token", data.access_token);
-                localStorage.setItem("user_email", email); 
-                
-                console.log("✅ Login autorizado via Postgres!");
-                window.location.href = "../dashboard.html";
-                
+            if (!response.ok) {
+                alert("❌ Falha no login. Verifique e-mail e senha.");
+                return;
+            }
+
+            const data = await response.json();
+
+            // 2. GRAVAÇÃO NA MEMÓRIA (O localStorage que faltava!)
+            // Sem isso, o Prefácio e a Dashboard darão "Sessão Expirada".
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("user_email", email);
+
+            console.log("✅ Token armazenado. Verificando telemetria de progresso...");
+
+            // 3. O DESVIO DE FLUXO DO CHARLES (A Inteligência de Rota)
+            const resProg = await fetch(`${API_URL}/progress/summary`, {
+                headers: { 'Authorization': `Bearer ${data.access_token}` }
+            });
+
+            const progresso = resProg.ok ? await resProg.json() : { completed: 0 };
+
+            if (!progresso || progresso.completed === 0) {
+                console.log("🆕 Usuário Novato: Direcionando para o Prefácio.");
+                window.location.href = "auth/1a-prefacio.html";
             } else {
-                const error = await response.json();
-                alert(`Erro: ${error.detail || "Falha na autenticação."}`);
+                console.log(`📈 Usuário Veterano (${progresso.completed} aulas): Direcionando para Dashboard.`);
+                window.location.href = "dashboard.html";
             }
 
         } catch (error) {
-            console.error("💥 Falha de Rede:", error);
-            // Se cair aqui, a VPS recusou a conexão antes mesmo de ler o login
-            alert("Erro de Rede: Verifique se o Uvicorn está ativo na VPS.");
+            console.error("❌ Curto-circuito no Login:", error);
+            alert("Erro de conexão com o servidor. Verifique se a VPS está online.");
         }
     });
 });
