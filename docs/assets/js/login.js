@@ -54,11 +54,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!progresso || progresso.completed === 0) {
                 console.log("🆕 Direcionando para o Prefácio...");
                 // Remova o 'auth/' se o arquivo já estiver na raiz ou ajuste o caminho:
-                window.location.href = "auth/1a-prefacio.html"; 
+                window.location.href = "1a-prefacio.html"; 
                 // Se continuar dando erro, tente: window.location.href = "./auth/1a-prefacio.html";
             } else {
                 console.log("📈 Direcionando para a Dashboard...");
-                window.location.href = "dashboard.html";
+                window.location.href = "../dashboard.html";
             }
 
         } catch (error) {
