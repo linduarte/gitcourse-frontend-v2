@@ -16,14 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("📡 Tentando conexão com a VPS...");
 
         try {
-            // 1. DISPARO DO LOGIN (Versão JSON com campo 'email')
+            // 1. DISPARO DO LOGIN (Padrão JSON Puro)
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 
-                    'Content-Type': 'application/json' // Definindo o protocolo como JSON
+                    'Content-Type': 'application/json' // O "idioma" que a VPS entende
                 },
                 body: JSON.stringify({
-                    'email': email,    // Usando o seu campo real
+                    'email': email,    // Campo exato da sua estrutura
                     'password': password
                 })
             });
