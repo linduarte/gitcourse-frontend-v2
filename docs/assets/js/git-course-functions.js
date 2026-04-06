@@ -27,45 +27,35 @@ export function formatarData(dataISO) {
  * REGISTRAR E AVANÇAR (Versão Refatorada - Sem Remendos)
  * Envia o progresso para a VPS, dá feedback visual e navega.
  */
-export async function registrarEAvancar(proximaAula) {
-    // 1. Definição Local (Garante que a função possui o endereço)
+export async function registrarEAvancar(topicId, proximaAula) { // Agora recebe topicId
     const API_URL = "https://charles-gitcourse.duckdns.org"; 
     const token = localStorage.getItem("access_token");
     const btn = window.event ? window.event.currentTarget || window.event.target : null;
 
-    console.log("📡 Tentando registrar progresso para:", proximaAula);
-
     const navegar = () => { window.location.href = proximaAula; };
 
-    if (!token) {
-        console.warn("⚠️ Token não encontrado no LocalStorage!");
-        navegar(); return;
-    }
+    if (!token) { navegar(); return; }
 
     try {
-        // 2. O Disparo (Acompanhe na aba 'Network' do F12)
-        const response = await fetch(`${API_URL}/progress/complete`, {
+        const response = await fetch(`${API_URL}/progress/complete`, { 
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}` 
             },
-            body: JSON.stringify({ lesson_url: proximaAula })
+            // ENVIANDO O ID COMO NÚMERO (conforme o Swagger)
+            body: JSON.stringify({ topic_id: parseInt(topicId) }) 
         });
 
         if (response.ok && btn) {
-            // 3. Feedback Visual (O sinal de sucesso)
             btn.style.backgroundColor = "#28a745"; 
             btn.innerHTML = "Registrado! ✓";
-            console.log("✅ VPS respondeu com SUCESSO.");
-            
             setTimeout(navegar, 800); 
         } else {
-            console.error("❌ VPS recusou o registro. Status:", response.status);
+            console.error("Erro na VPS:", response.status);
             navegar();
         }
     } catch (error) {
-        console.error("🚨 Erro crítico de rede/CORS:", error);
         navegar();
     }
 }

@@ -7,7 +7,8 @@
    Layout geral
 ------------------------------ */
 body {
-    background: url('../../static/images/waves.webp') center/cover no-repeat fixed;
+    /* Sobe um nível para sair de 'css' e entra em 'images' */
+    background: url('../images/waves.webp') center/cover no-repeat fixed;
     font-family: 'Victor Mono', monospace;
     margin: 0;
     padding: 0;
