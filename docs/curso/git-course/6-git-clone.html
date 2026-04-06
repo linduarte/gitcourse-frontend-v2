@@ -88,11 +88,7 @@
             onclick="registrarEAvancar('7-git-status.html')">
         Concluído ✓
         </button>
-        <script type="module">
-            import { logout, registrarEAvancar } from "../js/git-course-function.js";
-            window.logout = logout;
-            window.registrarEAvancar = registrarEAvancar;
-        </script>
+        
 
         </div>
     </div>
@@ -119,10 +115,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
-<script src="../../assets/js/config.js"></script>
-<script src="../../assets/js/git-course-functions.js"></script>
-<script src="../../assets/js/sensor-progresso.js"></script>
+<script type="module">
+    // Verifique se o nome do arquivo é functions (com S) ou function (sem S)
+    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    
+    window.logout = logout;
+    window.registrarEAvancar = registrarEAvancar;
 
+    console.log("✅ Sistema de Navegação da Aula 6: Conectado.");
+</script>
 
 </body>
 </html>
