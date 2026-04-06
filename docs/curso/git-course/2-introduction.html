@@ -150,10 +150,10 @@
 
     <div class="footer-buttons">
     <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
-    <button type="button" class="btn-footer-primary" onclick="registrarEAvancar('3-git-config.html')">
-        Concluído ✓
+    <button type="button" class="btn-footer-primary" 
+        onclick="registrarEAvancar('3-git-config.html')">
+    Concluído ✓
     </button>
-
     <script type="module">
             import { logout, registrarEAvancar } from "../js/git-course-function.js";
             window.logout = logout;
@@ -186,10 +186,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
-<script src="../../assets/js/config.js"></script>
-<script src="../../assets/js/git-course-functions.js"></script>
-<script src="../../assets/js/sensor-progresso.js"></script>
-
+<script type="module">
+    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    window.logout = logout;
+    window.registrarEAvancar = registrarEAvancar;
+</script>
 
 </body>
 </html>
