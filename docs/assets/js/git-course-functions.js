@@ -11,8 +11,11 @@
  */
 export function logout() {
     console.log("🔐 Encerrando sessão...");
-    localStorage.clear();
-    // Use o caminho completo do repositório para evitar o 404
+    
+    // 1. Limpa o "combustível" (Token e Progresso)
+    localStorage.clear(); 
+    
+    // 2. Redireciona para a base do projeto
     window.location.href = "/gitcourse-frontend-v2/index.html"; 
 }
 /**
@@ -30,7 +33,11 @@ export function formatarData(dataISO) {
 export async function registrarEAvancar(topicId, proximaAula) { // Agora recebe topicId
     const API_URL = "https://charles-gitcourse.duckdns.org"; 
     const token = localStorage.getItem("access_token");
-    const btn = window.event ? window.event.currentTarget || window.event.target : null;
+
+    // Capturamos o botão diretamente do evento passado
+    const btn = e ? e.currentTarget || e.target : null;
+
+    console.log("📡 Registrando tópico:", topicId);
 
     const navegar = () => { window.location.href = proximaAula; };
 
