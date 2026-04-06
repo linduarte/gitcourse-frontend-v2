@@ -193,14 +193,14 @@
 </div> <!-- /container -->
 
 <script type="module">
-    // O caminho correto para subir da pasta curso/git-course/ até assets/js/
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-function.js";
+    // O 'import' já faz o papel de carregar o arquivo, não precisa do <script src...>
+    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
     
-    // Tornando as funções globais para que o 'onclick' do HTML as encontre
+    // Conectando os cabos ao objeto global 'window'
     window.logout = logout;
     window.registrarEAvancar = registrarEAvancar;
-    
-    console.log("✅ Sistema de navegação do Prefácio carregado.");
+
+    console.log("✅ Sistema de Navegação do Prefácio: Ativo e Conectado.");
 </script>
 
 </body>
