@@ -5,32 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Prefácio - Git Course</title>
 
-    <!-- CSS correto para a página 1 -->
     <link rel="stylesheet" href="../../assets/css/gitcourse.css"> 
     <link rel="stylesheet" href="../../assets/css/gitcourse-pre.css">
 
-    <!-- PrismJS (CDN permanece igual) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
-
-    
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-        // Logout
-        const logoutBtn = document.getElementById('logoutButton');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                localStorage.removeItem('access_token');
-                window.location.href = '../../landing.html';
-            });
-        }
-
         // Polling para testes automatizados (Playwright)
         (function waitForToken(maxWait = 2500, interval = 50) {
             const start = Date.now();
-
             const tryCheck = () => {
                 const token = localStorage.getItem('access_token');
                 const params = new URLSearchParams(window.location.search || '');
@@ -40,7 +24,6 @@
                 if (testLoginFlag === '1' || testInjectFlag === '1') {
                     maxWait = 5000;
                 }
-
                 if (token) return;
 
                 if (testLoginFlag === '1') {
@@ -51,14 +34,12 @@
                 }
 
                 if (Date.now() - start >= maxWait) {
-                    console.log('TEST_LOG: auth-guard redirecting to landing; token=', token, 'elapsed=', Date.now() - start);
+                    console.log('TEST_LOG: auth-guard redirecting to landing');
                     window.location.href = '../../landing.html';
                     return;
                 }
-
                 setTimeout(tryCheck, interval);
             };
-
             tryCheck();
         })();
 
@@ -69,22 +50,16 @@
                 const banner = document.createElement('div');
                 banner.id = 'post-login-banner';
                 banner.setAttribute('data-test', 'login-success');
-                banner.textContent = 'Sucesso! Success. Bem-vindo ao curso.';
+                banner.textContent = 'Sucesso! Bem-vindo ao curso.';
                 banner.style.cssText =
                     'position:fixed;top:16px;left:50%;transform:translateX(-50%);' +
                     'background:#388e3c;color:#fff;padding:8px 16px;border-radius:8px;' +
                     'z-index:2000;font-weight:700;';
                 document.body.appendChild(banner);
-
                 sessionStorage.removeItem('login_success');
-
-                setTimeout(() => {
-                    try { banner.remove(); } catch (e) {}
-                }, 3000);
+                setTimeout(() => { try { banner.remove(); } catch (e) {} }, 3000);
             }
-        } catch (e) {
-            console.log('TEST_LOG: post-login banner error', e);
-        }
+        } catch (e) { console.log('TEST_LOG: banner error', e); }
     });
     </script>
 </head>
@@ -99,7 +74,6 @@
     </div>
 
     <div class="course-overview">
-
         <div class="overview-section">
             <h3>🎯 O que você vai aprender</h3>
             <ul>
@@ -123,23 +97,35 @@
                 <li>Suporte da comunidade</li>
             </ul>
         </div>
-
     </div>
 
     <div class="tip-box">
         <h4>💡 Dica importante</h4>
         <p>
             Este curso segue uma abordagem prática baseada no livro
-            <strong>"Practical Guide to Git and GitHub For Windows Users"</strong>,
-            de Roberto Vormittag. Você aprenderá fazendo!
+            <strong>"Practical Guide to Git and GitHub For Windows Users"</strong>. 
+            Você aprenderá fazendo!
         </p>
     </div>
 
+    <div class="instruction-box" style="background: #e3f2fd; border-left: 5px solid #2196f3; padding: 20px; margin: 25px 0; border-radius: 8px;">
+        <h4 style="margin-top: 0; color: #0d47a1; display: flex; align-items: center; gap: 10px;">
+            🚀 Como progredir no curso
+        </h4>
+        <p>Para garantir que sua evolução seja salva e seu certificado emitido, siga este procedimento:</p>
+        <ul style="margin-bottom: 0;">
+            <li>Estude o conteúdo de cada página e pratique os comandos.</li>
+            <li>Ao terminar, clique no botão <strong>"Concluído ✓"</strong> no final de cada aula.</li>
+            <li>O botão ficará <strong>verde</strong> para confirmar que seu progresso foi registrado na nuvem.</li>
+            <li>Use a <strong>Dashboard</strong> (disponível após o início) para retomar de onde parou.</li>
+        </ul>
+    </div>
+
     <div class="start-button">
-    <button type="button" class="btn-footer-primary" 
-        onclick="registrarEAvancar('2-introduction.html')">
-    Iniciar jornada Git ✓
-    </button>
+        <button type="button" class="btn-footer-primary" 
+                onclick="registrarEAvancar('2-introduction.html')">
+            Iniciar jornada Git ✓
+        </button>
     </div>
 
     <div class="footer-actions">
@@ -148,62 +134,47 @@
         </div>
     </div>
 
-    <!-- ============================
-         FOOTER
-============================= -->
-<footer class="footer">
+    <footer class="footer">
+        <div class="footer-flex">
+            <nav class="footer-nav">
+                <button type="button" onclick="window.location.href='../../index.html'" class="btn-footer-primary">
+                    Início
+                </button>
+                </nav>
 
-    <div class="footer-flex">
-
-        <nav class="footer-nav">
-            <button type="button" onclick="window.location.href='../../index.html'" class="btn-footer-primary">
-                Início
-            </button>
-
-            <button type="button" onclick="window.location.href='../../dashboard.html'" class="btn-footer-primary">
-                Dashboard
-            </button>
-        </nav>
-
-        <div class="footer-buttons">
-            <button id="logoutButton" type="button" class="btn-footer-primary">
-                Sair
-            </button>
+            <div class="footer-buttons">
+                <button id="logoutButton" type="button" class="btn-footer-primary" onclick="logout()">
+                    Sair
+                </button>
+            </div>
         </div>
 
-    </div>
+        <div class="footer-instruction">
+            Siga as instruções acima para começar sua jornada técnica.
+        </div>
 
-    <div class="footer-instruction">
-        Use os botões acima para navegar ou sair da sua conta.
-    </div>
+        <div class="footer-badges">
+            <a href="https://pages.github.com/" class="github-link">
+                <span>🐙 GitHub Pages</span>
+                <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            </a>
+            <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+                <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                     alt="CSS válido!" class="footer-logo" width="45" height="16">
+            </a>
+        </div>
+    </footer>
 
-    <div class="footer-badges">
-        <a href="https://pages.github.com/" class="github-link">
-            <span>🐙 GitHub Pages</span>
-            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
-        </a>
-        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
-                 alt="CSS válido!" class="footer-logo" width="45" height="16">
-        </a>
-    </div>
-
-</footer>
-
-</div> <!-- /container -->
-
-<script type="module">
-    // O 'import' já faz o papel de carregar o arquivo, não precisa do <script src...>
+</div> <script type="module">
+    // Carregando as funções globais refatoradas
     import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
     
     // Conectando os cabos ao objeto global 'window'
     window.logout = logout;
     window.registrarEAvancar = registrarEAvancar;
 
-    console.log("✅ Sistema de Navegação do Prefácio: Ativo e Conectado.");
+    console.log("✅ Prefácio: Dashboard removida e Manual de Operação inserido.");
 </script>
 
-</body>
-</html>
 </body>
 </html>
