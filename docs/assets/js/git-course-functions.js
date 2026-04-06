@@ -3,6 +3,9 @@
  * Utilitários globais para o Git Course.
  * Charles Duarte - v2.0 SPA
  */
+// Adicione isto no topo, se não estiver vindo de outro lugar:
+const API_URL = "https://charles-gitcourse.duckdns.org"; // Substitua pela sua URL real da VPS
+
 
 /**
  * Realiza o Logout seguro do sistema
@@ -21,41 +24,61 @@ export function formatarData(dataISO) {
 }
 
 /**
- * REGISTRAR E AVANÇAR
- * Envia o progresso para a VPS e pula para a próxima aula
+/**
+ * REGISTRAR E AVANÇAR (Versão Refatorada - Sem Remendos)
+ * Envia o progresso para a VPS, dá feedback visual e navega.
  */
 export async function registrarEAvancar(proximaAula) {
     const token = localStorage.getItem("access_token");
-    const btn = window.event ? window.event.target : null;
+    // Captura o botão que disparou o evento (o 'alvo' do clique)
+    const btn = window.event ? window.event.currentTarget || window.event.target : null;
 
-    console.log("📡 Sincronizando progresso com a VPS...");
+    console.log(`📡 Sincronizando: ${proximaAula}`);
 
-    if (token) {
-        try {
-            // Tenta avisar a VPS (timeout implícito de rede)
-            const response = await fetch(`${API_URL}/progress/update`, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
-                },
-                body: JSON.stringify({ lesson_url: proximaAula })
-            });
+    // Função interna para mudar a página (centraliza a saída)
+    const navegar = () => {
+        window.location.href = proximaAula;
+    };
 
-            if (response.ok && btn) {
-                // FEEDBACK DE ENGENHARIA: O botão "avisa" que funcionou
-                btn.style.backgroundColor = "#28a745"; // Verde Sucesso
-                btn.innerText = "Registrado! ✓";
-                console.log("✅ Progresso salvo com sucesso.");
-            }
-        } catch (e) {
-            console.error("⚠️ Falha na telemetria (VPS offline ou erro de rede):", e);
-        }
+    // Se não houver token, o test_insonia deslogou. Navega sem salvar.
+    if (!token) {
+        console.warn("⚠️ Sem token de acesso. Navegando sem registrar.");
+        navegar();
+        return;
     }
 
-    // O "Timer" de segurança: espera 500ms para o usuário ver o verde e pula!
-    // Se a VPS falhar, ele pula do mesmo jeito para não travar o aluno.
-    setTimeout(() => {
-        window.location.href = proximaAula;
-    }, 500);
+    try {
+        // 1. DISPARO PARA A VPS
+        const response = await fetch(`${API_URL}/progress/update`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({ lesson_url: proximaAula })
+        });
+
+        // 2. TRATAMENTO DE SUCESSO (Feedback Visual)
+        if (response.ok && btn) {
+            // Mudança de estado do botão (O "Banho de Verde")
+            btn.style.transition = "background-color 0.3s ease"; // Suaviza a cor
+            btn.style.backgroundColor = "#28a745"; 
+            btn.style.color = "#ffffff";
+            btn.innerHTML = "Registrado! ✓";
+            
+            console.log("✅ Progresso salvo na VPS.");
+
+            // 3. O "DELAY" DE ENGENHARIA (Aguardamos 0.8s para o usuário ver o verde)
+            setTimeout(navegar, 800); 
+        } else {
+            // Se a VPS responder erro (ex: 401 ou 500), não travamos o aluno
+            console.error("❌ Erro na resposta da VPS. Prosseguindo...");
+            navegar();
+        }
+
+    } catch (error) {
+        // Se houver queda de rede ou erro de fetch, o curso continua
+        console.error("⚠️ Falha crítica de comunicação:", error);
+        navegar();
+    }
 }
