@@ -154,11 +154,7 @@
         onclick="registrarEAvancar('3-git-config.html')">
     Concluído ✓
     </button>
-    <script type="module">
-            import { logout, registrarEAvancar } from "../js/git-course-function.js";
-            window.logout = logout;
-            window.registrarEAvancar = registrarEAvancar;
-    </script>
+    
 
     </div>
 
@@ -187,9 +183,14 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
+    // O 'import' carrega o arquivo de funções
     import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    
+    // Esta 'ponte' é VITAL: sem ela, o botão 'onclick' não acha a função
     window.logout = logout;
     window.registrarEAvancar = registrarEAvancar;
+
+    console.log("✅ Sistema de Navegação da Aula 2: Conectado.");
 </script>
 
 </body>
