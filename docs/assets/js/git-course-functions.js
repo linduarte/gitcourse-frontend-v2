@@ -44,7 +44,7 @@ export async function registrarEAvancar(proximaAula) {
 
     try {
         // 2. O Disparo (Acompanhe na aba 'Network' do F12)
-        const response = await fetch(`${API_URL}/progress/update`, {
+        const response = await fetch(`${API_URL}/progress/complete`, {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
