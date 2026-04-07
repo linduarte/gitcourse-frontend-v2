@@ -46,6 +46,9 @@ export const HomeView = {
             if (response.ok) {
                 const dados = await response.json(); 
                 console.log("✅ Dados brutos recebidos:", dados);
+
+                // 🚀 A LINHA MÁGICA: Guarda o progresso no navegador para o botão "Continuar"
+                localStorage.setItem('user_progress', JSON.stringify(dados));
                 
                 // Chamada da função que "pinta" a tela com os dados reais
                 this.atualizarInterface(dados);
