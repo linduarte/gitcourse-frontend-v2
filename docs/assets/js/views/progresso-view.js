@@ -42,6 +42,7 @@ export function atualizarBotaoContinuar(dados) {
         console.warn("⚠️ ID não encontrado no mapa, usando fallback.");
         btn.href = "/gitcourse-frontend-v2/curso/git-course/2-introduction.html";
     }
-    // No final do arquivo progresso-view.js
-    window.atualizarBotaoContinuar = atualizarBotaoContinuar;
+    
 }
+// ✅ AGORA SIM, DO LADO DE FORA:
+    window.atualizarBotaoContinuar = atualizarBotaoContinuar;
