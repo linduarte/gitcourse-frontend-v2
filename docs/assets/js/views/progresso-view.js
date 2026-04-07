@@ -1,10 +1,13 @@
-// Lógica para o botão "Continuar de onde parei"
 export function atualizarBotaoContinuar(dados) {
     const btn = document.getElementById('btn-continuar-onde-parei');
     if (!btn) return;
 
-    // Se completou 5, a próxima aula é a 6 (ou a 5, dependendo do seu índice)
-    const proximaAulaIndice = (dados.completed || 0) + 1;
+    // 1. Garantimos que o índice é um NÚMERO
+    // Se a VPS manda 'completed', usamos ele. Se não, zero.
+    const concluido = parseInt(dados.completed || 0);
+    const proximaAulaIndice = concluido + 1;
+
+    console.log("📊 Debug de Navegação:", { concluido, proximaAulaIndice });
 
     // 🗺️ O MAPA DE ROTAS (Ajuste os nomes conforme seus arquivos reais)
     const mapaAulas = {
@@ -24,13 +27,19 @@ export function atualizarBotaoContinuar(dados) {
         14: "14-undo-changes.html",
         15: "15-git-init.html",
         16: "16-git-workflows.html",
-        17: "17-terminal-customization.html"     // ... adicione as outras até a 16
+        17: "17-terminal-customization.html", 
     };
 
-    const paginaDestino = mapaAulas[proximaAulaIndice] || "2-introduction.html";
-    
-    // 🔗 Define o link final (certifique-se que o caminho curso/git-course/ está correto)
-    btn.href = `curso/git-course/${paginaDestino}`;
-    
-    console.log(`🚀 Navegação calibrada: Próxima parada -> ${paginaDestino}`);
+    const paginaDestino = mapaAulas[proximaAulaIndice];
+
+    if (paginaDestino) {
+        // 🔗 Monta o link absoluto para evitar erros de pasta
+        const baseUrl = "/gitcourse-frontend-v2/curso/git-course/";
+        btn.href = baseUrl + paginaDestino;
+        console.log("✅ Rota definida para:", btn.href);
+    } else {
+        // ⚠️ Se cair aqui, o ID não existe no mapa!
+        console.warn("⚠️ ID não encontrado no mapa, usando fallback.");
+        btn.href = "/gitcourse-frontend-v2/curso/git-course/2-introduction.html";
+    }
 }
