@@ -85,9 +85,10 @@ export function logout() {
     localStorage.removeItem("user_email");
     localStorage.removeItem("user_name");
 
-    // 🚀 AJUSTE DE ROTA:
-    // Se o seu login.html estiver na raiz do projeto:
+    // 🚀 Ajuste conforme a profundidade da pasta:
     window.location.href = "../../login.html"; 
-    // Ou use o caminho completo para não ter erro de "degrau":
-    // window.location.href = "/gitcourse-frontend-v2/login.html";
 }
+
+// 🔌 SOLDAGEM GLOBAL (Para o onclick do HTML funcionar)
+window.logout = logout;
+window.registrarEAvancar = registrarEAvancar;
