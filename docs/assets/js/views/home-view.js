@@ -12,7 +12,18 @@ export class HomeView {
 
     // 1. O RENDER APENAS ENTREGA O "ESQUELETO"
     render() {
-    const userName = localStorage.getItem('user_name') || "Charles Duarte";
+        // 🔍 Buscamos o e-mail ou nome no armazenamento local
+        const userEmail = localStorage.getItem('user_email') || "";
+        const storedName = localStorage.getItem('user_name');
+
+        // ✂️ Lógica das Iniciais: Pega tudo antes do '@' (ex: 'aluno.teste')
+        const emailInitials = userEmail.split('@')[0];
+
+        // 🏆 Prioridade de exibição: Nome Real > Iniciais do E-mail > Aluno
+        const displayIdentity = storedName || emailInitials || "Aluno";
+
+        // Agora o 'displayIdentity' substitui o seu nome fixo
+        const userName = displayIdentity;
     
     // Retornamos a string para o Roteador injetar no 'spa-content'
     return `
