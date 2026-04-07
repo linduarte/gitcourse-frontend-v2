@@ -1,67 +1,44 @@
 /**
- * git-course-functions.js
- * Utilitários globais para o Git Course.
- * Charles Duarte - v2.0 SPA
+ * GitCourse - Funções de Integração Frontend/Backend
+ * Refatoração Charles Duarte - Abril 2026
  */
 
-
-
-/**
- * Realiza o Logout seguro do sistema
- */
-export function logout() {
-    console.log("🔐 Encerrando sessão...");
-    
-    // 1. Limpa o "combustível" (Token e Progresso)
-    localStorage.clear(); 
-    
-    // 2. Redireciona para a base do projeto
-    window.location.href = "/gitcourse-frontend-v2/index.html"; 
-}
-/**
- * Formata datas ou outras strings se necessário futuramente
- */
-export function formatarData(dataISO) {
-    return new Date(dataISO).toLocaleDateString('pt-BR');
-}
+const API_URL = "https://charles-gitcourse.duckdns.org";
 
 /**
-/**
- * REGISTRAR E AVANÇAR (Versão Refatorada - Sem Remendos)
- * Envia o progresso para a VPS, dá feedback visual e navega.
- */
-/**
- * git-course-functions.js - Versão Corrigida (Fim do 401)
+ * Registra o progresso de uma aula e avança para a próxima.
+ * @param {Event} event - O evento de clique do botão.
+ * @param {number} topicId - O ID da aula atual.
+ * @param {string} proximaAula - O link para a próxima página.
  */
 export async function registrarEAvancar(event, topicId, proximaAula) {
-    // 1. Evita que a página recarregue e interrompa o fetch
+    // 1. Previne o comportamento padrão do navegador (essencial para SPAs)
     if (event) event.preventDefault();
 
-    const API_URL = "https://charles-gitcourse.duckdns.org";
+    // 2. Captura referências e credenciais
+    const btn = event ? (event.currentTarget || event.target) : null;
     const token = localStorage.getItem("access_token");
     const email = localStorage.getItem("user_email") || "test_insonia@test.com";
 
-    // Captura o botão para dar feedback visual
-    const btn = event ? event.currentTarget || event.target : null;
+    console.log(`📡 [Fluxo] Iniciando registro da Aula ${topicId} para ${email}`);
 
-    console.log(`📡 Tentando registrar aula ${topicId} para ${email}...`);
-
+    // Função auxiliar para navegação
     const navegar = () => { window.location.href = proximaAula; };
 
-    // Se não houver token, o usuário é um visitante: apenas navegamos.
+    // 3. Validação de Token (Modo Visitante vs Logado)
     if (!token) {
-        console.warn("⚠️ Visitante detectado (sem token). Apenas navegando...");
+        console.warn("⚠️ [Auth] Token não encontrado. Navegando como visitante.");
         navegar();
         return;
     }
 
     try {
+        // 4. Disparo do Sinal para a VPS
         const response = await fetch(`${API_URL}/progress/complete`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // 🔐 O "CRACHÁ" QUE ESTAVA FALTANDO:
-                'Authorization': `Bearer ${token}` 
+                'Authorization': `Bearer ${token}` // O "Crachá" que mata o 401
             },
             body: JSON.stringify({
                 email: email,
@@ -69,26 +46,32 @@ export async function registrarEAvancar(event, topicId, proximaAula) {
             })
         });
 
+        // 5. Tratamento de Resposta
         if (response.ok) {
-            console.log("✅ Aula registrada com sucesso na VPS!");
+            console.log("✅ [VPS] Registro concluído. Telegram acionado.");
             
-            // Feedback Visual: Transforma o botão em "Registrado!"
+            // Feedback visual imediato
             if (btn) {
                 btn.innerText = "Registrado! ✓";
-                btn.classList.add("btn-success"); // Se você tiver essa classe no CSS
+                btn.style.backgroundColor = "#28a745"; // Verde Sucesso
+                btn.disabled = true;
             }
 
-            // Aguarda 1 segundo para o usuário ver o sucesso e depois navega
-            setTimeout(navegar, 1000);
+            // Delay de 800ms para o usuário ver o "Registrado!" antes de saltar
+            setTimeout(navegar, 800);
 
+        } else if (response.status === 401) {
+            console.error("❌ [Auth] Sessão expirada ou Token inválido (401).");
+            alert("Sua sessão expirou. Por favor, faça login novamente.");
+            window.location.href = "login.html";
         } else {
-            const erroData = await response.json();
-            console.error("❌ Erro da VPS:", response.status, erroData);
-            alert(`Erro ${response.status}: Não foi possível registrar seu progresso.`);
+            const erroMsg = await response.text();
+            console.error(`❌ [Erro] Status ${response.status}: ${erroMsg}`);
+            navegar(); // Navega mesmo com erro para não travar o aluno
         }
+
     } catch (error) {
-        console.error("💥 Erro de rede:", error);
-        // Se a rede falhar, navegamos de qualquer forma para não travar o aluno
+        console.error("💥 [Rede] Falha crítica de conexão:", error);
         navegar();
     }
 }
