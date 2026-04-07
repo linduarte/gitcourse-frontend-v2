@@ -30,44 +30,65 @@ export function formatarData(dataISO) {
  * REGISTRAR E AVANÇAR (Versão Refatorada - Sem Remendos)
  * Envia o progresso para a VPS, dá feedback visual e navega.
  */
-export async function registrarEAvancar(event, topicId, proximaAula) { 
-    const API_URL = "https://charles-gitcourse.duckdns.org"; 
-    const token = localStorage.getItem("access_token");
+/**
+ * git-course-functions.js - Versão Corrigida (Fim do 401)
+ */
+export async function registrarEAvancar(event, topicId, proximaAula) {
+    // 1. Evita que a página recarregue e interrompa o fetch
+    if (event) event.preventDefault();
 
-    // 🕵️‍♂️ Agora o 'event' (ou 'e') existe e podemos capturar o botão!
+    const API_URL = "https://charles-gitcourse.duckdns.org";
+    const token = localStorage.getItem("access_token");
+    const email = localStorage.getItem("user_email") || "test_insonia@test.com";
+
+    // Captura o botão para dar feedback visual
     const btn = event ? event.currentTarget || event.target : null;
 
-    console.log("📡 Registrando tópico:", topicId);
+    console.log(`📡 Tentando registrar aula ${topicId} para ${email}...`);
 
     const navegar = () => { window.location.href = proximaAula; };
 
-    // Se não tem token, apenas navega (modo visitante)
-    if (!token) { 
-        console.warn("⚠️ Sem token, apenas navegando...");
-        navegar(); 
-        return; 
+    // Se não houver token, o usuário é um visitante: apenas navegamos.
+    if (!token) {
+        console.warn("⚠️ Visitante detectado (sem token). Apenas navegando...");
+        navegar();
+        return;
     }
 
     try {
-        const response = await fetch(`${API_URL}/progress/complete`, { 
+        const response = await fetch(`${API_URL}/progress/complete`, {
             method: 'POST',
-            headers: { 
+            headers: {
                 'Content-Type': 'application/json',
+                // 🔐 O "CRACHÁ" QUE ESTAVA FALTANDO:
                 'Authorization': `Bearer ${token}` 
             },
-            // ENVIANDO O ID COMO NÚMERO (conforme o Swagger)
-            body: JSON.stringify({ topic_id: parseInt(topicId) }) 
+            body: JSON.stringify({
+                email: email,
+                topic_id: parseInt(topicId)
+            })
         });
 
-        if (response.ok && btn) {
-            btn.style.backgroundColor = "#28a745"; 
-            btn.innerHTML = "Registrado! ✓";
-            setTimeout(navegar, 800); 
+        if (response.ok) {
+            console.log("✅ Aula registrada com sucesso na VPS!");
+            
+            // Feedback Visual: Transforma o botão em "Registrado!"
+            if (btn) {
+                btn.innerText = "Registrado! ✓";
+                btn.classList.add("btn-success"); // Se você tiver essa classe no CSS
+            }
+
+            // Aguarda 1 segundo para o usuário ver o sucesso e depois navega
+            setTimeout(navegar, 1000);
+
         } else {
-            console.error("Erro na VPS:", response.status);
-            navegar();
+            const erroData = await response.json();
+            console.error("❌ Erro da VPS:", response.status, erroData);
+            alert(`Erro ${response.status}: Não foi possível registrar seu progresso.`);
         }
     } catch (error) {
+        console.error("💥 Erro de rede:", error);
+        // Se a rede falhar, navegamos de qualquer forma para não travar o aluno
         navegar();
     }
 }
