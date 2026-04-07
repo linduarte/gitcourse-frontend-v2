@@ -80,15 +80,18 @@ export async function registrarEAvancar(event, topicId, proximaAula) {
  * Função de Logout - Remove as credenciais e volta para o login
  */
 export function logout() {
-    console.log("🔐 Encerrando sessão...");
+    console.log("🔐 Encerrando sessão e voltando para a Home...");
+    
+    // 1. Limpa as credenciais do navegador
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_email");
     localStorage.removeItem("user_name");
 
-    // 🚀 Ajuste conforme a profundidade da pasta:
-    window.location.href = "../../login.html"; 
+    // 2. ROTA ABSOLUTA PARA A INDEX
+    // Isso garante que funcione em qualquer página (Aula 1, Aula 20, Dashboard...)
+    const repoPath = "/gitcourse-frontend-v2";
+    window.location.href = window.location.origin + repoPath + "/index.html";
 }
 
-// 🔌 SOLDAGEM GLOBAL (Para o onclick do HTML funcionar)
+// Mantendo a soldagem global para o HTML enxergar
 window.logout = logout;
-window.registrarEAvancar = registrarEAvancar;
