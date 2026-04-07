@@ -8,24 +8,18 @@ const routes = {
     'home': new HomeView() 
 };
 
-export function navegar(rota) {
+export async function navegar(rota) {
     const container = document.getElementById('spa-content');
-    
-    if (!container) {
-        console.error("Contêiner 'spa-content' não encontrado!");
-        return;
-    }
-
     const view = routes[rota];
 
     if (view) {
-        // 1. Injeta o esqueleto do HTML
+        // ETAPA 1: Injeta o HTML (Síncrono)
         container.innerHTML = view.render();
         
-        // 2. Dispara a lógica (Busca na VPS, Calibragem do Botão, etc.)
-        // Mudamos de .init() para .carregarSumario() que é o nome da nossa função real
+        // ETAPA 2: Dispara a busca de dados (Assíncrono)
+        // Como o HTML já está no DOM, o JS agora consegue achar o 'btn-continuar-onde-parei'
         if (view.carregarSumario) {
-            view.carregarSumario();
+            await view.carregarSumario();
         }
     }
 }
