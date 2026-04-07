@@ -75,3 +75,14 @@ export async function registrarEAvancar(event, topicId, proximaAula) {
         navegar();
     }
 }
+
+/**
+ * Função de Logout - Remove as credenciais e volta para o login
+ */
+export function logout() {
+    console.log("🔐 Encerrando sessão...");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
+    window.location.href = "login.html";
+}
