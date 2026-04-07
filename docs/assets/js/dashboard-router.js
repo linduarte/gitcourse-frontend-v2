@@ -1,12 +1,11 @@
 /**
- * dashboard-router.js
- * Gerenciador de injeção de conteúdo.
+ * dashboard-router.js - Corrigido
  */
 import { HomeView } from './views/home-view.js';
 
 const routes = {
-    'home': HomeView
-    // Futuramente: 'progresso': ProgressoView
+    // 🚀 O segredo está aqui: Instanciar a classe com 'new'
+    'home': new HomeView() 
 };
 
 export function navegar(rota) {
@@ -17,13 +16,16 @@ export function navegar(rota) {
         return;
     }
 
-    if (routes[rota]) {
-        // Injeta o HTML da View
-        container.innerHTML = routes[rota].render();
+    const view = routes[rota];
+
+    if (view) {
+        // 1. Injeta o esqueleto do HTML
+        container.innerHTML = view.render();
         
-        // Inicializa a lógica específica daquela View (ex: preencher a barra de progresso)
-        if (routes[rota].init) {
-            routes[rota].init();
+        // 2. Dispara a lógica (Busca na VPS, Calibragem do Botão, etc.)
+        // Mudamos de .init() para .carregarSumario() que é o nome da nossa função real
+        if (view.carregarSumario) {
+            view.carregarSumario();
         }
     }
 }

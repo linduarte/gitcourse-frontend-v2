@@ -10,11 +10,21 @@ export class HomeView {
         console.log("🏠 HomeView energizada.");
     }
 
-    async render() {
-        // ... (seu código de renderização do HTML da Dashboard aqui) ...
-        // Após renderizar o HTML, disparamos a busca de dados:
-        await this.carregarSumario();
-    }
+    // 1. O RENDER APENAS ENTREGA O "ESQUELETO"
+    render() {
+    const userName = localStorage.getItem('user_name') || "Charles Duarte";
+    
+    // Retornamos a string para o Roteador injetar no 'spa-content'
+    return `
+        <div class="dashboard-header">
+            <h2>Bem-vindo, ${userName}!</h2>
+        </div>
+        <div id="progressCardContent">Sincronizando com a VPS...</div>
+        <a id="btn-continuar-onde-parei" class="btn-footer-primary" href="#">
+            Continuar de onde parei ✓
+        </a>
+    `;
+}
 
     async carregarSumario() {
         const email = "test_insonia@test.com"; // O usuário de teste atual
