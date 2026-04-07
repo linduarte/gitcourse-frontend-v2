@@ -27,36 +27,39 @@ export class HomeView {
 }
 
     async carregarSumario() {
-        const email = "test_insonia@test.com"; // O usuário de teste atual
-        const endpoint = `${this.apiUrl}/progress/summary?email=${email}`;
-        
-        console.log("📡 Solicitando Sumário em:", endpoint);
+    const email = "test_insonia@test.com";
+    const endpoint = `${this.apiUrl}/progress/summary?email=${email}`;
+    
+    // 🚀 RECUPERA O TOKEN DA GAVETA
+    const token = localStorage.getItem("access_token");
 
-        try {
-            const response = await fetch(endpoint);
-            
-            if (response.ok) {
-                const dados = await response.json();
-                console.log("✅ Dados brutos recebidos:", dados);
+    console.log("📡 Solicitando Sumário em:", endpoint);
 
-                // 1. PERSISTÊNCIA: Salva na "gaveta" para consulta global
-                localStorage.setItem('user_progress', JSON.stringify(dados));
-
-                // 2. NAVEGAÇÃO: Calibragem do botão "Continuar de onde parei"
-                this.configurarBotaoContinuar(dados);
-
-                // 3. INTERFACE: Pinta os gráficos e contadores
-                this.atualizarInterface(dados);
-
-            } else {
-                console.error("❌ Falha na resposta da VPS. Status:", response.status);
-                this.mostrarErro("Erro ao conectar com o servidor.");
+    try {
+        const response = await fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                // 🔐 ENVIA A CREDENCIAL PARA A VPS
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
-        } catch (error) {
-            console.error("💥 Erro de rede na HomeView:", error);
-            this.mostrarErro("Servidor offline ou erro de conexão.");
+        });
+        
+        if (response.ok) {
+            const dados = await response.json();
+            console.log("✅ Dados brutos recebidos:", dados);
+            localStorage.setItem('user_progress', JSON.stringify(dados));
+            this.configurarBotaoContinuar(dados);
+            this.atualizarInterface(dados);
+        } else {
+            console.error("❌ Falha na resposta da VPS. Status:", response.status);
+            this.mostrarErro(`Erro ${response.status}: Acesso não autorizado.`);
         }
+    } catch (error) {
+        console.error("💥 Erro de rede na HomeView:", error);
+        this.mostrarErro("Servidor offline.");
     }
+}
 
     configurarBotaoContinuar(dados) {
         const btn = document.getElementById('btn-continuar-onde-parei');
