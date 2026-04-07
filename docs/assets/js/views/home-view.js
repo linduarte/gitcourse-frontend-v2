@@ -30,7 +30,7 @@ export class HomeView {
     const email = "test_insonia@test.com";
     const endpoint = `${this.apiUrl}/progress/summary?email=${email}`;
     
-    // 🚀 RECUPERA O TOKEN DA GAVETA
+    // 🚀 RECUPERA O TOKEN DO ARMAZENAMENTO
     const token = localStorage.getItem("access_token");
 
     console.log("📡 Solicitando Sumário em:", endpoint);
@@ -48,6 +48,7 @@ export class HomeView {
         if (response.ok) {
             const dados = await response.json();
             console.log("✅ Dados brutos recebidos:", dados);
+            
             localStorage.setItem('user_progress', JSON.stringify(dados));
             this.configurarBotaoContinuar(dados);
             this.atualizarInterface(dados);
