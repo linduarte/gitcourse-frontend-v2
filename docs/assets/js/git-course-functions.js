@@ -84,5 +84,10 @@ export function logout() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_email");
     localStorage.removeItem("user_name");
-    window.location.href = "login.html";
+
+    // 🚀 AJUSTE DE ROTA:
+    // Se o seu login.html estiver na raiz do projeto:
+    window.location.href = "../../login.html"; 
+    // Ou use o caminho completo para não ter erro de "degrau":
+    // window.location.href = "/gitcourse-frontend-v2/login.html";
 }
