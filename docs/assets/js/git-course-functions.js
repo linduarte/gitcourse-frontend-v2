@@ -30,18 +30,23 @@ export function formatarData(dataISO) {
  * REGISTRAR E AVANÇAR (Versão Refatorada - Sem Remendos)
  * Envia o progresso para a VPS, dá feedback visual e navega.
  */
-export async function registrarEAvancar(topicId, proximaAula) { // Agora recebe topicId
+export async function registrarEAvancar(event, topicId, proximaAula) { 
     const API_URL = "https://charles-gitcourse.duckdns.org"; 
     const token = localStorage.getItem("access_token");
 
-    // Capturamos o botão diretamente do evento passado
-    const btn = e ? e.currentTarget || e.target : null;
+    // 🕵️‍♂️ Agora o 'event' (ou 'e') existe e podemos capturar o botão!
+    const btn = event ? event.currentTarget || event.target : null;
 
     console.log("📡 Registrando tópico:", topicId);
 
     const navegar = () => { window.location.href = proximaAula; };
 
-    if (!token) { navegar(); return; }
+    // Se não tem token, apenas navega (modo visitante)
+    if (!token) { 
+        console.warn("⚠️ Sem token, apenas navegando...");
+        navegar(); 
+        return; 
+    }
 
     try {
         const response = await fetch(`${API_URL}/progress/complete`, { 
