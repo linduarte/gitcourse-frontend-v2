@@ -3,7 +3,9 @@
 Interface web moderna para o curso de Git, projetada com foco em performance e experiência do usuário (UX).
 
 ## 🌐 Deploy e Arquitetura
-* **Hospedagem:** GitHub Pages.
+* O projeto utiliza uma arquitetura descentralizada para máxima eficiência e custo zero:
+* **Frontend:** Hospedado no **GitHub Pages**. Esta escolha estratégica permite um deploy contínuo (CI/CD) via GitHub Actions, garantindo que o site esteja sempre disponível em um ambiente escalável e seguro, sem a necessidade de servidores web complexos ou custos com domínios personalizados.
+* **Backend:** A API permanece em uma VPS dedicada para processamento de dados e segurança.  
 * **Arquitetura:** **SPA (Single Page Application)**. A navegação entre módulos e a atualização do Dashboard ocorrem de forma assíncrona, garantindo uma transição fluida sem recarregamento de página.
 
 ## 🛠️ Tecnologias
