@@ -1,7 +1,7 @@
 /**
- * HomeView.js - Refatorada para Gestão de Progresso e Navegação
- * Charles Duarte - Engenharia de Software
+ * HomeView.js - Corrigida (Alinhamento de Índice e Identidade)
  */
+import { navegar, LESSONS_LIST } from '../dashboard-router.js'; // Importamos a lista centralizada
 
 export class HomeView {
     constructor() {
@@ -10,97 +10,75 @@ export class HomeView {
         console.log("🏠 HomeView energizada.");
     }
 
-    // 1. O RENDER APENAS ENTREGA O "ESQUELETO"
     render() {
-        // 🔍 Buscamos o e-mail ou nome no armazenamento local
         const userEmail = localStorage.getItem('user_email') || "";
         const storedName = localStorage.getItem('user_name');
-
-        // ✂️ Lógica das Iniciais: Pega tudo antes do '@' (ex: 'aluno.teste')
         const emailInitials = userEmail.split('@')[0];
+        const userName = storedName || emailInitials || "Aluno";
 
-        // 🏆 Prioridade de exibição: Nome Real > Iniciais do E-mail > Aluno
-        const displayIdentity = storedName || emailInitials || "Aluno";
-
-        // Agora o 'displayIdentity' substitui o seu nome fixo
-        const userName = displayIdentity;
-    
-    // Retornamos a string para o Roteador injetar no 'spa-content'
-    return `
-        <div class="dashboard-header">
-            <h2>Bem-vindo, ${userName}!</h2>
-        </div>
-        <div id="progressCardContent">Sincronizando com a VPS...</div>
-        <a id="btn-continuar-onde-parei" class="btn-footer-primary" href="#">
-            Continuar de onde parei ✓
-        </a>
-    `;
-}
+        return `
+            <div class="dashboard-header">
+                <h2>Bem-vindo, ${userName}!</h2>
+            </div>
+            <div id="progressCardContent">Sincronizando com a VPS...</div>
+            <a id="btn-continuar-onde-parei" class="btn-footer-primary" href="#">
+                Continuar de onde parei ✓
+            </a>
+        `;
+    }
 
     async carregarSumario() {
-    const email = "test_insonia@test.com";
-    const endpoint = `${this.apiUrl}/progress/summary?email=${email}`;
-    
-    // 🚀 RECUPERA O TOKEN DO ARMAZENAMENTO
-    const token = localStorage.getItem("access_token");
+        // 🚨 ATENÇÃO: Aqui estava fixo 'test_insonia'. Mudei para pegar o e-mail logado!
+        const email = localStorage.getItem('user_email') || "teste_almoco@gmail.com";
+        const endpoint = `${this.apiUrl}/progress/summary?email=${email}`;
+        const token = localStorage.getItem("access_token");
 
-    console.log("📡 Solicitando Sumário em:", endpoint);
-
-    try {
-        const response = await fetch(endpoint, {
-            method: 'GET',
-            headers: {
-                // 🔐 ENVIA A CREDENCIAL PARA A VPS
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        if (response.ok) {
-            const dados = await response.json();
-            console.log("✅ Dados brutos recebidos:", dados);
+        try {
+            const response = await fetch(endpoint, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             
-            localStorage.setItem('user_progress', JSON.stringify(dados));
-            this.configurarBotaoContinuar(dados);
-            this.atualizarInterface(dados);
-        } else {
-            console.error("❌ Falha na resposta da VPS. Status:", response.status);
-            this.mostrarErro(`Erro ${response.status}: Acesso não autorizado.`);
+            if (response.ok) {
+                const dados = await response.json();
+                console.log("✅ Dados da VPS:", dados);
+                
+                this.configurarBotaoContinuar(dados);
+                this.atualizarInterface(dados);
+            }
+        } catch (error) {
+            console.error("💥 Erro de rede:", error);
+            this.mostrarErro("Servidor offline.");
         }
-    } catch (error) {
-        console.error("💥 Erro de rede na HomeView:", error);
-        this.mostrarErro("Servidor offline.");
     }
-}
 
     configurarBotaoContinuar(dados) {
         const btn = document.getElementById('btn-continuar-onde-parei');
         if (!btn) return;
 
-        // Cálculo do Índice: Se completou 5, a próxima é a 6
+        // 🧠 LÓGICA DE ENGENHARIA:
+        // Se o banco diz que completou 7 aulas (IDs 2 ao 8), 
+        // a próxima aula na LESSONS_LIST (que tem 17 itens) deve ser o índice 8.
+        
         const concluido = parseInt(dados.completed || 0);
-        const proxima = concluido + 1;
-
-        // MAPA DE ROTAS (O "GPS" do curso)
-        const mapaAulas = {
-            1: "1a-prefacio.html", 2: "2-introduction.html", 3: "3-git-config.html",
-            4: "4-hosting.html", 5: "5-connect.html", 6: "6-git-clone.html",
-            7: "7-git-status.html", 8: "8-git-add.html", 9: "9-git-commit.html",
-            10: "10-feature_req.html", 11: "11-branch.html", 12: "12-branch-merge.html",
-            13: "13-git-diff.html", 14: "14-undo-changes.html", 15: "15-git-init.html",
-            16: "16-git-workflows.html", 17: "17-terminal-customization.html"
-        };
-
-        const destino = mapaAulas[proxima] || "2-introduction.html";
         
-        // Aplica o link final
-        btn.href = this.repoBase + destino;
+        // Se ele completou 7, o índice 7 da lista é a aula 8. 
+        // Para ir para a aula 9, precisamos do índice 8.
+        const indiceProxima = concluido + 1; 
+
+        const destino = LESSONS_LIST[indiceProxima] || LESSONS_LIST[1]; // Fallback para Introdução
         
-        console.log(`🚀 Navegação calibrada: Completou ${concluido} -> Próxima: ${destino}`);
+        // IMPORTANTE: Como é SPA, não usamos href direto para o GitHub se quisermos manter o controle.
+        // Mas para o seu teste atual, vamos manter o caminho completo:
+        btn.href = `https://linduarte.github.io${this.repoBase}${destino}`;
+        
+        console.log(`🚀 GPS Calibrado: Completou ${concluido} aulas. Apontando para índice ${indiceProxima}: ${destino}`);
     }
 
     atualizarInterface(dados) {
-        // Aqui vai sua lógica de preencher o Card de Progresso (porcentagem, etc)
         const progressText = document.getElementById('progressCardContent');
         if (progressText) {
             progressText.innerText = `${dados.percentage}% concluído (${dados.completed}/${dados.total})`;
