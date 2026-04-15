@@ -56,27 +56,21 @@ export class HomeView {
     }
 
     configurarBotaoContinuar(dados) {
-        const btn = document.getElementById('btn-continuar-onde-parei');
-        if (!btn) return;
+    const btn = document.getElementById('btn-continuar-onde-parei');
+    if (!btn) return;
 
-        // 🧠 LÓGICA DE ENGENHARIA:
-        // Se o banco diz que completou 7 aulas (IDs 2 ao 8), 
-        // a próxima aula na LESSONS_LIST (que tem 17 itens) deve ser o índice 8.
-        
-        const concluido = parseInt(dados.completed || 0);
-        
-        // Se ele completou 7, o índice 7 da lista é a aula 8. 
-        // Para ir para a aula 9, precisamos do índice 8.
-        const indiceProxima = concluido + 1; 
+    // A mágica está aqui:
+    // Se o maior ID concluído é 11, a aula 11 está na posição 10 da lista.
+    // Portanto, a PRÓXIMA aula (12) está exatamente na posição 11 da lista!
+    const indiceAlvo = parseInt(dados.completed || 0); 
 
-        const destino = LESSONS_LIST[indiceProxima] || LESSONS_LIST[1]; // Fallback para Introdução
-        
-        // IMPORTANTE: Como é SPA, não usamos href direto para o GitHub se quisermos manter o controle.
-        // Mas para o seu teste atual, vamos manter o caminho completo:
-        btn.href = `https://linduarte.github.io${this.repoBase}${destino}`;
-        
-        console.log(`🚀 GPS Calibrado: Completou ${concluido} aulas. Apontando para índice ${indiceProxima}: ${destino}`);
-    }
+    // Não somamos +1 aqui, pois o ID já é o deslocamento correto para o array 0-indexed
+    const destino = LESSONS_LIST[indiceAlvo] || LESSONS_LIST[1]; 
+
+    btn.href = `https://linduarte.github.io${this.repoBase}${destino}`;
+    
+    console.log(`🎯 Mira ajustada: ID ${dados.completed} -> Indo para o índice ${indiceAlvo}: ${destino}`);
+}
 
     atualizarInterface(dados) {
         const progressText = document.getElementById('progressCardContent');
