@@ -305,7 +305,15 @@
             <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button> 
         
         <button type="button" class="btn-footer-primary" 
-        onclick="const id = 16; const url = '../../dashboard.html'; registrarEAvancar(id, url);">
+        onclick="(async () => {
+            // 1. Tenta avisar a VPS que terminamos a 16
+            try {
+                await registrarEAvancar(16, '../../dashboard.html');
+            } catch (e) {
+                // 2. Se a rede falhar, vai para o dashboard assim mesmo
+                window.location.href = '../../dashboard.html';
+            }
+        })()">
         Finalizar Curso e Ver Progresso ✓
         </button>
     
