@@ -1,26 +1,26 @@
 /* dashboard-app.js */
-import { CONFIG } from './config.js';
+// No GitHub Pages, às vezes o './' precisa ser muito explícito
+import { CONFIG } from './config.js'; 
 import { navegar } from './dashboard-router.js';
 import { inicializarDashboard } from './dashboard-logic.js';
 import { inicializarMenuLateral } from './sidebar-logic.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
+// Função de boot que não depende exclusivamente do evento se ele já passou
+const boot = async () => {
     console.log("⚡ SPA Charles Duarte: Iniciando Boot de Engenharia...");
-
     try {
-        // 1. Liga os comandos do menu lateral (Uma única vez)
         inicializarMenuLateral();
-
-        // 2. Busca dados na VPS passando a CONFIG necessária
-        // Aqui garantimos que o Dashboard sabe onde a VPS mora
         await inicializarDashboard(CONFIG);
-
-        // 3. Carrega a tela inicial (Injeta o Card de Progresso)
         await navegar('home');
-
         console.log("✅ SPA operando com sucesso!");
-
     } catch (error) {
         console.error("❌ Falha crítica no boot da SPA:", error);
     }
-});
+};
+
+// Se o documento já carregou, executa. Se não, espera o evento.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+} else {
+    boot();
+}
