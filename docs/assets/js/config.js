@@ -1,2 +1,5 @@
 // docs/assets/js/config.js
-export const API_URL = "https://charles-gitcourse.duckdns.org";
+export const CONFIG = {
+    API_URL: "https://charles-gitcourse.duckdns.org",
+    REPO_BASE: "/gitcourse-frontend-v2/curso/git-course/"
+};
