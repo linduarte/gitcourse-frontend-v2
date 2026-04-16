@@ -3,7 +3,10 @@
  * Motor de busca e controle de navegação (Perfil e Progresso)
  * Charles Duarte - Foco em Confiabilidade
  */
-import { API_URL } from "./config.js";
+import { CONFIG } from './config.js';
+
+// E onde no código estiver escrito API_URL, você muda para:
+// CONFIG.API_URL
 
 // Estado Interno
 let token = null;
