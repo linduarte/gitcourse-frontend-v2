@@ -1,40 +1,48 @@
 /**
- * HomeView.js - Corrigida (Alinhamento de Índice e Identidade)
+ * HomeView.js - v4.0 (Edição Especial Charles Duarte)
+ * Lógica: Navegação por Estado (Pendência > Sequência > Conclusão)
  */
-import { navegar, LESSONS_LIST } from '../dashboard-router.js'; // Importamos a lista centralizada
+import { navegar, LESSONS_LIST } from '../dashboard-router.js';
 
 export class HomeView {
     constructor() {
         this.apiUrl = "https://charles-gitcourse.duckdns.org";
         this.repoBase = "/gitcourse-frontend-v2/curso/git-course/";
-        console.log("🏠 HomeView energizada.");
     }
 
     render() {
         const userEmail = localStorage.getItem('user_email') || "";
-        const storedName = localStorage.getItem('user_name');
-        const emailInitials = userEmail.split('@')[0];
-        const userName = storedName || emailInitials || "Aluno";
+        const userName = localStorage.getItem('user_name') || userEmail.split('@')[0] || "Aluno";
 
         return `
             <div class="dashboard-header">
                 <h2>Bem-vindo, ${userName}!</h2>
             </div>
-            <div id="progressCardContent">Sincronizando com a VPS...</div>
-            <a id="btn-continuar-onde-parei" class="btn-footer-primary" href="#">
-                Continuar de onde parei ✓
-            </a>
+
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">Progresso do Curso</h5>
+                    <div id="progressCardContent" class="h2 fw-bold text-primary mb-3">Sincronizando...</div>
+                    
+                    <div id="statusNotificationArea"></div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <a id="mainActionButton" class="btn-footer-primary" href="#" style="transition: all 0.3s ease;">
+                    Aguardando Telemetria...
+                </a>
+            </div>
         `;
     }
 
     async carregarSumario() {
-        // 🚨 ATENÇÃO: Aqui estava fixo 'test_insonia'. Mudei para pegar o e-mail logado!
-        const email = localStorage.getItem('user_email') || "teste_almoco@gmail.com";
-        const endpoint = `${this.apiUrl}/progress/summary?email=${email}`;
+        const email = localStorage.getItem('user_email');
         const token = localStorage.getItem("access_token");
+        if (!email) return;
 
         try {
-            const response = await fetch(endpoint, {
+            const response = await fetch(`${this.apiUrl}/progress/summary?email=${email}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -44,39 +52,69 @@ export class HomeView {
             
             if (response.ok) {
                 const dados = await response.json();
-                console.log("✅ Dados da VPS:", dados);
-                
-                this.configurarBotaoContinuar(dados);
-                this.atualizarInterface(dados);
+                this.processarEstadoDashboard(dados);
             }
         } catch (error) {
-            console.error("💥 Erro de rede:", error);
-            this.mostrarErro("Servidor offline.");
+            console.error("💥 Falha de comunicação:", error);
+            this.mostrarErro("Servidor Indisponível");
         }
     }
 
-    configurarBotaoContinuar(dados) {
-    const btn = document.getElementById('btn-continuar-onde-parei');
-    if (!btn) return;
-
-    // A mágica está aqui:
-    // Se o maior ID concluído é 11, a aula 11 está na posição 10 da lista.
-    // Portanto, a PRÓXIMA aula (12) está exatamente na posição 11 da lista!
-    const indiceAlvo = parseInt(dados.completed || 0); 
-
-    // Não somamos +1 aqui, pois o ID já é o deslocamento correto para o array 0-indexed
-    const destino = LESSONS_LIST[indiceAlvo] || LESSONS_LIST[1]; 
-
-    btn.href = `https://linduarte.github.io${this.repoBase}${destino}`;
-    
-    console.log(`🎯 Mira ajustada: ID ${dados.completed} -> Indo para o índice ${indiceAlvo}: ${destino}`);
-}
-
-    atualizarInterface(dados) {
+    processarEstadoDashboard(dados) {
+        const btn = document.getElementById('mainActionButton');
         const progressText = document.getElementById('progressCardContent');
-        if (progressText) {
-            progressText.innerText = `${dados.percentage}% concluído (${dados.completed}/${dados.total})`;
+        const notificationArea = document.getElementById('statusNotificationArea');
+        
+        if (!btn || !progressText) return;
+
+        // 1. Atualiza o contador global
+        progressText.innerText = `${dados.percentage}% (${dados.completed}/${dados.total})`;
+
+        // 2. Análise de Estados
+        const pending = dados.pending_topics || [];
+        const hasPending = pending.length > 0;
+        const isFullyComplete = dados.completed === dados.total && !hasPending;
+
+        // ESTADO 1: Existem "buracos" (ex: Aula 10 faltante)
+        if (hasPending) {
+            const idFaltante = pending[0];
+            const destino = LESSONS_LIST[idFaltante - 1]; // Ajuste de índice
+
+            btn.textContent = `Aula Faltante: ID ${idFaltante} - Completar ⚠️`;
+            btn.style.backgroundColor = "#ffc107"; // Amarelo Alerta
+            btn.style.color = "#212529";
+            btn.style.borderColor = "#e0a800";
+            btn.href = `https://linduarte.github.io${this.repoBase}${destino}`;
+
+            notificationArea.innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>Integridade:</strong> Lições [ ${pending.join(", ")} ] pendentes.
+                </div>`;
+            return;
         }
+
+        // ESTADO 2: Curso totalmente concluído
+        if (isFullyComplete) {
+            btn.textContent = "Curso Concluído! Rever Material ✓";
+            btn.style.backgroundColor = "#198754"; // Verde Sucesso
+            btn.style.color = "white";
+            btn.href = `https://linduarte.github.io${this.repoBase}${LESSONS_LIST[1]}`;
+
+            notificationArea.innerHTML = `
+                <div class="alert alert-success">
+                    🎉 Parabéns! Você concluiu todas as etapas da engenharia Git.
+                </div>`;
+            return;
+        }
+
+        // ESTADO 3: Fluxo sequencial normal
+        const indiceAlvo = parseInt(dados.completed || 0);
+        const destinoSeq = LESSONS_LIST[indiceAlvo] || LESSONS_LIST[0];
+
+        btn.textContent = "Continuar de onde parei ✓";
+        btn.style.backgroundColor = ""; // Cor padrão
+        btn.href = `https://linduarte.github.io${this.repoBase}${destinoSeq}`;
+        notificationArea.innerHTML = "";
     }
 
     mostrarErro(msg) {
