@@ -16,8 +16,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 
-    <!-- Configuração global -->
-    <script src="../../assets/js/config.js"></script>
+    
+    
 
     
     <!-- Mermaid -->
@@ -336,37 +336,65 @@
 <script>Prism.highlightAll();</script>
 
 
+<script src="../../assets/js/config.js"></script>
+
 <script type="module">
-    // Importamos a CONFIG para usar a URL da VPS
     import { CONFIG } from '../../assets/js/config.js';
 
     window.finalizarCurso = async () => {
-        console.log("🏁 Iniciando registro da Aula 16...");
+        const btn = document.querySelector('.btn-footer-primary');
         const email = localStorage.getItem('user_email');
+        const token = localStorage.getItem('access_token'); // O progress.py EXIGE o token!
         const urlDashboard = '../../dashboard.html';
 
-        if (!email) {
-            console.warn("Usuário não logado, apenas redirecionando...");
-            window.location.href = urlDashboard;
-            return;
-        }
+        if (!btn) return;
+
+        // Feedback visual padrão Charles Duarte
+        btn.disabled = true;
+        btn.textContent = "Processando...";
 
         try {
-            // Chamada direta para a VPS
-            const response = await fetch(`${CONFIG.API_URL}/progress/update?email=${email}&topic_id=16`, {
-                method: 'POST'
+            // Rota correta conforme seu progress.py: /complete
+            const urlFinal = `${CONFIG.API_URL}/progress/complete`;
+
+            const response = await fetch(urlFinal, { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Obrigatório conforme seu Depends(get_current_user)
+                },
+                body: JSON.stringify({
+                    topic_id: 16 // O schema ProgressUpdate espera isso
+                })
             });
 
             if (response.ok) {
-                console.log("✅ Progresso 16 salvo com sucesso!");
+                // PADRONIZAÇÃO VISUAL
+                btn.textContent = "Registrado! ✓";
+                btn.style.backgroundColor = "#28a745";
+                btn.style.color = "white";
+
+                console.log("✅ Progresso 16 gravado no DB.");
+
+                setTimeout(() => {
+                    window.location.href = urlDashboard;
+                }, 1200);
+            } else {
+                const erro = await response.json();
+                throw new Error(erro.detail || "Erro no servidor");
             }
+
         } catch (error) {
-            console.error("⚠️ Erro na rede/VPS, mas seguindo adiante...", error);
-        } finally {
-            // Garante a navegação correta para o Dashboard
-            window.location.href = urlDashboard;
+            console.error("❌ Falha:", error);
+            btn.textContent = "Erro no Registro";
+            btn.style.backgroundColor = "#dc3545";
+            
+            setTimeout(() => {
+                window.location.href = urlDashboard;
+            }, 2000);
         }
     };
 </script>
+
 </body>
 </html>
