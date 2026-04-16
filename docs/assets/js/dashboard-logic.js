@@ -33,8 +33,8 @@ async function buscarDadosGlobais() {
     try {
         // Busca Perfil e Resumo de Progresso em paralelo (Otimização de tempo)
         const [resMe, resProg] = await Promise.all([
-            fetch(`${API_URL}/auth/me`, { headers }),
-            fetch(`${API_URL}/progress/summary`, { headers })
+        fetch(`${CONFIG.API_URL}/auth/me`, { headers }),
+        fetch(`${CONFIG.API_URL}/progress/summary`, { headers })
         ]);
 
         if (!resMe.ok) throw new Error("Falha na autenticação do Perfil");
