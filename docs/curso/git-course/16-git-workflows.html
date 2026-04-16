@@ -304,16 +304,7 @@
         <div class="footer-buttons">
             <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button> 
         
-        <button type="button" class="btn-footer-primary" 
-        onclick="(async () => {
-            // 1. Tenta avisar a VPS que terminamos a 16
-            try {
-                await registrarEAvancar(16, '../../dashboard.html');
-            } catch (e) {
-                // 2. Se a rede falhar, vai para o dashboard assim mesmo
-                window.location.href = '../../dashboard.html';
-            }
-        })()">
+        <button type="button" class="btn-footer-primary" onclick="finalizarCurso()">
         Finalizar Curso e Ver Progresso ✓
         </button>
     
@@ -345,21 +336,37 @@
 <script>Prism.highlightAll();</script>
 
 
-<script>
-    async function registrarEAvancar(urlDestino) {
-        console.log("🏁 Finalizando o curso e enviando último sinal...");
-        
-        // Chama a função registrarConclusao que está dentro do sensor-progresso.js
-        try {
-            await registrarConclusao(); 
-            console.log("✅ Último registro salvo! Redirecionando para a Dashboard...");
-        } catch (error) {
-            console.error("⚠️ Falha no registro final, mas prosseguindo...", error);
+<script type="module">
+    // Importamos a CONFIG para usar a URL da VPS
+    import { CONFIG } from '../../assets/js/config.js';
+
+    window.finalizarCurso = async () => {
+        console.log("🏁 Iniciando registro da Aula 16...");
+        const email = localStorage.getItem('user_email');
+        const urlDashboard = '../../dashboard.html';
+
+        if (!email) {
+            console.warn("Usuário não logado, apenas redirecionando...");
+            window.location.href = urlDashboard;
+            return;
         }
-        
-        // Redireciona para a Dashboard
-        window.location.href = urlDestino;
-    }
+
+        try {
+            // Chamada direta para a VPS
+            const response = await fetch(`${CONFIG.API_URL}/progress/update?email=${email}&topic_id=16`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                console.log("✅ Progresso 16 salvo com sucesso!");
+            }
+        } catch (error) {
+            console.error("⚠️ Erro na rede/VPS, mas seguindo adiante...", error);
+        } finally {
+            // Garante a navegação correta para o Dashboard
+            window.location.href = urlDashboard;
+        }
+    };
 </script>
 </body>
 </html>
