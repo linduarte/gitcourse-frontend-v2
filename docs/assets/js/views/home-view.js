@@ -1,46 +1,55 @@
 /**
- * HomeView.js - v4.0 (Edição Consolidada)
- * Arquitetura: Mapeamento de Estados (Study Strategy Mapping)
- * Engenheiro responsável: Charles Duarte
+ * HomeView.js - v4.1 (Versão Refatorada)
+ * Engenheiro: Charles Duarte
+ * Foco: Integridade de Estados e Legibilidade (UX)
  */
 import { navegar, LESSONS_LIST } from '../dashboard-router.js';
 
 /**
- * MAPA DE ESTADOS DE ESTUDO
- * Define o comportamento do botão principal e notificações baseadas no progresso.
+ * 🛠️ UTILITÁRIOS DE FORMATAÇÃO
+ */
+const formatarNomeAula = (nomeArquivo) => {
+    if (!nomeArquivo) return "Aula Desconhecida";
+    let nomeLimpo = nomeArquivo.replace('.html', '').replace(/[-_]/g, ' ');
+    return nomeLimpo.split(' ').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+};
+
+/**
+ * 🧠 MAPA DE ESTRATÉGIAS DE ESTUDO
  */
 const STUDY_MAP = {
-    // ESTADO 1: Identificada quebra de sequência (ex: aula 10 faltante)
     "PENDENTE": (dados, urlBase) => {
         const idFaltante = dados.pending_topics[0];
-        const destino = LESSONS_LIST[idFaltante - 1]; // Ajuste de índice (ID 10 está na pos 9)
+        const arquivo = LESSONS_LIST[idFaltante - 1];
+        const titulo = formatarNomeAula(arquivo);
         return {
-            texto: `Aula Faltante: ID ${idFaltante} - Completar ⚠️`,
-            cor: "#ffc107", // Amarelo Alerta
+            texto: `Retomar: ${titulo} ⚠️`,
+            cor: "#ffc107",
             textoCor: "#212529",
-            link: `${urlBase}${destino}`,
-            msg: `<strong>Protocolo de Integridade:</strong> Identificamos que a lição <b>ID ${idFaltante}</b> não foi registrada. Finalize-a para validar seu progresso.`
+            link: `${urlBase}${arquivo}`,
+            msg: `<strong>Integridade:</strong> A lição <b>${titulo}</b> foi pulada. Complete-a para validar seu progresso.`
         };
     },
 
-    // ESTADO 2: Curso 100% concluído sem pendências
     "CONCLUIDO": (dados, urlBase) => ({
         texto: "Curso Concluído! Rever Material ✓",
-        cor: "#198754", // Verde Sucesso
+        cor: "#198754",
         textoCor: "#ffffff",
-        link: `${urlBase}${LESSONS_LIST[1]}`, // Sugere rever a partir do Prefácio
-        msg: "🌟 <strong>Parabéns!</strong> Você concluiu todas as etapas da engenharia Git com sucesso."
+        link: `${urlBase}${LESSONS_LIST[0]}`,
+        msg: "🌟 <strong>Parabéns!</strong> Você concluiu todas as etapas da engenharia Git."
     }),
 
-    // ESTADO 3: Fluxo normal de aprendizado
     "SEQUENCIAL": (dados, urlBase) => {
-        const proximoIndice = parseInt(dados.completed || 0);
-        const destino = LESSONS_LIST[proximoIndice] || LESSONS_LIST[0];
+        const proximoIdx = parseInt(dados.completed || 0);
+        const arquivo = LESSONS_LIST[proximoIdx] || LESSONS_LIST[0];
+        const titulo = formatarNomeAula(arquivo);
         return {
-            texto: "Continuar de onde parei ✓",
-            cor: "#0d6efd", // Azul Padrão
+            texto: `Continuar: ${titulo} ✓`,
+            cor: "#0d6efd",
             textoCor: "#ffffff",
-            link: `${urlBase}${destino}`,
+            link: `${urlBase}${arquivo}`,
             msg: ""
         };
     }
@@ -48,35 +57,29 @@ const STUDY_MAP = {
 
 export class HomeView {
     constructor() {
-        this.apiUrl = "https://charles-gitcourse.duckdns.org";
+        // Agora centralizado para facilitar manutenção (Porta 8080 conforme ajuste)
+        this.apiUrl = "https://charles-gitcourse.duckdns.org:8080";
         this.repoBase = "/gitcourse-frontend-v2/curso/git-course/";
-        console.log("🏠 HomeView: Sistema de Gestão de Estados Energizado.");
+        this.urlBaseCompleta = `https://linduarte.github.io${this.repoBase}`;
     }
 
     render() {
-        const userEmail = localStorage.getItem('user_email') || "";
-        const userName = localStorage.getItem('user_name') || userEmail.split('@')[0] || "Aluno";
-
+        const userName = localStorage.getItem('user_name') || "Engenheiro";
         return `
             <div class="dashboard-header text-center mb-4">
-                <h2 class="fw-bold">Bem-vindo ao Centro de Comando, ${userName}!</h2>
-                <p class="text-muted">Engenharia de Software & Versionamento</p>
+                <h2 class="fw-bold">Bem-vindo, ${userName}!</h2>
+                <p class="text-muted">Centro de Comando de Versionamento</p>
             </div>
-
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-4 text-center">
-                    <h5 class="text-muted mb-2">Seu Progresso Atual</h5>
-                    <div id="progressCardContent" class="display-5 fw-bold text-primary mb-3">0% (0/17)</div>
-                    
+                    <h5 class="text-muted mb-2">Progresso do Curso</h5>
+                    <div id="progressCardContent" class="display-5 fw-bold text-primary mb-3">Sincronizando...</div>
                     <div id="statusNotificationArea"></div>
                 </div>
             </div>
-
             <div class="d-grid gap-2 mb-5">
-                <a id="mainActionButton" class="btn btn-lg shadow-sm" href="#" 
-                   style="padding: 15px; font-weight: bold; border-radius: 8px; transition: all 0.3s ease;">
-                   Sincronizando Telemetria...
-                </a>
+                <a id="mainActionButton" class="btn btn-lg shadow-sm d-none" href="#" 
+                   style="padding: 15px; font-weight: bold; border-radius: 8px;"></a>
             </div>
         `;
     }
@@ -85,77 +88,46 @@ export class HomeView {
         const email = localStorage.getItem('user_email');
         const token = localStorage.getItem("access_token");
 
-        if (!email) {
-            console.error("❌ Erro de Identidade: Email não encontrado.");
-            this.mostrarErro("Sessão expirada. Faça login novamente.");
-            return;
-        }
-
         try {
-            const response = await fetch(`${this.apiUrl}/progress/summary?email=${email}`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+            const res = await fetch(`${this.apiUrl}/progress/summary?email=${email}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-
-            if (response.ok) {
-                const dados = await response.json();
-                console.log("📡 Telemetria VPS Recebida:", dados);
-                this.processarEstadoDashboard(dados);
-            } else {
-                throw new Error("Resposta negativa da VPS");
-            }
-        } catch (error) {
-            console.error("💥 Falha Crítica de Conexão:", error);
-            this.mostrarErro("Erro ao conectar com a VPS.");
+            if (!res.ok) throw new Error("Falha na Telemetria");
+            
+            const dados = await res.json();
+            this.atualizarInterface(dados);
+        } catch (err) {
+            console.error("💥 Erro:", err);
+            document.getElementById('progressCardContent').innerText = "Erro na conexão.";
         }
     }
 
-    processarEstadoDashboard(dados) {
+    atualizarInterface(dados) {
         const btn = document.getElementById('mainActionButton');
         const progressText = document.getElementById('progressCardContent');
-        const notificationArea = document.getElementById('statusNotificationArea');
-        const urlBaseCompleta = `https://linduarte.github.io${this.repoBase}`;
+        const notify = document.getElementById('statusNotificationArea');
 
-        if (!btn || !progressText) return;
-
-        // 1. Atualização do Contador
-        progressText.innerText = `${dados.percentage}% (${dados.completed}/${dados.total})`;
-
-        // 2. Determinação do Estado (Bússola Logística)
+        // 1. Determina Estado
         let estado = "SEQUENCIAL";
-        if (dados.pending_topics && dados.pending_topics.length > 0) {
-            estado = "PENDENTE";
-        } else if (dados.completed === dados.total) {
-            estado = "CONCLUIDO";
-        }
+        if (dados.pending_topics?.length > 0) estado = "PENDENTE";
+        else if (dados.completed >= dados.total) estado = "CONCLUIDO";
 
-        console.log(`🧠 Estado do Aluno identificado: ${estado}`);
+        // 2. Busca Estratégia
+        const acao = STUDY_MAP[estado](dados, this.urlBaseCompleta);
 
-        // 3. Obtenção da Estratégia do Mapa
-        const acao = STUDY_MAP[estado](dados, urlBaseCompleta);
-
-        // 4. Aplicação Visual e Funcional
+        // 3. Aplica UI
+        progressText.innerText = `${dados.percentage}% (${dados.actual_count}/${dados.total})`;
         btn.innerText = acao.texto;
-        btn.style.backgroundColor = acao.cor;
-        btn.style.color = acao.textoCor;
-        btn.style.borderColor = acao.cor;
         btn.href = acao.link;
+        btn.classList.remove('d-none');
+        Object.assign(btn.style, {
+            backgroundColor: acao.cor,
+            borderColor: acao.cor,
+            color: acao.textoCor
+        });
 
-        if (notificationArea && acao.msg) {
-            notificationArea.innerHTML = `
-                <div class="alert mt-3" style="background-color: ${acao.cor}22; border: 1px solid ${acao.cor}; color: #444; font-size: 0.95em;">
-                    ${acao.msg}
-                </div>`;
-        } else if (notificationArea) {
-            notificationArea.innerHTML = "";
+        if (notify && acao.msg) {
+            notify.innerHTML = `<div class="alert mt-3" style="background-color: ${acao.cor}22; border: 1px solid ${acao.cor};">${acao.msg}</div>`;
         }
-    }
-
-    mostrarErro(msg) {
-        const content = document.getElementById('progressCardContent');
-        if (content) content.innerText = msg;
     }
 }
