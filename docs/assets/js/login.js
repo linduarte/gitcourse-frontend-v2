@@ -1,5 +1,6 @@
 // Configuração da Central de Comando
-const API_URL = "https://charles-gitcourse.duckdns.org";
+// Adicione o :8000 no final da URL
+const API_URL = "https://charles-gitcourse.duckdns.org:8000";
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🔌 Sistema de Login: Inicializado.");
