@@ -17,23 +17,25 @@ export class HomeView {
      */
     async render() {
     if (this.container) {
-        // 1. Injeta o esqueleto HTML PRIMEIRO
+        // 1. Injeta o HTML (O esqueleto)
         this.container.innerHTML = `
-            <div id="home-dashboard">
-                <h2 class="welcome-message">Sincronizando...</h2>
-                <div class="card p-4 shadow-sm">
-                    <button id="btn-continuar" class="btn btn-secondary btn-lg w-100">
+            <div id="home-content" class="fade-in">
+                <h2 id="welcome-user" class="mb-4">Sincronizando...</h2>
+                <div class="card p-4 shadow-sm border-0 bg-light">
+                    <p class="text-muted">Status da sua jornada:</p>
+                    <button id="btn-continuar" class="btn btn-secondary btn-lg w-100 py-3">
                         <span class="spinner-border spinner-border-sm"></span> Iniciando sistema...
                     </button>
                 </div>
             </div>`;
+
+        // 2. A MANOBRA DE SINCRONIA: 
+        // Esperamos um pequeno ciclo (macro-task) para o navegador registrar os IDs
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        // 3. Agora sim, com o botão garantido no DOM, buscamos os dados
+        await this.carregarSumario();
     }
-
-    // 2. Pequena pausa de segurança (milissegundos) para o DOM respirar
-    await new Promise(resolve => setTimeout(resolve, 50));
-
-    // 3. Agora sim, busca os dados e atualiza o botão que ACABAMOS de criar
-    await this.carregarSumario();
 }
 
     /**
