@@ -11,10 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault(); 
         
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        console.log("📡 Tentando conexão com a VPS...");
+        
+// Use esta forma segura (Engenharia de Proteção):
+        const nome = (data.user && data.user.name) ? data.user.name : "Charles";
+        const email = data.email || "teste_almoco@gmail.com"; // Ajuste conforme seu JSON
+            
+        // E certifique-se de salvar antes de redirecionar:
+        localStorage.setItem("user_name", nome);
+        localStorage.setItem("user_email", email);
+        localStorage.setItem("access_token", data.access_token);
+                console.log("📡 Tentando conexão com a VPS...");
 
         try {
             // 1. DISPARO DO LOGIN (Padrão JSON Puro)
@@ -39,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. GRAVAÇÃO NA MEMÓRIA (O localStorage que faltava!)
             // Sem isso, o Prefácio e a Dashboard darão "Sessão Expirada".
             localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("user_email", email);
+            localStorage.setItem("user_name", data.user.name);
 
             console.log("✅ Token armazenado. Verificando telemetria de progresso...");
 
