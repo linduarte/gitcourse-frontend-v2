@@ -1,24 +1,30 @@
-/* dashboard-app.js */
-// No GitHub Pages, às vezes o './' precisa ser muito explícito
-import { CONFIG } from './config.js'; 
 import { navegar } from './dashboard-router.js';
-import { inicializarDashboard } from './dashboard-logic.js';
 import { inicializarMenuLateral } from './sidebar-logic.js';
 
-// Função de boot que não depende exclusivamente do evento se ele já passou
 const boot = async () => {
-    console.log("⚡ SPA Charles Duarte: Iniciando Boot de Engenharia...");
+    console.log("⚡ Boot SPA iniciado");
+
     try {
         inicializarMenuLateral();
-        await inicializarDashboard(CONFIG);
+
+        // valida sessão básica
+        const token = localStorage.getItem("access_token");
+        const email = localStorage.getItem("user_email");
+
+        if (!token || !email) {
+            console.warn("⚠️ Sem sessão. Redirecionando...");
+            window.location.href = "auth/login.html";
+            return;
+        }
+
         await navegar('home');
-        console.log("✅ SPA operando com sucesso!");
-    } catch (error) {
-        console.error("❌ Falha crítica no boot da SPA:", error);
+
+        console.log("✅ SPA pronta!");
+    } catch (err) {
+        console.error("💥 Erro no boot:", err);
     }
 };
 
-// Se o documento já carregou, executa. Se não, espera o evento.
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
 } else {
