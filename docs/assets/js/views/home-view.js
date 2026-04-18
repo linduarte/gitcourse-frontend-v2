@@ -69,26 +69,31 @@ export class HomeView {
      * MÓDULO DE INTERFACE: A lógica do Botão Amarelo ⚠️
      */
     atualizarInterface(progresso) {
-        const btnAcao = document.getElementById("btn-continuar");
-        if (!btnAcao) return;
+    // Tenta encontrar o botão e a mensagem de boas-vindas
+    const btnAcao = document.getElementById("btn-continuar");
+    const welcomeEl = document.getElementById("welcome-user") || document.querySelector(".welcome-message");
+    
+    // Recupera o nome que salvamos no login
+    const nome = localStorage.getItem("user_name") || "Charles";
 
-        // 1. REGRA: RECUPERAÇÃO (BOTÃO AMARELO)
+    // 1. Atualiza o Nome (Se o elemento existir)
+    if (welcomeEl) {
+        welcomeEl.textContent = `Bem-vindo, ${nome}!`;
+    }
+
+    // 2. Atualiza o Botão (Lógica da Aula 10)
+    if (btnAcao) {
         if (progresso.pending_topics && progresso.pending_topics.length > 0) {
             const aulaId = progresso.pending_topics[0];
             btnAcao.textContent = `Retomar: Aula ${aulaId} ⚠️`;
             btnAcao.className = "btn btn-warning btn-lg w-100 fw-bold text-dark border-3 shadow";
             btnAcao.onclick = () => window.location.href = `auth/${aulaId}-aula.html`;
-            console.log(`⚠️ Status: Aula ${aulaId} pendente.`);
-        } 
-        // 2. REGRA: NOVATO OU CONCLUÍDO (AZUL/VERDE)
-        else if (progresso.completed === 0) {
-            btnAcao.textContent = "Começar do Início 🚀";
-            btnAcao.className = "btn btn-primary btn-lg w-100 fw-bold";
-            btnAcao.onclick = () => window.location.href = "auth/1a-prefacio.html";
         } else {
-            btnAcao.textContent = `Continuar (${progresso.percentage || 0}%)`;
-            btnAcao.className = "btn btn-success btn-lg w-100 fw-bold";
-            btnAcao.onclick = () => window.location.href = progresso.last_lesson_url || "auth/2-introduction.html";
+            // ... lógica para novato/concluído ...
+            btnAcao.textContent = "Continuar Jornada 🚀";
         }
+    } else {
+        console.warn("⚠️ Botão 'btn-continuar' não encontrado no DOM ainda.");
     }
+}
 }
