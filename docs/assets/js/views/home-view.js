@@ -16,15 +16,25 @@ export class HomeView {
      * Ponto de entrada da View
      */
     async render() {
-        if (this.container) {
-            this.container.innerHTML = `
-                <div class="p-4 text-center">
-                    <div class="spinner-border text-primary" role="status"></div>
-                    <p class="mt-2">Sincronizando telemetria com a VPS...</p>
-                </div>`;
-        }
-        await this.carregarSumario();
+    if (this.container) {
+        // 1. Injeta o esqueleto HTML PRIMEIRO
+        this.container.innerHTML = `
+            <div id="home-dashboard">
+                <h2 class="welcome-message">Sincronizando...</h2>
+                <div class="card p-4 shadow-sm">
+                    <button id="btn-continuar" class="btn btn-secondary btn-lg w-100">
+                        <span class="spinner-border spinner-border-sm"></span> Iniciando sistema...
+                    </button>
+                </div>
+            </div>`;
     }
+
+    // 2. Pequena pausa de segurança (milissegundos) para o DOM respirar
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    // 3. Agora sim, busca os dados e atualiza o botão que ACABAMOS de criar
+    await this.carregarSumario();
+}
 
     /**
      * MÓDULO DE DADOS: Busca o progresso real na VPS
