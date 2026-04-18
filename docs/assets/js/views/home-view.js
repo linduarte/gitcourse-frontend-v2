@@ -18,21 +18,21 @@ export class HomeView {
     async render() {
     if (!this.container) return;
 
-    // 1. Injeta o HTML IMEDIATAMENTE (Síncrono)
+    // 1. Injeção imediata do esqueleto
     this.container.innerHTML = `
-        <div id="home-content">
-            <h2 id="welcome-user">Sincronizando...</h2>
-            <div class="card p-4 shadow-sm">
-                <button id="btn-continuar" class="btn btn-secondary btn-lg w-100">
+        <div id="home-content" class="fade-in">
+            <h2 id="welcome-user" class="mb-4">Sincronizando...</h2>
+            <div class="card p-4 shadow-sm border-0 bg-light">
+                <button id="btn-continuar" class="btn btn-secondary btn-lg w-100 py-3">
                     <span class="spinner-border spinner-border-sm"></span> Iniciando sistema...
                 </button>
             </div>
         </div>`;
 
-    // 2. O "Pulo do Gato": Espera o navegador registrar o HTML no DOM
+    // 2. A PAUSA DE ENGENHARIA: Espera o navegador registrar os IDs no DOM
     await new Promise(resolve => requestAnimationFrame(resolve));
 
-    // 3. Agora sim, busca os dados da VPS (Porta 8000)
+    // 3. Agora sim, busca os dados da VPS
     await this.carregarSumario();
 }
 
@@ -79,31 +79,32 @@ export class HomeView {
      * MÓDULO DE INTERFACE: A lógica do Botão Amarelo ⚠️
      */
     atualizarInterface(progresso) {
-    // Tenta encontrar o botão e a mensagem de boas-vindas
+    // 1. Localiza os componentes no painel (DOM)
     const btnAcao = document.getElementById("btn-continuar");
-    const welcomeEl = document.getElementById("welcome-user") || document.querySelector(".welcome-message");
+    const welcomeEl = document.getElementById("welcome-user");
     
-    // Recupera o nome que salvamos no login
+    // 2. Recupera a informação da memória
     const nome = localStorage.getItem("user_name") || "Charles";
 
-    // 1. Atualiza o Nome (Se o elemento existir)
+    // 3. Atribui o valor ao visor (Nome)
     if (welcomeEl) {
         welcomeEl.textContent = `Bem-vindo, ${nome}!`;
     }
 
-    // 2. Atualiza o Botão (Lógica da Aula 10)
+    // 4. Lógica do Atuador (Botão Amarelo ⚠️)
     if (btnAcao) {
         if (progresso.pending_topics && progresso.pending_topics.length > 0) {
-            const aulaId = progresso.pending_topics[0];
+            const aulaId = progresso.pending_topics[0]; // Aqui virá o '10'
             btnAcao.textContent = `Retomar: Aula ${aulaId} ⚠️`;
             btnAcao.className = "btn btn-warning btn-lg w-100 fw-bold text-dark border-3 shadow";
-            btnAcao.onclick = () => window.location.href = `auth/${aulaId}-aula.html`;
+            
+            // Navegação correta para o SPA:
+            btnAcao.onclick = () => navegar(`${aulaId}-feature_req.html`); 
         } else {
-            // ... lógica para novato/concluído ...
             btnAcao.textContent = "Continuar Jornada 🚀";
         }
     } else {
-        console.warn("⚠️ Botão 'btn-continuar' não encontrado no DOM ainda.");
+        console.warn("⚠️ Botão 'btn-continuar' não encontrado no DOM.");
     }
 }
 }
