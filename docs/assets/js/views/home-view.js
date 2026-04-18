@@ -39,17 +39,18 @@ export class HomeView {
         }
 
         try {
-            // Chamada unificada para a porta 8000 (Via CONFIG)
             const res = await fetch(`${this.apiUrl}/progress/summary?email=${email}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
-            if (!res.ok) throw new Error(`Erro na API: ${res.status}`);
-
             const progresso = await res.json();
-            console.log("📊 Telemetria recebida:", progresso);
-
+            
+            // A CHAVE DO SUCESSO: Forçar a atualização da interface com os dados novos
             this.atualizarInterface(progresso);
+            
+            // E atualizar o nome no cabeçalho se ele estiver lá
+            const nome = localStorage.getItem("user_name") || "Charles";
+            const welcomeEl = document.querySelector(".welcome-message"); // ou o seu ID
+            if (welcomeEl) welcomeEl.textContent = `Bem-vindo, ${nome}!`;
 
         } catch (error) {
             console.error("💥 Falha na comunicação com a VPS:", error);
