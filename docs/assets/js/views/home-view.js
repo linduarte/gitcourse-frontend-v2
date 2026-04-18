@@ -77,11 +77,11 @@ export class HomeView {
             const aula = progresso.pending_topics[0];
 
             btn.textContent = `Retomar Aula ${aula}`;
-            btn.onclick = () => navegar(`${aula}-feature_req.html`);
+            btn.onclick = () => navegar(`lesson:${aula}`, true);
 
         } else {
             btn.textContent = "Continuar Jornada";
-            btn.onclick = () => navegar("2-introduction.html");
+            btn.onclick = () => navegar("lesson:2", true);
         }
     }
 }
