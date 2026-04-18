@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard - Git Course (SPA)</title>
+  <title>Dashboard - Git Course</title>
 
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
-  
+
+  <!-- Styles -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
   <link rel="stylesheet" href="assets/css/gitcourse.css">
   <link rel="stylesheet" href="assets/css/dashboard.css">
@@ -16,51 +18,72 @@
 
 <body>
 
-  <aside class="sidebar">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Menu lateral">
     <h2>Git Course</h2>
-    <ul>
-      <li><a href="#" id="menuDashboard">Dashboard</a></li>
-      <li><a href="#" id="menuProgresso">Progresso</a></li>
-      <li><a href="#" id="menuContinue">Continuar</a></li>
-      <li><a href="#" id="menuSair">Sair</a></li>
-    </ul>
+    <nav>
+      <ul>
+        <li><a href="#" id="menuDashboard">Dashboard</a></li>
+        <li><a href="#" id="menuProgresso">Progresso</a></li>
+        <li><a href="#" id="menuContinue">Continuar</a></li>
+        <li><a href="#" id="menuSair">Sair</a></li>
+      </ul>
+    </nav>
   </aside>
 
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="dashboard-container container">
-    
+
+    <!-- HEADER -->
     <header class="dashboard-header">
-        <h1>Bem-vindo, <span id="userEmailDisplay">...</span>!</h1>
-        <p id="welcomeMessage">Iniciando sistema...</p>
+      <h1>
+        Bem-vindo, 
+        <span id="userEmailDisplay">...</span>!
+      </h1>
+      <p id="welcomeMessage">Iniciando sistema...</p>
     </header>
-    
+
     <hr>
 
-    <div id="spa-content">
-        <p style="text-align: center; margin-top: 50px; font-style: italic; color: #888;">
-            Carregando sua jornada técnica...
-        </p>
+    <!-- Spinner global -->
+    <div id="global-loader" class="hidden">
+      <div class="spinner"></div>
     </div>
+    <!-- SPA ROOT (ÚNICO!) -->
+    <section id="spa-content" aria-live="polite">
+      <p class="loading-text">
+        Carregando sua jornada técnica...
+      </p>
+    </section>
 
+    <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
           <span>🐙 GitHub Pages</span>
-          <img src="assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+          <img 
+            src="assets/images/github-mark-white.png" 
+            alt="GitHub Logo" 
+            class="footer-logo"
+          >
         </a>
+
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-          <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+          <img 
+            src="https://jigsaw.w3.org/css-validator/images/vcss" 
+            alt="CSS válido!" 
+            class="footer-logo" 
+            width="45" 
+            height="16"
+          >
         </a>
       </div>
     </footer>
+
   </main>
 
-<!-- dashboard.html -->
-<div id="spa-content">
-    <p style="text-align: center; margin-top: 50px; font-style: italic; color: #888;">
-        Carregando sua jornada técnica...
-    </p>
-</div>  
+  <!-- JS -->
+  <script type="module" src="./assets/js/dashboard-app.js"></script>
 
-<script type="module" src="./assets/js/dashboard-app.js"></script>
 </body>
 </html>
