@@ -16,26 +16,24 @@ export class HomeView {
      * Ponto de entrada da View
      */
     async render() {
-    if (this.container) {
-        // 1. Injeta o HTML (O esqueleto)
-        this.container.innerHTML = `
-            <div id="home-content" class="fade-in">
-                <h2 id="welcome-user" class="mb-4">Sincronizando...</h2>
-                <div class="card p-4 shadow-sm border-0 bg-light">
-                    <p class="text-muted">Status da sua jornada:</p>
-                    <button id="btn-continuar" class="btn btn-secondary btn-lg w-100 py-3">
-                        <span class="spinner-border spinner-border-sm"></span> Iniciando sistema...
-                    </button>
-                </div>
-            </div>`;
+    if (!this.container) return;
 
-        // 2. A MANOBRA DE SINCRONIA: 
-        // Esperamos um pequeno ciclo (macro-task) para o navegador registrar os IDs
-        await new Promise(resolve => setTimeout(resolve, 0));
+    // 1. Injeta o HTML IMEDIATAMENTE (Síncrono)
+    this.container.innerHTML = `
+        <div id="home-content">
+            <h2 id="welcome-user">Sincronizando...</h2>
+            <div class="card p-4 shadow-sm">
+                <button id="btn-continuar" class="btn btn-secondary btn-lg w-100">
+                    <span class="spinner-border spinner-border-sm"></span> Iniciando sistema...
+                </button>
+            </div>
+        </div>`;
 
-        // 3. Agora sim, com o botão garantido no DOM, buscamos os dados
-        await this.carregarSumario();
-    }
+    // 2. O "Pulo do Gato": Espera o navegador registrar o HTML no DOM
+    await new Promise(resolve => requestAnimationFrame(resolve));
+
+    // 3. Agora sim, busca os dados da VPS (Porta 8000)
+    await this.carregarSumario();
 }
 
     /**
