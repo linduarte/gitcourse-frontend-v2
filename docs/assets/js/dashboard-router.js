@@ -40,8 +40,13 @@ export async function navegar(rota) {
 
     const view = routes[rota];
     if (view) {
-        // Renderiza o esqueleto da View
-        container.innerHTML = view.render();
+        // CORREÇÃO: Adicione o 'await' para esperar o HTML ser gerado
+        const esqueleto = await view.render(); 
+        
+        // Se o render() apenas injeta no container internamente, 
+        // verifique se ele retorna uma string. 
+        // Se o seu render() da home-view NÃO der 'return', use apenas:
+        // await view.render();
         
         // Dispara o carregamento de dados (Sumário/Progresso)
         if (view.carregarSumario) {
