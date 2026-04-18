@@ -3,7 +3,7 @@
  * Gerenciamento do Painel Principal (Dashboard)
  * Charles Duarte - Foco em Sincronia de Portas e SSL
  */
-import { CONFIG } from './config.js';
+import { CONFIG } from '../config.js';
 
 export class HomeView {
     constructor() {
