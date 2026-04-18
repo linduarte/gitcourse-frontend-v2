@@ -1,13 +1,11 @@
 /**
- * sidebar-logic.js
- * Controla os cliques no menu lateral da SPA.
+ * sidebar-logic.js (versão SPA com URL)
  */
 import { navegar } from './dashboard-router.js';
 import { logout } from './git-course-functions.js';
 
 export function inicializarMenuLateral() {
     const sidebar = document.querySelector('.sidebar');
-    
     if (!sidebar) return;
 
     sidebar.addEventListener('click', (e) => {
@@ -15,23 +13,30 @@ export function inicializarMenuLateral() {
         if (!link) return;
 
         e.preventDefault();
+
         const id = link.id;
 
-        console.log(`🖱️ Menu: Clique detectado em ${id}`);
+        console.log(`🖱️ Menu: ${id}`);
 
         switch (id) {
             case 'menuDashboard':
-                navegar('home');
+                navegar('home', true);
                 break;
+
+            case 'menuProgresso':
+                navegar('progresso', true);
+                break;
+
+            case 'menuContinue':
+                navegar('home', true);
+                break;
+
             case 'menuSair':
                 logout();
                 break;
-            case 'menuProgresso':
-                // Futuramente: navegar('progresso');
-                console.log("Rota de progresso em construção...");
-                break;
+
             default:
-                console.warn("Rota não mapeada para este ID.");
+                console.warn("Rota não mapeada.");
         }
     });
 }
