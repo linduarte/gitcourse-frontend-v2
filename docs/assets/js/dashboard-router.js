@@ -40,18 +40,22 @@ export async function navegar(rota) {
 
     const view = routes[rota];
     if (view) {
-        // CORREÇÃO: Adicione o 'await' para esperar o HTML ser gerado
-        const esqueleto = await view.render(); 
+        // 1. Limpa o container principal antes de renderizar
+        container.innerHTML = ''; 
+
+        // 2. AGUARDA a renderização do esqueleto (Spinner)
+        // Como o seu HomeView injeta direto no 'this.container', apenas aguarde:
+        await view.render();
         
-        // Se o render() apenas injeta no container internamente, 
-        // verifique se ele retorna uma string. 
-        // Se o seu render() da home-view NÃO der 'return', use apenas:
-        // await view.render();
-        
-        // Dispara o carregamento de dados (Sumário/Progresso)
+        // 3. AGUARDA a busca dos dados na VPS (Porta 8000)
         if (view.carregarSumario) {
             await view.carregarSumario();
         }
+        
+        // OPCIONAL: Se quiser garantir que o nome apareça no cabeçalho:
+        const nomeUsuario = localStorage.getItem("user_name") || "Charles";
+        const welcomeEl = document.getElementById("welcome-user");
+        if (welcomeEl) welcomeEl.textContent = `Bem-vindo, ${nomeUsuario}!`;
     }
 }
 
