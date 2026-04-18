@@ -40,22 +40,9 @@ export async function navegar(rota) {
 
     const view = routes[rota];
     if (view) {
-        // 1. Limpa o container principal antes de renderizar
-        container.innerHTML = ''; 
-
-        // 2. AGUARDA a renderização do esqueleto (Spinner)
-        // Como o seu HomeView injeta direto no 'this.container', apenas aguarde:
-        await view.render();
-        
-        // 3. AGUARDA a busca dos dados na VPS (Porta 8000)
-        if (view.carregarSumario) {
-            await view.carregarSumario();
-        }
-        
-        // OPCIONAL: Se quiser garantir que o nome apareça no cabeçalho:
-        const nomeUsuario = localStorage.getItem("user_name") || "Charles";
-        const welcomeEl = document.getElementById("welcome-user");
-        if (welcomeEl) welcomeEl.textContent = `Bem-vindo, ${nomeUsuario}!`;
+        container.innerHTML = ''; // Limpa o "Iniciando sistema" antigo
+        await view.render();      // Chama o render e PARA POR AQUI.
+        // NÃO chame carregarSumario() aqui! A HomeView fará isso sozinha.
     }
 }
 
