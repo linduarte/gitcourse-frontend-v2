@@ -3,6 +3,8 @@
  * Refatoração Charles Duarte - Abril 2026
  */
 
+import { CONFIG } from './config.js';
+
 const API_URL = "https://charles-gitcourse.duckdns.org";
 
 /**
@@ -95,3 +97,36 @@ export function logout() {
 
 // Mantendo a soldagem global para o HTML enxergar
 window.logout = logout;
+
+// Outros imports ou funções existentes
+
+export async function getProgress() {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+        throw new Error("Token não encontrado");
+    }
+
+    try {
+        const response = await fetch(`${CONFIG.API_URL}/progress/summary`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.error("Erro ao buscar progresso:", error);
+        throw error;
+    }
+}
+
+// Outras funções exportadas, se houver
