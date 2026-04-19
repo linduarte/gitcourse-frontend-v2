@@ -1,4 +1,4 @@
-// dashboard-router. - ver.3.0 - 2026-04-19
+// dashboard-router. - ver.3.1 - 2026-04-19
 
 import { HomeView } from './views/home-view.js';
 
@@ -49,12 +49,16 @@ const routes = {
 function resolverAula(id) {
     const idStr = String(id);
 
-    // caso especial
+    // 🔥 caso especial: aula 1 → 1a-prefacio
+    if (idStr === "1") {
+        return "1a-prefacio.html";
+    }
+
     if (idStr === "1a") {
         return "1a-prefacio.html";
     }
 
-    // busca exata por número + hífen
+    // 🔎 busca padrão
     return LESSONS.find(aula => aula.startsWith(idStr + "-"));
 }
 
