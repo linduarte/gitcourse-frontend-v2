@@ -81,9 +81,14 @@ export class HomeView {
         welcome.textContent = `Bem-vindo, ${nome}!`;
     }
 
-    // 📊 Cálculo de progresso (fonte única de verdade)
+    // 📊 Cálculo de progresso (com ajuste da aula 1)
     const total = 16;
-    const pending = progresso?.pending_topics || [];
+
+    let pending = progresso?.pending_topics || [];
+
+    // 🔥 REMOVE aula 1 da lógica (não tem "Concluído")
+    pending = pending.filter(a => String(a) !== "1");
+
     const completed = total - pending.length;
     const percent = Math.floor((completed / total) * 100);
 
@@ -97,7 +102,7 @@ export class HomeView {
 
     if (!btn) return;
 
-    // 🎯 Lógica de navegação (ordem correta)
+    // 🎯 Lógica de navegação (agora consistente)
     if (completed === 0) {
         btn.textContent = "Iniciar Jornada Git";
         btn.onclick = () => navegar("lesson:1a", true);
