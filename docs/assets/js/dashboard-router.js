@@ -1,8 +1,8 @@
-// dashboard-router.js
+// dashboard-router. - ver.3.0 - 2026-04-19
 
 import { HomeView } from './views/home-view.js';
 
-// 📚 Lista oficial de aulas (único ponto de verdade)
+// 📚 Lista oficial de aulas
 const LESSONS = [
     '1a-prefacio.html',
     '2-introduction.html',
@@ -23,153 +23,100 @@ const LESSONS = [
     '17-terminal-customization.html'
 ];
 
-// 🌐 Base URL das aulas
+// 🌐 Base das aulas (GitHub Pages)
 const BASE_URL = "https://linduarte.github.io/gitcourse-frontend-v2/curso/git-course/";
 
-// 🧠 Cache
-const viewCache = new Map();
-
-// 🗺️ Rotas principais
+// 🧠 Rotas SPA (somente dashboard)
 const routes = {
     home: () => new HomeView(),
 
     progresso: async () => ({
         async render() {
             const el = document.getElementById('spa-content');
-            el.innerHTML = "<h2>📊 Progresso (em construção)</h2>";
+            if (!el) return;
+
+            el.innerHTML = `
+                <div class="fade-in">
+                    <h2>📊 Progresso</h2>
+                    <p>Em construção...</p>
+                </div>
+            `;
         }
     })
 };
 
-// 🔍 Resolve ID → arquivo real
+// 🔍 Resolver aula com segurança (evita conflito 1 vs 1a)
 function resolverAula(id) {
     const idStr = String(id);
 
-    // 👇 caso especial (prefácio)
+    // caso especial
     if (idStr === "1a") {
         return "1a-prefacio.html";
     }
 
-    // 👇 busca exata (evita confundir 1 com 1a)
+    // busca exata por número + hífen
     return LESSONS.find(aula => aula.startsWith(idStr + "-"));
 }
 
-// 📥 Carrega HTML da aula
-async function carregarConteudoAula(arquivo) {
-    const container = document.getElementById('spa-content');
-
-    const response = await fetch(BASE_URL + arquivo);
-
-    if (!response.ok) {
-        throw new Error(`Erro HTTP ${response.status}`);
-    }
-
-    const html = await response.text();
-
-    container.innerHTML = html;
-
-    window.scrollTo(0, 0);
-}
-
-// ⏳ Loader
-function showLoader() {
-    document.getElementById("global-loader")?.classList.remove("hidden");
-}
-
-function hideLoader() {
-    document.getElementById("global-loader")?.classList.add("hidden");
-}
-
-// 🎯 Menu ativo
-function setActiveMenu(rota) {
-    document.querySelectorAll(".sidebar a").forEach(a => {
-        a.classList.remove("active");
-    });
-
-    if (rota.startsWith("lesson:")) {
-        document.getElementById("menuContinue")?.classList.add("active");
-        return;
-    }
-
-    const map = {
-        home: "menuDashboard",
-        progresso: "menuProgresso"
-    };
-
-    const id = map[rota];
-    if (id) {
-        document.getElementById(id)?.classList.add("active");
-    }
-}
-
 /**
- * 🚀 Navegação SPA completa
+ * 🚀 Navegação principal
  */
 export async function navegar(rota, atualizarURL = false) {
     const container = document.getElementById('spa-content');
-    if (!container) return;
 
-    console.log("➡️ ID recebido:", id);
-    console.log("➡️ Arquivo resolvido:", arquivo);
+    if (!container) {
+        console.error("❌ Container #spa-content não encontrado");
+        return;
+    }
 
-    // 🔄 URL
+    // 🔄 Atualiza URL (somente dashboard)
     if (atualizarURL) {
         history.pushState({ rota }, "", `?page=${rota}`);
     }
 
-    setActiveMenu(rota);
-    showLoader();
-
     try {
-        // 🎓 ROTA DE AULA (NOVO!)
+        // 🎓 ROTA DE AULA → REDIRECT (MPA)
         if (rota.startsWith("lesson:")) {
             const id = rota.split(":")[1];
+
+            console.log("➡️ ID recebido:", id);
+
             const arquivo = resolverAula(id);
 
+            console.log("➡️ Arquivo resolvido:", arquivo);
+
             if (!arquivo) {
+                console.error("❌ Aula não encontrada:", id);
                 container.innerHTML = "<h2>Aula não encontrada</h2>";
                 return;
             }
 
-            // ⚡ Cache da aula
-            if (viewCache.has(arquivo)) {
-                console.log("⚡ Aula cache:", arquivo);
-                container.innerHTML = viewCache.get(arquivo);
-            } else {
-                await carregarConteudoAula(arquivo);
-                viewCache.set(arquivo, container.innerHTML);
-                console.log("🆕 Aula carregada:", arquivo);
-            }
-
+            // 👉 REDIRECIONA PARA A AULA REAL
+            window.location.href = BASE_URL + arquivo;
             return;
         }
 
-        // 🧠 Rotas normais (home, progresso)
-        let view;
+        // 🧠 ROTAS DO DASHBOARD (SPA)
+        const factory = routes[rota];
 
-        if (viewCache.has(rota)) {
-            view = viewCache.get(rota);
-            console.log("⚡ Cache view:", rota);
-        } else {
-            const factory = routes[rota];
-
-            if (!factory) {
-                container.innerHTML = "<h2>Rota não encontrada</h2>";
-                return;
-            }
-
-            view = await factory();
-            viewCache.set(rota, view);
-            console.log("🆕 View criada:", rota);
+        if (!factory) {
+            container.innerHTML = "<h2>Rota não encontrada</h2>";
+            return;
         }
+
+        const view = await factory();
 
         container.innerHTML = "";
         await view.render();
 
     } catch (err) {
-        console.error("💥 Erro:", err);
-        container.innerHTML = "<h2>Erro ao carregar conteúdo</h2>";
-    } finally {
-        hideLoader();
+        console.error("💥 Erro na navegação:", err);
+
+        container.innerHTML = `
+            <div class="error-container">
+                <h2>Erro ao carregar</h2>
+                <p>${err.message}</p>
+            </div>
+        `;
     }
 }
