@@ -47,16 +47,16 @@ export class HomeView {
             return;
         }
 
+        
+
         try {
-            const res = await fetch(`${this.apiUrl}/progress/summary?email=${email}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+        const progresso = await getProgress(); // 👈 chamada ao backend
 
-            const data = await res.json();
+        // 🔥 COLOQUE O LOG AQUI
+        console.log("🔥 DADOS RECEBIDOS DO BACKEND:", progresso);
 
-            this.atualizarUI(data);
+        // 👇 depois chama a UI
+        this.atualizarUI(progresso);
 
         } catch (err) {
             console.error("Erro API:", err);
