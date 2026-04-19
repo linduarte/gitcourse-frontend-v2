@@ -1,7 +1,7 @@
 // login.js - v1.3 Refatorado
 // Charles Duarte - Foco em Sequência Lógica e Proteção de Dados
 
-const API_URL = "https://charles-gitcourse.duckdns.org:8000";
+const API_URL = "https://charles-gitcourse.duckdns.org";
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log("🔌 Sistema de Login: Inicializado.");
