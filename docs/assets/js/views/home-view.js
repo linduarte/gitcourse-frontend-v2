@@ -8,27 +8,35 @@ export class HomeView {
     }
 
     async render() {
-        if (!this.container) return;
+    if (!this.container) return;
 
-        // 1. Render inicial imediato
-        this.container.innerHTML = `
-            <div class="fade-in">
-                <h2 id="welcome-user">Carregando...</h2>
+    // 1. Render inicial imediato
+    this.container.innerHTML = `
+        <div class="fade-in">
+            <h2 id="welcome-user">Carregando...</h2>
 
-                <div class="card">
-                    <button id="btn-continuar">
-                        ⏳ Carregando progresso...
-                    </button>
+            <!-- 📊 PROGRESSO -->
+            <div id="progress-box" class="progress-box">
+                <p id="progress-text">Calculando progresso...</p>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
                 </div>
             </div>
-        `;
 
-        // 2. Espera DOM existir
-        await new Promise(r => requestAnimationFrame(r));
+            <div class="card">
+                <button id="btn-continuar">
+                    ⏳ Carregando progresso...
+                </button>
+            </div>
+        </div>
+    `;
 
-        // 3. Carrega dados
-        await this.carregarDados();
-    }
+    // 2. Espera DOM existir
+    await new Promise(r => requestAnimationFrame(r));
+
+    // 3. Carrega dados
+    await this.carregarDados();
+}
 
     async carregarDados() {
         const token = localStorage.getItem("access_token");
@@ -61,27 +69,48 @@ export class HomeView {
     }
 
     atualizarUI(progresso) {
-        const btn = document.getElementById("btn-continuar");
-        const welcome = document.getElementById("welcome-user");
+    const btn = document.getElementById("btn-continuar");
+    const welcome = document.getElementById("welcome-user");
 
-        const nome = localStorage.getItem("user_name") || "Engenheiro";
+    const progressText = document.getElementById("progress-text");
+    const progressFill = document.getElementById("progress-fill");
 
-        if (welcome) {
-            welcome.textContent = `Bem-vindo, ${nome}!`;
-        }
+    const nome = localStorage.getItem("user_name") || "Engenheiro";
 
-        if (!btn) return;
-
-        // 🔥 Lógica simples e robusta
-        if (progresso?.pending_topics?.length > 0) {
-            const aula = progresso.pending_topics[0];
-
-            btn.textContent = `Retomar Aula ${aula}`;
-            btn.onclick = () => navegar(`lesson:${aula}`, true);
-
-        } else {
-            btn.textContent = "Continuar Jornada";
-            btn.onclick = () => navegar("lesson:2", true);
-        }
+    if (welcome) {
+        welcome.textContent = `Bem-vindo, ${nome}!`;
     }
+
+    // 📊 Cálculo de progresso (fonte única de verdade)
+    const total = 16;
+    const pending = progresso?.pending_topics || [];
+    const completed = total - pending.length;
+    const percent = Math.floor((completed / total) * 100);
+
+    if (progressText) {
+        progressText.textContent = `Progresso: ${completed} / ${total} aulas (${percent}%)`;
+    }
+
+    if (progressFill) {
+        progressFill.style.width = `${percent}%`;
+    }
+
+    if (!btn) return;
+
+    // 🎯 Lógica de navegação (ordem correta)
+    if (completed === 0) {
+        btn.textContent = "Iniciar Jornada Git";
+        btn.onclick = () => navegar("lesson:1a", true);
+
+    } else if (pending.length === 0) {
+        btn.textContent = "Curso Concluído 🎉";
+        btn.onclick = () => navegar("progresso", true);
+
+    } else {
+        const aula = pending[0];
+
+        btn.textContent = `Retomar Aula ${aula}`;
+        btn.onclick = () => navegar(`lesson:${aula}`, true);
+    }
+}
 }
