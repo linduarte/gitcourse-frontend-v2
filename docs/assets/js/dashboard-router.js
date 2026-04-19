@@ -3,7 +3,7 @@
 import { HomeView } from './views/home-view.js';
 
 // 📚 Lista oficial de aulas
-const LESSONS = [
+export const LESSONS = [
     '1a-prefacio.html',
     '2-introduction.html',
     '3-git-config.html',
@@ -22,7 +22,6 @@ const LESSONS = [
     '16-git-workflows.html',
     '17-terminal-customization.html'
 ];
-
 // 🌐 Base das aulas (GitHub Pages)
 const BASE_URL = "https://linduarte.github.io/gitcourse-frontend-v2/curso/git-course/";
 
