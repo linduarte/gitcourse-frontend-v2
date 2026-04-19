@@ -43,7 +43,15 @@ const routes = {
 
 // 🔍 Resolve ID → arquivo real
 function resolverAula(id) {
-    return LESSONS.find(aula => aula.startsWith(id));
+    const idStr = String(id);
+
+    // 👇 caso especial (prefácio)
+    if (idStr === "1a") {
+        return "1a-prefacio.html";
+    }
+
+    // 👇 busca exata (evita confundir 1 com 1a)
+    return LESSONS.find(aula => aula.startsWith(idStr + "-"));
 }
 
 // 📥 Carrega HTML da aula
@@ -100,6 +108,9 @@ function setActiveMenu(rota) {
 export async function navegar(rota, atualizarURL = false) {
     const container = document.getElementById('spa-content');
     if (!container) return;
+
+    console.log("➡️ ID recebido:", id);
+    console.log("➡️ Arquivo resolvido:", arquivo);
 
     // 🔄 URL
     if (atualizarURL) {
