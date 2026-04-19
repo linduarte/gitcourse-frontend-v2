@@ -84,14 +84,21 @@ export class HomeView {
     // 📊 Cálculo de progresso (com ajuste da aula 1)
     const total = 16;
 
+    // 🔥 pega do backend
     let pending = progresso?.pending_topics || [];
 
-    // 🔥 REMOVE aula 1 da lógica (não tem "Concluído")
-    pending = pending.filter(a => String(a) !== "1");
+    console.log("📊 progresso bruto:", progresso);
 
+    // 🔥 remove aula 1 (onboarding) e 17 (sub-aula da 2)
+    pending = pending.filter(a => {
+        const n = Number(a);
+        return n >= 2 && n <= 16;
+    });
+
+    // 📊 cálculo correto
     const completed = total - pending.length;
     const percent = Math.floor((completed / total) * 100);
-
+    
     if (progressText) {
         progressText.textContent = `Progresso: ${completed} / ${total} aulas (${percent}%)`;
     }
