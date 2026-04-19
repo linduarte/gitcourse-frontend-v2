@@ -1,5 +1,6 @@
 import { CONFIG } from '../config.js';
 import { navegar } from '../dashboard-router.js';
+import { getProgress } from '../git-course-functions.js';
 
 export class HomeView {
     constructor() {
