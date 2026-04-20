@@ -89,7 +89,7 @@ export class HomeView {
             btn.onclick = () => navegar("progresso", true);
         } else {
             const aula = pending[0];
-
+        
             if (aula === "1a") {
                 btn.textContent = "Iniciar Jornada Git";
                 btn.onclick = () => navegar("lesson:1a", true);
@@ -99,45 +99,52 @@ export class HomeView {
             }
         }
 
-        // =========================
-        // 🎨 LACUNAS VISUAIS PREMIUM
-        // =========================
-
-        function getLessonName(aulaId) {
-            const file = LESSONS.find(f => f.startsWith(`${aulaId}-`));
-            return file
-                ?.replace('.html', '')
-                ?.replace(/^\d+-?/, '')
-                ?.replace(/-/g, ' ') || `Aula ${aulaId}`;
-        }
-
-        if (lacunasBox && pending.length > 0) {
-
-            lacunasBox.innerHTML = `
-                <div class="lacunas-card">
-                    <h3>⚠️ Continue sua jornada</h3>
-                    <p>Você pulou algumas etapas importantes:</p>
-
-                    <div class="lacunas-list">
-                        ${pending.map(a => `
-                            <button class="lacuna-btn" data-aula="${a}">
-                                Aula ${a} - ${getLessonName(a)}
-                            </button>
-                        `).join("")}
-                    </div>
+            // =========================
+    // 🎨 LACUNAS VISUAIS
+    // =========================
+        
+    function getLessonName(aulaId) {
+        const file = LESSONS.find(f => f.startsWith(`${aulaId}-`));
+        return file
+            ?.replace('.html', '')
+            ?.replace(/^\d+-?/, '')
+            ?.replace(/-/g, ' ') || `Aula ${aulaId}`;
+    }
+    
+    function formatLessonName(name) {
+        return name
+            .replace(/_/g, ' ')
+            .replace(/-/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+    }
+    
+    if (lacunasBox && pending.length > 0) {
+    
+        lacunasBox.innerHTML = `
+            <div class="lacunas-card">
+                <h3>⚠️ Continue sua jornada</h3>
+                <p>Você pulou algumas etapas importantes:</p>
+    
+                <div class="lacunas-list">
+                    ${pending.map(a => `
+                        <button class="lacuna-btn" data-aula="${a}">
+                            Aula ${a} - ${formatLessonName(getLessonName(a))}
+                        </button>
+                    `).join("")}
                 </div>
-            `;
-
-            // 🔥 eventos
-            lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const aula = btn.dataset.aula;
-                    navegar(`lesson:${aula}`, true);
-                });
+            </div>
+        `;
+                    
+        // eventos
+        lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const aula = btn.dataset.aula;
+                navegar(`lesson:${aula}`, true);
             });
-
-        } else if (lacunasBox) {
-            lacunasBox.innerHTML = "";
-        }
+        });
+    
+    } else if (lacunasBox) {
+        lacunasBox.innerHTML = "";
+    }
     }
 }
