@@ -116,8 +116,12 @@ export class HomeView {
         }
 
         if (progressFill) {
-            progressFill.style.width = `${percent}%`;
-        }
+            progressFill.style.width = "0%";
+
+            setTimeout(() => {
+                progressFill.style.width = `${percent}%`;
+            }, 150);
+    }
 
         if (!btn) return;
 
