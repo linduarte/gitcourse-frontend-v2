@@ -246,32 +246,44 @@
     </div>
 
     <div class="footer-flex">
-    <nav class="footer-nav">
-        <a href="2-introduction.html" class="footer-link">← Voltar</a>
-    </nav>
 
-    <div class="footer-buttons">
-        <button id="logoutButton" type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
+        <nav class="footer-nav">
+            <a href="2-introduction.html" class="footer-link">← Voltar</a>
+        </nav>
 
-        <button type="button" class="btn-footer-primary" 
-        onclick="window.location.href='2-introduction.html'">
-        Voltar para Introdução ✓
-        </button>
+        <div class="footer-buttons">
+            <button type="button" class="btn-footer-primary" onclick="logout()">
+                Logout
+            </button>
+
+            <button type="button" class="btn-footer-primary" 
+                onclick="window.location.href='2-introduction.html'">
+                ✔ Retornar para Aula 2
+            </button>
+        </div>
+
     </div>
-</div>
 
-<div class="footer-instruction">
-    Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
-</div>
-
+    <div class="footer-instruction">
+        Após concluir esta etapa, retorne à Aula 2 para continuar sua jornada.
+    </div>
 
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo" width="16" height="16">
+            <img src="../../assets/images/github-mark-white.png"
+                 alt="GitHub Logo"
+                 class="footer-logo"
+                 width="16"
+                 height="16">
         </a>
+
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-            <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!"
+                 class="footer-logo"
+                 width="45"
+                 height="16">
         </a>
     </div>
 
@@ -284,14 +296,11 @@
 
 <!-- Funções globais -->
 <script type="module">
-    // 1. Verifique se o caminho tem ../../assets/js/
-    
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
-    
-    window.logout = logout;
-    window.registrarEAvancar = registrarEAvancar;
+    import { logout } from "../../assets/js/git-course-functions.js";
 
-    console.log("✅ Script de Customização: Conectado e Localizado.");
+    window.logout = logout;
+
+    console.log("✅ Aula 17 carregada corretamente (sem registro de progresso).");
 </script>
 
 </body>
