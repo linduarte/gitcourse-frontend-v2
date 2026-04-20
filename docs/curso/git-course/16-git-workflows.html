@@ -302,98 +302,105 @@
     <div class="footer-flex">
 
         <div class="footer-buttons">
-            <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button> 
-        
-        <button type="button" class="btn-footer-primary" onclick="finalizarCurso()">
-        Finalizar Curso e Ver Progresso ✓
-        </button>
-    
-        
-</div>
+            <button type="button" class="btn-footer-primary" onclick="logout()">
+                Logout
+            </button>
+
+            <button type="button" 
+                    id="btn-finalizar"
+                    class="btn-footer-primary" 
+                    onclick="finalizarCurso()">
+                Finalizar Curso e Ver Progresso ✓
+            </button>
+        </div>
 
     </div>
 
     <div class="footer-instruction">
-        Para sair da sua conta, clique em Logout. Para registrar seu progresso, clique em Concluído.
+        Clique em <strong>Finalizar Curso</strong> para registrar sua conclusão e visualizar seu progresso.
     </div>
 
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            <img src="../../assets/images/github-mark-white.png"
+                 alt="GitHub Logo"
+                 class="footer-logo">
         </a>
+
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
             <img src="https://jigsaw.w3.org/css-validator/images/vcss"
-                 alt="CSS válido!" class="footer-logo" width="45" height="16">
+                 alt="CSS válido!"
+                 class="footer-logo"
+                 width="45"
+                 height="16">
         </a>
     </div>
 
 </footer>
 
-<!-- Scripts -->
+<!-- Prism (mantido) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
-
-<script src="../../assets/js/config.js"></script>
-
+<!-- 🚀 Script corrigido (SEM conflito de módulo) -->
 <script type="module">
     import { CONFIG } from '../../assets/js/config.js';
+    import { logout } from "../../assets/js/git-course-functions.js";
+
+    window.logout = logout;
 
     window.finalizarCurso = async () => {
-        const btn = document.querySelector('.btn-footer-primary');
-        const email = localStorage.getItem('user_email');
-        const token = localStorage.getItem('access_token'); // O progress.py EXIGE o token!
+        const btn = document.getElementById("btn-finalizar");
+        const token = localStorage.getItem('access_token');
         const urlDashboard = '../../dashboard.html';
 
         if (!btn) return;
 
-        // Feedback visual padrão Charles Duarte
+        // 🔄 feedback visual
         btn.disabled = true;
         btn.textContent = "Processando...";
 
         try {
-            // Rota correta conforme seu progress.py: /complete
-            const urlFinal = `${CONFIG.API_URL}/progress/complete`;
-
-            const response = await fetch(urlFinal, { 
+            const response = await fetch(`${CONFIG.API_URL}/progress/complete`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Obrigatório conforme seu Depends(get_current_user)
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    topic_id: 16 // O schema ProgressUpdate espera isso
+                    topic_id: 16
                 })
             });
 
             if (response.ok) {
-                // PADRONIZAÇÃO VISUAL
                 btn.textContent = "Registrado! ✓";
                 btn.style.backgroundColor = "#28a745";
-                btn.style.color = "white";
 
-                console.log("✅ Progresso 16 gravado no DB.");
+                console.log("✅ Aula 16 registrada com sucesso");
 
                 setTimeout(() => {
                     window.location.href = urlDashboard;
                 }, 1200);
+
             } else {
-                const erro = await response.json();
-                throw new Error(erro.detail || "Erro no servidor");
+                throw new Error("Erro no servidor");
             }
 
         } catch (error) {
-            console.error("❌ Falha:", error);
+            console.error("❌ Falha ao registrar:", error);
+
             btn.textContent = "Erro no Registro";
             btn.style.backgroundColor = "#dc3545";
-            
+
             setTimeout(() => {
                 window.location.href = urlDashboard;
             }, 2000);
         }
     };
+
+    console.log("✅ Aula 16 pronta (fluxo final correto)");
 </script>
 
 </body>
