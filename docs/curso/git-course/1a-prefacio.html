@@ -122,58 +122,70 @@
     </div>
 
     <div class="start-button">
-        <button type="button" class="btn-footer-primary" 
-                onclick="registrarEAvancar(event,'2-introduction.html')">
-            Iniciar jornada Git ✓
-        </button>
+    <button type="button" class="btn-footer-primary" 
+            onclick="window.location.href='2-introduction.html'">
+        Iniciar Jornada Git ✓
+    </button>
+</div>
+
+<div class="footer-actions">
+    <div class="footer-actions-info">
+        Tempo estimado: 4–6 horas • Nível: Iniciante
+    </div>
+</div>
+
+<footer class="footer">
+
+    <div class="footer-flex">
+
+        <nav class="footer-nav">
+            <button type="button"
+                    onclick="window.location.href='../../index.html'"
+                    class="btn-footer-primary">
+                Início
+            </button>
+        </nav>
+
+        <div class="footer-buttons">
+            <button type="button"
+                    class="btn-footer-primary"
+                    onclick="logout()">
+                Sair
+            </button>
+        </div>
+
     </div>
 
-    <div class="footer-actions">
-        <div class="footer-actions-info">
-            Tempo estimado: 4–6 horas • Nível: Iniciante
-        </div>
+    <div class="footer-instruction">
+        Siga as instruções acima para começar sua jornada técnica.
     </div>
 
-    <footer class="footer">
-        <div class="footer-flex">
-            <nav class="footer-nav">
-                <button type="button" onclick="window.location.href='../../index.html'" class="btn-footer-primary">
-                    Início
-                </button>
-                </nav>
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../assets/images/github-mark-white.png"
+                 alt="GitHub Logo"
+                 class="footer-logo">
+        </a>
 
-            <div class="footer-buttons">
-                <button id="logoutButton" type="button" class="btn-footer-primary" onclick="logout()">
-                    Sair
-                </button>
-            </div>
-        </div>
+        <a href="https://jigsaw.w3.org/css-validator/check/referer"
+           class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!"
+                 class="footer-logo"
+                 width="45"
+                 height="16">
+        </a>
+    </div>
 
-        <div class="footer-instruction">
-            Siga as instruções acima para começar sua jornada técnica.
-        </div>
+</footer>
 
-        <div class="footer-badges">
-            <a href="https://pages.github.com/" class="github-link">
-                <span>🐙 GitHub Pages</span>
-                <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
-            </a>
-            <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-                <img src="https://jigsaw.w3.org/css-validator/images/vcss"
-                     alt="CSS válido!" class="footer-logo" width="45" height="16">
-            </a>
-        </div>
-    </footer>
+<script type="module">
+    import { logout } from "../../assets/js/git-course-functions.js";
 
-</div> <script type="module">
-    // Carregando as funções globais refatoradas
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
-    
-    // Conectando os cabos ao objeto global 'window'
     window.logout = logout;
-    window.registrarEAvancar = registrarEAvancar;
 
-    console.log("✅ Prefácio: Dashboard removida e Manual de Operação inserido.");
+    console.log("✅ Prefácio carregado corretamente (sem registro de progresso).");
 </script>
 
 </body>
