@@ -13,6 +13,8 @@ export class HomeView {
             <div class="fade-in">
                 <h2 id="welcome-user">Carregando...</h2>
 
+                <p id="mensagem-status" class="mensagem-status"></p>
+
                 <div class="progress-box">
                     <p id="progress-text">Calculando progresso...</p>
                     <div class="progress-bar">
@@ -71,6 +73,42 @@ export class HomeView {
         const total = progresso?.total || 15;
         const completed = progresso?.actual_count || 0;
         const percent = progresso?.percentage || 0;
+
+
+        let mensagem = "";
+
+        if (percent === 100) {
+            mensagem = "🏆 Parabéns! Você concluiu o curso!";
+        } else if (percent >= 80) {
+            mensagem = "🔥 Você está muito perto de concluir!";
+        } else if (percent >= 50) {
+            mensagem = "🚀 Excelente progresso, continue assim!";
+        } else if (percent > 0) {
+            mensagem = "💡 Continue avançando, você está no caminho certo!";
+        } else {
+            mensagem = "👋 Bem-vindo! Vamos começar sua jornada!";
+        }
+
+        // 👇 👉 AQUI entra o seu código
+        const mensagemBox = document.getElementById("mensagem-status");
+
+        if (mensagemBox) {
+            mensagemBox.textContent = mensagem;
+        
+            // 🔥 limpa classes antigas
+            mensagemBox.className = "mensagem-status";
+        
+            // 🎯 aplica estilo dinâmico
+            if (percent === 100) {
+                mensagemBox.classList.add("sucesso");
+            } else if (percent >= 80) {
+                mensagemBox.classList.add("alerta");
+            } else if (percent >= 50) {
+                mensagemBox.classList.add("progresso");
+            } else {
+                mensagemBox.classList.add("inicio");
+            }
+        }
 
         // 📊 UI progresso
         if (progressText) {
