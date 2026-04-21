@@ -23,19 +23,35 @@
 
         <h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
 
-        <form id="registerForm">
+        <form id="registerForm" autocomplete="on">
 
-          <label for="email">Email</label>
-          <input type="email" id="email" required>
+  <!-- EMAIL -->
+      <label for="email">Email</label>
+      <input 
+        type="email" 
+        id="email"
+        name="email"
+        placeholder="seu@email.com"
+        autocomplete="email"
+        required
+      >
 
-          <label for="password">Senha</label>
-          <input type="password" id="password" required>
+      <!-- SENHA -->
+      <label for="password">Senha</label>
+      <input 
+        type="password" 
+        id="password"
+        name="password"
+        placeholder="Crie uma senha"
+        autocomplete="new-password"
+        required
+      >
 
-          <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">
-            Registrar
-          </button>
+      <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">
+        Registrar
+      </button>
 
-        </form>
+      </form>
 
         <div id="result" style="margin-top:15px;"></div>
 
@@ -73,14 +89,11 @@
   </main>
 
   <script>
-    // DEFINA A VARIÁVEL AQUI PARA O SCRIPT INTEIRO ENXERGAR
-    // Mude de http://...:8000 para https://...
-   const API_URL = "https://charles-gitcourse.duckdns.org"; 
+const API_URL = "https://charles-gitcourse.duckdns.org";
 
-    // O resto do seu código (form.addEventListener, etc.) vem abaixo...
-  </script>
+// 🎯 Foco automático
+document.getElementById("email").focus();
 
-  <script>
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -88,11 +101,11 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
     const password = document.getElementById("password").value.trim();
     const resultEl = document.getElementById("result");
 
-    resultEl.style.color = "#333";
-    resultEl.textContent = "Registrando...";
+    // 💡 feedback visual melhor
+    resultEl.style.color = "#9ca3af";
+    resultEl.textContent = "Criando conta...";
 
     try {
-        // Use a variável API_URL que vem do seu config.js
         const response = await fetch(`${API_URL}/auth/register`, {
             method: "POST",
             headers: {
@@ -104,15 +117,18 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
         const data = await response.json();
 
         if (response.ok) {
-            resultEl.style.color = "#388e3c";
-            resultEl.textContent = "Registro realizado com sucesso! Redirecionando...";
+            // 💾 salva email para login automático depois
+            localStorage.setItem("user_email", email);
+
+            resultEl.style.color = "#4ade80";
+            resultEl.textContent = "Conta criada com sucesso! Redirecionando...";
 
             setTimeout(() => {
                 window.location.href = "login.html";
             }, 1200);
 
         } else {
-            resultEl.style.color = "#d32f2f";
+            resultEl.style.color = "#f87171";
 
             if (typeof data.detail === "string") {
                 resultEl.textContent = "Erro: " + data.detail;
@@ -125,7 +141,7 @@ document.getElementById("registerForm").addEventListener("submit", async (e) => 
 
     } catch (err) {
         console.error(err);
-        resultEl.style.color = "#d32f2f";
+        resultEl.style.color = "#f87171";
         resultEl.textContent = "Erro ao conectar ao servidor.";
     }
 });
