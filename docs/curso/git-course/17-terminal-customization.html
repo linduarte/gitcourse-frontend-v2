@@ -23,136 +23,99 @@
 <body class="intro-page" data-topic-id="20">
 <div class="container">
 
-    <section id="terminal-customization-intro" style="padding: 40px 0; text-align: center;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Seu Terminal, Seu Painel de Controle</h2>
-        <p style="font-size: 1.1rem; max-width: 700px; margin: 0 auto;">
-            Aprenda a instalar o <strong>Starship</strong>: o motor que transforma seu terminal em uma ferramenta profissional, rápida e totalmente em português.
+    <section id="terminal-intro" style="padding: 40px 0; text-align: center;">
+        <h1 style="font-size: 2rem; color: #3b82f6;">Seu Cockpit de Programação</h1>
+        <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; color: #4b5563;">
+            Dominar o Git exige clareza. Vamos transformar seu terminal em um painel de instrumentos profissional, 
+            rápido e intuitivo usando o <strong>Starship</strong>.
         </p>
-        <a href="#terminal-customization" 
-        style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: #0078d4; color: white; border-radius: 6px; text-decoration: none; font-weight: bold;">
-            Configurar Meu Terminal Agora
-        </a>
     </section>
 
-    <section id="terminal-customization" style="padding: 60px 0; max-width: 900px; margin: 0 auto;">
-
-        <h1 style="font-size: 1.8rem; margin-bottom: 15px; text-align: center; color: #0078d4;">
-            Customização Profissional com Starship
-        </h1>
-
-        <div style="background: #e7f3ff; border-left: 5px solid #0078d4; padding: 15px; margin: 20px 0; border-radius: 4px;">
-        <strong>🌎 Um só comando, qualquer sistema:</strong> 
-        O Starship é multiplataforma. As instruções abaixo focam no Windows, mas se você usa <strong>Linux</strong>
-        ou <strong>Mac</strong>, o visual e a configuração final serão exatamente os mesmos!
-        </div>
-
-        <p style="font-size: 1.15rem; line-height: 1.6; text-align: center;">
-            Para dominar o Git, você precisa de clareza. O <strong>Starship</strong> funciona como um GPS: ele te diz exatamente onde você está, em qual ramificação (branch) do projeto você trabalha e se o seu Python está pronto para o combate.
-        </p>
-
-        <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
-
-        <h2 style="font-size: 1.5rem; margin-bottom: 20px; text-align: center;">O Salto de Qualidade</h2>
+    <section class="setup-guide" style="max-width: 900px; margin: 0 auto; padding: 20px;">
         
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-            <div style="flex: 1; min-width: 300px; background: #f9f9f9; padding: 20px; border-radius: 8px;">
-                <h3 style="font-size: 1.1rem; color: #666;">Antes: Terminal Comum</h3>
-                <img src="../../assets/images/command_c.webp" alt="Terminal padrão" style="max-width: 100%; border-radius: 4px; margin: 10px 0;">
-                <p style="font-size: 0.95rem; color: #777;">Escuro, sem cores e sem informações sobre o seu progresso no Git.</p>
-            </div>
-
-            <div style="flex: 1; min-width: 300px; background: #eef6ff; padding: 20px; border-radius: 8px; border: 1px solid #0078d4;">
-                <h3 style="font-size: 1.1rem; color: #0078d4;">Depois: Seu Novo Painel</h3>
-                <img src="../../assets/images/starship_snapshot.webp" alt="Terminal com Starship" style="max-width: 100%; border-radius: 4px; margin: 10px 0; border: 1px solid #ddd;">
-                <p style="font-size: 0.95rem; color: #444;"><strong>Tudo em Português:</strong> Pasta atual, ícone do Python e status do Git em tempo real.</p>
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #3b82f6; padding-left: 15px;">1. A Fundação: Windows Terminal e PowerShell</h2>
+            <p>Primeiro, precisamos das ferramentas modernas da Microsoft para garantir velocidade e suporte a cores.</p>
+            
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin-top: 15px;">
+                <p><strong>A. Instale o Windows Terminal:</strong></p>
+                <pre><code class="language-bash">winget install Microsoft.WindowsTerminal</code></pre>
+                
+                <p style="margin-top: 20px;"><strong>B. Instale o PowerShell Moderno (Versão 7+):</strong></p>
+                <pre><code class="language-bash">winget install --id Microsoft.PowerShell --source winget</code></pre>
             </div>
         </div>
 
-        <hr style="margin: 40px 0; border: 0;">
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #10b981; padding-left: 15px;">2. A Visão: Nerd Fonts (Obrigatório)</h2>
+            <p>Para enxergar os ícones (🐍 e 🌱), seu terminal precisa de uma fonte especial. Recomendamos a <strong>Fira Code</strong>.</p>
+            <pre><code class="language-bash">winget install NerdFonts.FiraCode</code></pre>
+            
+            <div style="margin: 20px 0; background: #fffbeb; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px;">
+                <strong>⚠️ Configuração Manual:</strong> Abra o Windows Terminal, vá em <em>Configurações > Aparência</em> e mude a fonte para <strong>"FiraCode Nerd Font"</strong>.
+            </div>
+        </div>
 
-        <h2 style="color: #0078d4;">Guia de Instalação (Windows)</h2>
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #8b5cf6; padding-left: 15px;">3. O Motor: Starship</h2>
+            <p>Agora instalamos o Starship e ensinamos o PowerShell a iniciá-lo automaticamente.</p>
+            <pre><code class="language-bash">winget install Starship.Starship</code></pre>
 
-        <h3>1. O Novo Terminal</h3>
-        <p>Antes de tudo, instale o <strong>Windows Terminal</strong>. Ele permite abrir várias abas e mostra as cores corretamente.</p>
-        <pre><code class="language-bash">winget install Microsoft.WindowsTerminal</code></pre>
+            <p style="margin-top: 20px;">Edite seu perfil de usuário:</p>
+            <pre><code class="language-powershell">notepad $PROFILE</code></pre>
+            
+            <p>Cole esta linha ao final do arquivo, salve e feche:</p>
+            <pre><code class="language-powershell">Invoke-Expression (&starship init powershell)</code></pre>
+        </div>
 
-        <h3>2. A Fonte Especial (Nerd Font)</h3>
-        <p>Para que os ícones (como a 🐍 do Python) apareçam, você precisa da fonte <strong>Fira Code Nerd Font</strong>.</p>
-        <pre><code class="language-bash">winget install NerdFonts.FiraCode</code></pre>
-        <p style="font-size: 0.9rem; background: #fff3cd; padding: 10px; border-radius: 4px;">
-            <strong>Dica:</strong> Após instalar, abra o Windows Terminal, vá em <em>Configurações > Aparência</em> e mude a fonte para "FiraCode Nerd Font".
-        </p>
-
-        <h3>3. Instalando o Motor (Starship)</h3>
-        <p>Agora, vamos instalar o motor que processa as informações:</p>
-        <pre><code class="language-bash">winget install Starship.Starship</code></pre>
-
-        <h3>4. Ativando e Traduzindo</h3>
-        <p>Abra o arquivo de configuração do seu terminal:</p>
-        <pre><code class="language-bash">notepad $PROFILE</code></pre>
-        <p>Adicione esta linha ao final do arquivo, salve e feche:</p>
-        <pre><code class="language-powershell">Invoke-Expression (&starship init powershell)</code></pre>
-
-        <hr style="margin: 30px 0;">
-
-        <h3>5. Configuração em Português</h3>
-        <p>Para que o seu terminal fale a sua língua, crie o arquivo de configuração:</p>
-        <pre><code class="language-bash">notepad ~/.config/starship.toml</code></pre>
-        <p>Cole o código abaixo para ter um visual limpo e eficiente:</p>
-
-<pre><code class="language-toml"># Configuração simplificada para o Curso do Charles
-add_newline = true
-
-[character]
-success_symbol = "[➜](bold green) "
-error_symbol = "[✗](bold red) "
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #ec4899; padding-left: 15px;">4. Personalização Profissional</h2>
+            <p>Crie o arquivo de configuração para ter o visual exato do curso:</p>
+            <pre><code class="language-bash">notepad ~/.config/starship.toml</code></pre>
+            
+            <p>Copie e cole o código abaixo:</p>
+            <div style="position: relative;">
+                <pre><code class="language-toml">
+# Configuração Oficial - Curso de Git Charles Duarte
+format = "$directory$git_branch$git_status$python$character"
 
 [directory]
-style = "bold cyan"
-placeholder = "Pasta Atual"
+style = "cyan"
+truncation_length = 3
 
 [git_branch]
-symbol = " "
-format = "em [$symbol$branch]($style) "
-style = "bold magenta"
+symbol = "🌱 "
+style = "bold purple"
+
+[git_status]
+style = "bold yellow"
+staged = "+"
+modified = "!"
+untracked = "?"
 
 [python]
 symbol = "🐍 "
-format = 'via [${symbol}Python ${version}]($style) '
-style = "bold yellow"
-</code></pre>
+format = "via [$symbol$version]($style) "
+style = "bold green"
 
-        <hr style="margin: 40px 0;">
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+                </code></pre>
+            </div>
+        </div>
 
-        <h2 style="text-align: center;">Por que isso ajuda você no curso?</h2>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-            <tr style="background: #0078d4; color: white;">
-                <th style="padding: 12px; border: 1px solid #ddd;">Sinal Visual</th>
-                <th style="padding: 12px; border: 1px solid #ddd;">O que significa?</th>
-            </tr>
-            <tr>
-                <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><strong>➜ (Verde)</strong></td>
-                <td style="padding: 12px; border: 1px solid #ddd;">Tudo certo! Pode digitar seu próximo comando Git.</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><strong>✗ (Vermelho)</strong></td>
-                <td style="padding: 12px; border: 1px solid #ddd;">Atenção! O último comando deu erro. Verifique o que foi digitado.</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><strong>🐍 Python</strong></td>
-                <td style="padding: 12px; border: 1px solid #ddd;">Confirmação de que o ambiente de programação está ligado.</td>
-            </tr>
-            <tr>
-                <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><strong> main</strong></td>
-                <td style="padding: 12px; border: 1px solid #ddd;">Mostra em qual "versão" do projeto você está trabalhando agora.</td>
-            </tr>
-        </table>
-
-        <p style="text-align: center; margin-top: 40px; font-weight: bold; color: #0078d4;">
-            🚀 Agora seu terminal está pronto para a jornada!
-        </p>
+        <div class="result-box" style="padding: 40px; background: #111827; border-radius: 12px; text-align: center; color: white;">
+            <h2 style="color: #10b981; margin-bottom: 20px;">🎯 Resultado Final</h2>
+            <p style="margin-bottom: 20px;">Seu terminal agora deve se parecer com este snapshot:</p>
+            <img src="../../assets/images/starship_show.webp" alt="Snapshot Starship" style="max-width: 100%; border-radius: 8px; border: 1px solid #374151; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <p style="margin-top: 20px; font-style: italic; color: #9ca3af;">
+                Note como a <strong>🐍 Versão do Python</strong> e a <strong>🌱 Branch</strong> ficam visíveis de imediato!
+            </p>
+        </div>
 
     </section>
+
 
 <!-- ============================
          FOOTER
