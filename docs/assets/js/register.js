@@ -1,4 +1,6 @@
-const API = window.CONFIG.API;
+const API = window.CONFIG.API_URL;
+
+console.log("🔥 API URL:", window.CONFIG?.API_URL);
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registerForm");
