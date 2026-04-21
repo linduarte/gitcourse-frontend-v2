@@ -1,8 +1,5 @@
-// dashboard-router. - ver.3.1 - 2026-04-19
-
+// dashboard-router.js
 import { HomeView } from './views/home-view.js';
-
-// 📚 Lista oficial de aulas
 export const LESSONS = [
     '1a-prefacio.html',
     '2-introduction.html',
@@ -22,104 +19,85 @@ export const LESSONS = [
     '16-git-workflows.html',
     '17-terminal-customization.html'
 ];
-// 🌐 Base das aulas (GitHub Pages)
+
 const BASE_URL = "https://linduarte.github.io/gitcourse-frontend-v2/curso/git-course/";
 
-// 🧠 Rotas SPA (somente dashboard)
 const routes = {
     home: () => new HomeView(),
-
     progresso: async () => ({
         async render() {
             const el = document.getElementById('spa-content');
             if (!el) return;
-
-            el.innerHTML = `
-                <div class="fade-in">
-                    <h2>📊 Progresso</h2>
-                    <p>Em construção...</p>
-                </div>
-            `;
+            el.innerHTML = `<div class="fade-in"><h2>📊 Progresso</h2><p>Em construção...</p></div>`;
         }
     })
 };
 
-// 🔍 Resolver aula com segurança (evita conflito 1 vs 1a)
+// 🔐 AUTENTICAÇÃO
+async function validarUsuario() {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = "auth/login.html";
+        return false;
+    }
+    try {
+        const response = await fetch(`${window.CONFIG.API_URL}/auth/me`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("Token inválido");
+        return true;
+    } catch (err) {
+        localStorage.removeItem("access_token");
+        window.location.href = "auth/login.html";
+        return false;
+    }
+}
+
 function resolverAula(id) {
     const idStr = String(id);
-
-    // 🔥 caso especial: aula 1 → 1a-prefacio
-    if (idStr === "1") {
-        return "1a-prefacio.html";
-    }
-
-    if (idStr === "1a") {
-        return "1a-prefacio.html";
-    }
-
-    // 🔎 busca padrão
+    if (idStr === "1" || idStr === "1a") return "1a-prefacio.html";
     return LESSONS.find(aula => aula.startsWith(idStr + "-"));
 }
 
-/**
- * 🚀 Navegação principal
- */
 export async function navegar(rota, atualizarURL = false) {
     const container = document.getElementById('spa-content');
+    if (!container) return;
 
-    if (!container) {
-        console.error("❌ Container #spa-content não encontrado");
-        return;
-    }
+    // 🔒 valida antes de tudo
+    if (!(await validarUsuario())) return;
 
-    // 🔄 Atualiza URL (somente dashboard)
-    if (atualizarURL) {
-        history.pushState({ rota }, "", `?page=${rota}`);
-    }
+    if (atualizarURL) history.pushState({ rota }, "", `?page=${rota}`);
 
     try {
-        // 🎓 ROTA DE AULA → REDIRECT (MPA)
         if (rota.startsWith("lesson:")) {
             const id = rota.split(":")[1];
-
-            console.log("➡️ ID recebido:", id);
-
             const arquivo = resolverAula(id);
-
-            console.log("➡️ Arquivo resolvido:", arquivo);
-
-            if (!arquivo) {
-                console.error("❌ Aula não encontrada:", id);
-                container.innerHTML = "<h2>Aula não encontrada</h2>";
-                return;
-            }
-
-            // 👉 REDIRECIONA PARA A AULA REAL
+            if (!arquivo) { container.innerHTML = "<h2>Aula não encontrada</h2>"; return; }
             window.location.href = BASE_URL + arquivo;
             return;
         }
 
-        // 🧠 ROTAS DO DASHBOARD (SPA)
         const factory = routes[rota];
-
-        if (!factory) {
-            container.innerHTML = "<h2>Rota não encontrada</h2>";
-            return;
-        }
+        if (!factory) { container.innerHTML = "<h2>Rota não encontrada</h2>"; return; }
 
         const view = await factory();
-
         container.innerHTML = "";
         await view.render();
 
     } catch (err) {
-        console.error("💥 Erro na navegação:", err);
-
-        container.innerHTML = `
-            <div class="error-container">
-                <h2>Erro ao carregar</h2>
-                <p>${err.message}</p>
-            </div>
-        `;
+        console.error("Erro na navegação:", err);
+        container.innerHTML = `<div class="error-container"><h2>Erro ao carregar</h2><p>${err.message}</p></div>`;
     }
 }
+
+// 🚪 LOGOUT GLOBAL
+export function logout() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_email");
+    window.location.href = "auth/login.html";
+}
+
+// 🔥 START
+document.addEventListener("DOMContentLoaded", () => {
+    navegar("home");
+});
