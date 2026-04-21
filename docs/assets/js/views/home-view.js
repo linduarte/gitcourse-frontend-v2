@@ -70,6 +70,15 @@ export class HomeView {
 
         // 📊 Dados do backend
         const pending = progresso?.pending_topics || [];
+
+        // 🔥 NOVO USUÁRIO → ir direto para o prefácio
+        if (!pending || pending.length === 0) {
+        alert("Bem-vindo ao Git Course! Vamos começar pelo Prefácio para você entender toda a jornada.");
+        window.location.href = "curso/git-course/1a-prefacio.html";
+        return;
+ }
+
+
         const total = progresso?.total || 15;
         const completed = progresso?.actual_count || 0;
         const percent = progresso?.percentage || 0;
