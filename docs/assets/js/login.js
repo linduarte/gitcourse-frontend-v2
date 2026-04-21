@@ -1,4 +1,4 @@
-import { CONFIG } from "./config.js";
+const API = window.CONFIG.API_URL;
 
 const response = await fetch(`${CONFIG.API_URL}/auth/token`, {
     method: "POST",
