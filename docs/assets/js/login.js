@@ -19,21 +19,33 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("📡 Tentando conexão com a VPS...");
 
         try {
-            // 2. DISPARO DO LOGIN
-            const response = await fetch(`${API_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    'email': emailInput,
-                    'password': passwordInput
+            // 2. DISPARO DO LOGIN (CORRETO)
+            const response = await fetch(`${API_URL}/auth/token`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    username: emailInput,   // ⚠️ email vai aqui
+                    password: passwordInput
                 })
             });
-
-            if (!response.ok) {
-                alert("❌ Falha no login. Verifique e-mail e senha.");
-                return;
+            
+            const data = await response.json();
+            
+            console.log("🔐 login response:", data);
+            
+            if (response.ok && data.access_token) {
+                // 💾 salva token
+                localStorage.setItem("access_token", data.access_token);
+            
+                console.log("✅ login OK");
+            
+                window.location.href = "../dashboard.html";
+            
+            } else {
+                console.error("❌ erro login:", data);
             }
-
             // 3. RECEBIMENTO DOS DADOS (Aqui o 'data' nasce!)
             const data = await response.json();
 
