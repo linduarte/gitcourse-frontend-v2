@@ -32,8 +32,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const data = await response.json();
-            
-            console.log("🔐 login response:", data);
+
+            console.log("🔐 resposta completa:", data);
+                    
+            // 🔥 ESSA LINHA É CRÍTICA
+            localStorage.setItem("access_token", data.access_token);
+                    
+            console.log("💾 salvo:", localStorage.getItem("access_token"));
             
             if (response.ok && data.access_token) {
                 // 💾 salva token
