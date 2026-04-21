@@ -1,4 +1,4 @@
-import { CONFIG } from "./config.js";
+const API = window.CONFIG.API;
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registerForm");
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // =========================
             // 🧾 REGISTRO
             // =========================
-            const response = await fetch(`${API_URL}/auth/register`, {
+            const response = await fetch(`${API}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // =========================
                 // 🔐 AUTO LOGIN (CORRIGIDO)
                 // =========================
-                const loginResponse = await fetch(`${API_URL}/auth/token`, {
+                const loginResponse = await fetch(`${API}/auth/token`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
