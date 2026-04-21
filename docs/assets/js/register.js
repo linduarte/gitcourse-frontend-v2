@@ -57,47 +57,45 @@ document.addEventListener("DOMContentLoaded", () => {
                 resultEl.textContent = "Conta criada! Entrando automaticamente...";
 
                 // =========================
-                // 🔐 AUTO LOGIN
+                // 🔐 AUTO LOGIN (CORRIGIDO)
                 // =========================
-                const loginResponse = await fetch(`${API_URL}/auth/login`, {
+                const loginResponse = await fetch(`${API_URL}/auth/token`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     body: new URLSearchParams({
-                        username: email,  // ⚠️ FastAPI exige "username"
+                        username: email,   // FastAPI espera "username"
                         password: password
                     })
                 });
 
-                const loginData = await loginResponse.json();
+                // 🔍 DEBUG (muito útil agora)
+                console.log("🔐 status login:", loginResponse.status);
 
-                if (loginResponse.ok) {
+                const loginData = await loginResponse.json();
+                console.log("🔐 resposta login:", loginData);
+
+                if (loginResponse.ok && loginData.access_token) {
                     // 💾 salva token
                     localStorage.setItem("access_token", loginData.access_token);
-
-                    // 🚀 vai direto para dashboard
+                
+                    console.log("✅ Login automático OK");
+                
+                    // 🚀 redireciona direto
                     setTimeout(() => {
                         window.location.href = "../dashboard.html";
-                    }, 1000);
-
+                    }, 800);
+                
                 } else {
+                    console.warn("⚠️ Auto-login falhou → indo para login");
+                
                     // fallback seguro
-                    window.location.href = "login.html";
-                }
-
-            } else {
-                resultEl.style.color = "#f87171";
-
-                if (typeof data.detail === "string") {
-                    resultEl.textContent = "Erro: " + data.detail;
-                } else if (Array.isArray(data.detail)) {
-                    resultEl.textContent = "Erro: " + data.detail[0].msg;
-                } else {
-                    resultEl.textContent = "Erro ao registrar.";
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 1200);
                 }
             }
-
         } catch (err) {
             console.error(err);
             resultEl.style.color = "#f87171";
