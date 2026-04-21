@@ -286,5 +286,9 @@ estudo técnico → produto funcional
 
 ---
 
+## 🌐 Acesso ao projeto
 
+Acesse a plataforma em produção:
+
+👉 https://linduarte.github.io/gitcourse-frontend-v2/
 
