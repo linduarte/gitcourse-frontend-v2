@@ -4,6 +4,7 @@ import { getProgress } from '../git-course-functions.js';
 export class HomeView {
     constructor() {
         this.container = document.getElementById('spa-content');
+        this.redirecting = false; // 🔒 evita múltiplos redirects
     }
 
     async render() {
@@ -39,17 +40,12 @@ export class HomeView {
     async carregarDados() {
         try {
             const progresso = await getProgress();
-
             console.log("🔥 BACKEND:", progresso);
-
             this.atualizarUI(progresso);
 
         } catch (err) {
             console.error("Erro API:", err);
-
-            this.container.innerHTML = `
-                <h2>Erro ao conectar com servidor</h2>
-            `;
+            this.container.innerHTML = `<h2>Erro ao conectar com servidor</h2>`;
         }
     }
 
@@ -59,32 +55,46 @@ export class HomeView {
         const progressText = document.getElementById("progress-text");
         const progressFill = document.getElementById("progress-fill");
         const lacunasBox = document.getElementById("lacunas-box");
+        const mensagemBox = document.getElementById("mensagem-status");
 
-        // 👤 Nome via email
+        // =========================
+        // 👤 NOME DO USUÁRIO
+        // =========================
         const email = localStorage.getItem("user_email") || "usuário";
-        const nome = email.split("@")[0];
+        const nomeBase = email.split("@")[0];
+        const nomeLimpo = nomeBase.replace(/[._]/g, " ");
+        const nome = nomeLimpo.charAt(0).toUpperCase() + nomeLimpo.slice(1);
 
         if (welcome) {
             welcome.textContent = `Bem-vindo, ${nome}!`;
         }
 
-        // 📊 Dados do backend
+        // =========================
+        // 📊 DADOS BACKEND
+        // =========================
         const pending = progresso?.pending_topics || [];
-
-        // 🔥 NOVO USUÁRIO → ir direto para o prefácio
-        if (!pending || pending.length === 0) {
-        alert("Bem-vindo ao Git Course! Vamos começar pelo Prefácio para você entender toda a jornada.");
-        window.location.href = "curso/git-course/1a-prefacio.html";
-        return;
- }
-
-
         const total = progresso?.total || 15;
         const completed = progresso?.actual_count || 0;
         const percent = progresso?.percentage || 0;
 
+        // =========================
+        // 🚀 NOVO USUÁRIO → PREFÁCIO
+        // =========================
+        if (!pending.length && !this.redirecting) {
+            this.redirecting = true;
 
-        let mensagem = "";
+            setTimeout(() => {
+                alert("Bem-vindo ao Git Course! Vamos começar pelo Prefácio 🚀");
+                window.location.href = "curso/git-course/1a-prefacio.html";
+            }, 300);
+
+            return;
+        }
+
+        // =========================
+        // 💬 MENSAGEM DINÂMICA
+        // =========================
+        let mensagem = "👋 Bem-vindo! Vamos começar sua jornada!";
 
         if (percent === 100) {
             mensagem = "🏆 Parabéns! Você concluiu o curso!";
@@ -94,108 +104,87 @@ export class HomeView {
             mensagem = "🚀 Excelente progresso, continue assim!";
         } else if (percent > 0) {
             mensagem = "💡 Continue avançando, você está no caminho certo!";
-        } else {
-            mensagem = "👋 Bem-vindo! Vamos começar sua jornada!";
         }
-
-        // 👇 👉 AQUI entra o seu código
-        const mensagemBox = document.getElementById("mensagem-status");
 
         if (mensagemBox) {
             mensagemBox.textContent = mensagem;
-        
-            // 🔥 limpa classes antigas
             mensagemBox.className = "mensagem-status";
-        
-            // 🎯 aplica estilo dinâmico
-            if (percent === 100) {
-                mensagemBox.classList.add("sucesso");
-            } else if (percent >= 80) {
-                mensagemBox.classList.add("alerta");
-            } else if (percent >= 50) {
-                mensagemBox.classList.add("progresso");
-            } else {
-                mensagemBox.classList.add("inicio");
-            }
+
+            if (percent === 100) mensagemBox.classList.add("sucesso");
+            else if (percent >= 80) mensagemBox.classList.add("alerta");
+            else if (percent >= 50) mensagemBox.classList.add("progresso");
+            else mensagemBox.classList.add("inicio");
         }
 
-        // 📊 UI progresso
+        // =========================
+        // 📊 PROGRESSO VISUAL
+        // =========================
         if (progressText) {
             progressText.textContent = `Progresso: ${completed} / ${total} aulas (${percent}%)`;
         }
 
         if (progressFill) {
             progressFill.style.width = "0%";
-
             setTimeout(() => {
                 progressFill.style.width = `${percent}%`;
             }, 150);
-    }
+        }
 
+        // =========================
+        // 🎯 BOTÃO PRINCIPAL
+        // =========================
         if (!btn) return;
 
-        // 🎯 BOTÃO PRINCIPAL
         if (pending.length === 0) {
             btn.textContent = "Curso Concluído 🎉";
             btn.onclick = () => navegar("progresso", true);
         } else {
             const aula = pending[0];
-        
-            if (aula === "1a") {
-                btn.textContent = "Iniciar Jornada Git";
-                btn.onclick = () => navegar("lesson:1a", true);
-            } else {
-                btn.textContent = `Retomar Aula ${aula}`;
-                btn.onclick = () => navegar(`lesson:${aula}`, true);
-            }
+
+            btn.textContent = aula === "1a"
+                ? "Iniciar Jornada Git"
+                : `Retomar Aula ${aula}`;
+
+            btn.onclick = () => navegar(`lesson:${aula}`, true);
         }
 
-            // =========================
-    // 🎨 LACUNAS VISUAIS
-    // =========================
-        
-    function getLessonName(aulaId) {
-        const file = LESSONS.find(f => f.startsWith(`${aulaId}-`));
-        return file
-            ?.replace('.html', '')
-            ?.replace(/^\d+-?/, '')
-            ?.replace(/-/g, ' ') || `Aula ${aulaId}`;
-    }
-    
-    function formatLessonName(name) {
-        return name
-            .replace(/_/g, ' ')
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, c => c.toUpperCase());
-    }
-    
-    if (lacunasBox && pending.length > 0) {
-    
-        lacunasBox.innerHTML = `
-            <div class="lacunas-card">
-                <h3>⚠️ Continue sua jornada</h3>
-                <p>Você pulou algumas etapas importantes:</p>
-    
-                <div class="lacunas-list">
-                    ${pending.map(a => `
-                        <button class="lacuna-btn" data-aula="${a}">
-                            Aula ${a} - ${formatLessonName(getLessonName(a))}
-                        </button>
-                    `).join("")}
+        // =========================
+        // 🎨 LACUNAS VISUAIS
+        // =========================
+        const getLessonName = (id) => {
+            const file = LESSONS.find(f => f.startsWith(`${id}-`));
+            return file
+                ?.replace('.html', '')
+                ?.replace(/^\d+-?/, '')
+                ?.replace(/-/g, ' ') || `Aula ${id}`;
+        };
+
+        const formatName = (name) =>
+            name.replace(/\b\w/g, c => c.toUpperCase());
+
+        if (lacunasBox && pending.length > 0) {
+            lacunasBox.innerHTML = `
+                <div class="lacunas-card">
+                    <h3>⚠️ Continue sua jornada</h3>
+                    <p>Você pulou algumas etapas importantes:</p>
+                    <div class="lacunas-list">
+                        ${pending.map(a => `
+                            <button class="lacuna-btn" data-aula="${a}">
+                                Aula ${a} - ${formatName(getLessonName(a))}
+                            </button>
+                        `).join("")}
+                    </div>
                 </div>
-            </div>
-        `;
-                    
-        // eventos
-        lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const aula = btn.dataset.aula;
-                navegar(`lesson:${aula}`, true);
+            `;
+
+            lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    navegar(`lesson:${btn.dataset.aula}`, true);
+                });
             });
-        });
-    
-    } else if (lacunasBox) {
-        lacunasBox.innerHTML = "";
-    }
+
+        } else if (lacunasBox) {
+            lacunasBox.innerHTML = "";
+        }
     }
 }
