@@ -1,17 +1,22 @@
-// login.js
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
     const resultEl = document.getElementById("result");
+    const btn = document.getElementById("btn-login");
 
-    // 🌐 API global (config.js)
     const API = window.CONFIG?.API_URL;
 
-    console.log("🔥 API URL:", API);
+    console.log("🔥 API:", API);
 
-    // 🎯 Foco automático
-    if (emailInput) emailInput.focus();
+    // 🔥 Preenche email salvo
+    const savedEmail = localStorage.getItem("user_email");
+    if (savedEmail) {
+        emailInput.value = savedEmail;
+    }
+
+    // 🎯 foco automático
+    emailInput.focus();
 
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -19,63 +24,53 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // 💡 Feedback inicial
-        resultEl.style.color = "#9ca3af";
-        resultEl.textContent = "Entrando...";
+        // UX
+        btn.disabled = true;
+        btn.textContent = "Entrando...";
+        resultEl.textContent = "";
 
         try {
-            // 🔐 LOGIN
             const response = await fetch(`${API}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
+                body: JSON.stringify({ email, password })
             });
 
             const data = await response.json();
 
-            console.log("🔐 resposta login:", data);
+            console.log("🔐 resposta:", data);
 
             if (response.ok && data.access_token) {
 
-                // 💾 salva token
+                // 💾 salvar sessão
                 localStorage.setItem("access_token", data.access_token);
-
-                // 💾 salva email (UX)
                 localStorage.setItem("user_email", email);
 
                 resultEl.style.color = "#4ade80";
                 resultEl.textContent = "Login realizado com sucesso!";
 
-                console.log("✅ Token salvo:", localStorage.getItem("access_token"));
-
-                // 🚀 Redireciona
                 setTimeout(() => {
                     window.location.href = "../dashboard.html";
                 }, 800);
 
             } else {
-                // ❌ erro de autenticação
                 resultEl.style.color = "#f87171";
+                resultEl.textContent = data.detail || "Email ou senha inválidos.";
 
-                if (typeof data.detail === "string") {
-                    resultEl.textContent = "Erro: " + data.detail;
-                } else if (Array.isArray(data.detail)) {
-                    resultEl.textContent = "Erro: " + data.detail[0].msg;
-                } else {
-                    resultEl.textContent = "Email ou senha inválidos.";
-                }
+                btn.disabled = false;
+                btn.textContent = "Entrar";
             }
 
         } catch (err) {
-            console.error("❌ erro conexão:", err);
+            console.error(err);
 
             resultEl.style.color = "#f87171";
             resultEl.textContent = "Erro ao conectar ao servidor.";
+
+            btn.disabled = false;
+            btn.textContent = "Entrar";
         }
     });
 });
