@@ -1,92 +1,34 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Registro - Git Course</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/gitcourse.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Git Course</title>
+    <link rel="stylesheet" href="../assets/css/gitcourse.css">
 </head>
 <body>
+<main class="container register-box" style="max-width: 400px; margin: 50px auto;">
+    <h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
 
-<main class="container register-box" style="max-width:400px; margin:50px auto;">
-<h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
+    <div class="card" style="padding:30px;">
+        <h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
 
-<div class="card" style="padding:30px;">
-<h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
+        <form id="registerForm" autocomplete="on">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required>
+            <label for="password">Senha</label>
+            <input type="password" id="password" placeholder="Crie uma senha" autocomplete="new-password" required>
+            <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">Registrar</button>
+        </form>
 
-<form id="registerForm" autocomplete="on">
-    <label for="email">Email</label>
-    <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required>
-
-    <label for="password">Senha</label>
-    <input type="password" id="password" placeholder="Crie uma senha" autocomplete="new-password" required>
-
-    <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">Registrar</button>
-</form>
-
-<div id="result" style="margin-top:15px;"></div>
-<p style="text-align:center; margin-top:20px;">
-    Já tem conta? <a href="login.html">Faça login</a>
-</p>
-</div>
+        <div id="result" style="margin-top:15px;"></div>
+        <p style="text-align:center; margin-top:20px;">
+            Já tem conta? <a href="login.html">Faça login</a>
+        </p>
+    </div>
 </main>
 
-<!-- ✔ SCRIPT MODULE -->
-<script type="module">
-import { register, login } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
-import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
-
-const API = CONFIG.API_URL;
-const form = document.getElementById("registerForm");
-const resultEl = document.getElementById("result");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-
-emailInput.focus();
-
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    // Validação básica
-    if (password.length < 6 || !/[a-zA-Z]/.test(password)) {
-        resultEl.style.color = "#f87171";
-        resultEl.textContent = "A senha deve ter pelo menos 6 caracteres e conter letras.";
-        return;
-    }
-
-    resultEl.style.color = "#333";
-    resultEl.textContent = "Registrando...";
-
-    try {
-        const regSuccess = await register(email, password, API);
-
-        if (regSuccess) {
-            localStorage.setItem("user_email", email);
-            resultEl.style.color = "#4ade80";
-            resultEl.textContent = "Conta criada! Entrando automaticamente...";
-
-            // Auto-login
-            const loginSuccess = await login(email, password, API);
-            if (loginSuccess) {
-                window.location.href = "/gitcourse-frontend-v2/dashboard.html";
-            } else {
-                window.location.href = "/gitcourse-frontend-v2/login.html";
-            }
-        } else {
-            resultEl.style.color = "#f87171";
-            resultEl.textContent = "Erro ao criar conta.";
-        }
-
-    } catch (err) {
-        console.error(err);
-        resultEl.style.color = "#f87171";
-        resultEl.textContent = "Erro ao conectar ao servidor.";
-    }
-});
-</script>
+<!-- Scripts -->
+<script type="module" src="/gitcourse-frontend-v2/assets/js/register.js"></script>
 </body>
 </html>
