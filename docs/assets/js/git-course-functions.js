@@ -3,6 +3,10 @@
 // 🔹 Funções de integração Frontend ↔ Backend
 // 🔹 Compatível com import { login, register, logout, registrarEAvancar, getProgress } from "./git-course-functions.js"
 
+import { CONFIG } from "./config.js";
+
+const API = CONFIG.API_URL;
+
 export async function register(email, password, apiUrl) {
     try {
         const response = await fetch(`${apiUrl}/auth/register`, {
