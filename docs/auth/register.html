@@ -1,104 +1,92 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Registro - Git Course</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro - Git Course</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="../assets/css/gitcourse.css">
+<link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/gitcourse.css">
 </head>
-
 <body>
 
-  <main>
-    <div class="container register-box">
+<main class="container register-box" style="max-width:400px; margin:50px auto;">
+<h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
 
-      <h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
+<div class="card" style="padding:30px;">
+<h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
 
-      <div class="card" style="padding:30px;">
+<form id="registerForm" autocomplete="on">
+    <label for="email">Email</label>
+    <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required>
 
-        <h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
+    <label for="password">Senha</label>
+    <input type="password" id="password" placeholder="Crie uma senha" autocomplete="new-password" required>
 
-        <form id="registerForm" autocomplete="on">
+    <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">Registrar</button>
+</form>
 
-  <!-- EMAIL -->
-      <label for="email">Email</label>
-      <input 
-        type="email" 
-        id="email"
-        name="email"
-        placeholder="seu@email.com"
-        autocomplete="email"
-        required
-      >
+<div id="result" style="margin-top:15px;"></div>
+<p style="text-align:center; margin-top:20px;">
+    Já tem conta? <a href="login.html">Faça login</a>
+</p>
+</div>
+</main>
 
-      <!-- SENHA -->
-      <label for="password">Senha</label>
-      <input 
-        type="password" 
-        id="password"
-        name="password"
-        placeholder="Crie uma senha"
-        autocomplete="new-password"
-        required
-      >
+<!-- ✔ SCRIPT MODULE -->
+<script type="module">
+import { register, login } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
 
-      <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">
-        Registrar
-      </button>
+const API = CONFIG.API_URL;
+const form = document.getElementById("registerForm");
+const resultEl = document.getElementById("result");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-      </form>
+emailInput.focus();
 
-        <div id="result" style="margin-top:15px;"></div>
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
 
-        <p style="text-align:center; margin-top:20px;">
-          Já tem conta?
-          <a href="login.html" class="footer-link">Faça login</a>
-        </p>
+    // Validação básica
+    if (password.length < 6 || !/[a-zA-Z]/.test(password)) {
+        resultEl.style.color = "#f87171";
+        resultEl.textContent = "A senha deve ter pelo menos 6 caracteres e conter letras.";
+        return;
+    }
 
-      </div>
+    resultEl.style.color = "#333";
+    resultEl.textContent = "Registrando...";
 
-      <div class="footer" style="margin-top:30px;">
-        <p>&copy; 2025 Curso de Git</p>
+    try {
+        const regSuccess = await register(email, password, API);
 
-        <div class="footer-badges">
+        if (regSuccess) {
+            localStorage.setItem("user_email", email);
+            resultEl.style.color = "#4ade80";
+            resultEl.textContent = "Conta criada! Entrando automaticamente...";
 
-          <a href="https://pages.github.com/" class="github-link">
-            <span>Powered by GitHub Pages</span>
-            <img src="../assets/images/github-mark-white.png"
-                 alt="GitHub Logo"
-                 class="footer-logo"
-                 width="16" height="16">
-          </a>
+            // Auto-login
+            const loginSuccess = await login(email, password, API);
+            if (loginSuccess) {
+                window.location.href = "/gitcourse-frontend-v2/dashboard.html";
+            } else {
+                window.location.href = "/gitcourse-frontend-v2/login.html";
+            }
+        } else {
+            resultEl.style.color = "#f87171";
+            resultEl.textContent = "Erro ao criar conta.";
+        }
 
-          <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
-                 alt="CSS válido!"
-                 class="footer-logo"
-                 width="45" height="16">
-          </a>
-
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <!-- ✔ ORDEM CORRETA -->
-  <script src="/gitcourse-frontend-v2/assets/js/config.js"></script>
-  <script src="/gitcourse-frontend-v2/assets/js/register.js"></script>
-  
-
-
-// 🎯 Foco automático
-// document.getElementById("email").focus();
-
-
-
-
+    } catch (err) {
+        console.error(err);
+        resultEl.style.color = "#f87171";
+        resultEl.textContent = "Erro ao conectar ao servidor.";
+    }
+});
+</script>
 </body>
 </html>
