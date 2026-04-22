@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard - Git Course</title>
 
-  
-
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,41 +49,34 @@
     <div id="global-loader" class="hidden">
       <div class="spinner"></div>
     </div>
-    <!-- SPA ROOT (ÚNICO!) -->
+
+    <!-- SPA ROOT -->
     <section id="spa-content" aria-live="polite">
-      <p class="loading-text">
-        Carregando sua jornada técnica...
-      </p>
+      <p class="loading-text">Carregando sua jornada técnica...</p>
     </section>
+
+    <!-- Lacunas visuais -->
+    <section id="lacunas-box"></section>
+
+    <!-- Mensagens de status -->
+    <p id="mensagem-status" class="mensagem-status"></p>
 
     <!-- FOOTER -->
     <footer class="footer">
       <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
           <span>🐙 GitHub Pages</span>
-          <img 
-            src="assets/images/github-mark-white.png" 
-            alt="GitHub Logo" 
-            class="footer-logo"
-          >
+          <img src="assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
-
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
-          <img 
-            src="https://jigsaw.w3.org/css-validator/images/vcss" 
-            alt="CSS válido!" 
-            class="footer-logo" 
-            width="45" 
-            height="16"
-          >
+          <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
         </a>
       </div>
     </footer>
-
   </main>
 
-  <!-- JS -->
-  <script type="module" src="./assets/js/dashboard-app.js"></script>
+  <!-- SCRIPTS -->
+  <script type="module" src="/gitcourse-frontend-v2/assets/js/dashboard-app.js"></script>
 
 </body>
 </html>
