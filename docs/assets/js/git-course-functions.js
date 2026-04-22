@@ -5,7 +5,7 @@
 
 const API = window.CONFIG.API_URL;
 
-const API_URL = "https://charles-gitcourse.duckdns.org";
+// const API_URL = "https://charles-gitcourse.duckdns.org";
 
 /**
  * Registra o progresso de uma aula e avança para a próxima.
@@ -36,7 +36,7 @@ export async function registrarEAvancar(event, topicId, proximaAula) {
 
     try {
         // 4. Disparo do Sinal para a VPS
-        const response = await fetch(`${API_URL}/progress/complete`, {
+        const response = await fetch(`${API}/progress/complete`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export async function getProgress() {
     }
 
     try {
-        const response = await fetch(`${CONFIG.API_URL}/progress/summary`, {
+        const response = await fetch(`${API}/progress/summary`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
