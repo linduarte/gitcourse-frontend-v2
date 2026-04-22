@@ -1,25 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login - Git Course</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/gitcourse.css">
-
-<style>
-.login-box .card { background-color: #f8f9fa; border: 1px solid #e9ecef; padding: 30px; border-radius: 8px; }
-.btn-footer-primary { background-color: #5f9ea0; border: none; color: white; padding: 12px; width: 100%; cursor: pointer; margin-top: 15px; border-radius: 4px; font-weight: bold; }
-.btn-footer-primary:hover { background-color: #4f8e90; }
-.form-group { margin-bottom: 15px; }
-label { display: block; margin-bottom: 5px; font-weight: bold; }
-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Git Course</title>
+    <link rel="stylesheet" href="../assets/css/gitcourse.css">
 </head>
 <body>
-
-<main class="container login-box" style="max-width: 400px; margin:50px auto;">
+<main class="container login-box" style="max-width: 400px; margin: 50px auto;">
     <h1 style="text-align:center; margin-bottom:25px;">Git Course</h1>
 
     <div class="card">
@@ -35,6 +23,7 @@ input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; 
             </div>
             <button type="submit" class="btn-footer-primary">Entrar</button>
         </form>
+
         <div id="result" style="margin-top:15px; text-align:center;"></div>
         <p style="text-align:center; margin-top:20px;">
             Ainda não tem conta? <a href="register.html">Registre-se</a>
@@ -42,48 +31,7 @@ input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; 
     </div>
 </main>
 
-<!-- ✔ SCRIPT MODULE -->
-<script type="module">
-import { login, logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
-import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
-
-const API = CONFIG.API_URL;
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const form = document.getElementById("login-form");
-const resultEl = document.getElementById("result");
-
-// Preenche email salvo (UX)
-const savedEmail = localStorage.getItem("user_email");
-if (savedEmail) emailInput.value = savedEmail;
-emailInput.focus();
-
-// Submit login
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-    resultEl.style.color = "#333";
-    resultEl.textContent = "Entrando...";
-
-    try {
-        const success = await login(email, password, API);
-        if (success) {
-            localStorage.setItem("user_email", email);
-            window.location.href = "/gitcourse-frontend-v2/dashboard.html";
-        } else {
-            resultEl.style.color = "#f87171";
-            resultEl.textContent = "E-mail ou senha incorretos.";
-        }
-    } catch (err) {
-        console.error(err);
-        resultEl.style.color = "#f87171";
-        resultEl.textContent = "Erro ao conectar ao servidor.";
-    }
-});
-
-// Logout global
-window.logout = () => logout();
-</script>
+<!-- Scripts: ordem importa! -->
+<script type="module" src="/gitcourse-frontend-v2/assets/js/login.js"></script>
 </body>
 </html>
