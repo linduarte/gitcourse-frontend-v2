@@ -33,11 +33,7 @@
                     }
                 }
 
-                if (Date.now() - start >= maxWait) {
-                    console.log('TEST_LOG: auth-guard redirecting to landing');
-                    window.location.href = '../../landing.html';
-                    return;
-                }
+                
                 setTimeout(tryCheck, interval);
             };
             tryCheck();
