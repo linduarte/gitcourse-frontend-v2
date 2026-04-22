@@ -3,7 +3,7 @@
  * Refatoração Charles Duarte - Abril 2026
  */
 
-import { CONFIG } from './config.js';
+const API = window.CONFIG.API_URL;
 
 const API_URL = "https://charles-gitcourse.duckdns.org";
 
