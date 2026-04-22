@@ -1,106 +1,101 @@
-/** 
- * GitCourse - Funções de Integração Frontend/Backend
- * Refatoração blindada contra CONFIG indefinido
- * Autor: Charles Duarte - Abril 2026
- */
+// git-course-functions.js - Versão final (Módulo ES6)
+// Autor: Charles Duarte - Abril 2026
+// 🔹 Funções de integração Frontend ↔ Backend
+// 🔹 Compatível com import { login, register, logout, registrarEAvancar, getProgress } from "./git-course-functions.js"
 
-// 🔥 Função para obter a API de forma segura
-function getAPI() {
-    if (!window.CONFIG || !window.CONFIG.API_URL) {
-        console.warn("⚠️ CONFIG ou API_URL não encontrado. Usando fallback seguro.");
-        return "https://charles-gitcourse.duckdns.org";
+export async function register(email, password, apiUrl) {
+    try {
+        const response = await fetch(`${apiUrl}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (!response.ok) return false;
+        return true;
+    } catch (err) {
+        console.error("Erro no register:", err);
+        return false;
     }
-    return window.CONFIG.API_URL;
 }
 
-// ==================================================
-//  FUNÇÃO: registrarEAvancar
-// ==================================================
-export async function registrarEAvancar(event, topicId, proximaAula) {
-    if (event) event.preventDefault();
+export async function login(email, password, apiUrl) {
+    try {
+        const response = await fetch(`${apiUrl}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
 
+        if (!response.ok) return false;
+
+        const data = await response.json();
+        if (data.access_token) {
+            localStorage.setItem("access_token", data.access_token);
+            return true;
+        }
+        return false;
+    } catch (err) {
+        console.error("Erro no login:", err);
+        return false;
+    }
+}
+
+export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
+    window.location.href = redirectUrl;
+}
+
+export async function registrarEAvancar(event, topicId, proximaAula, apiUrl) {
+    if (event) event.preventDefault();
     const btn = event ? (event.currentTarget || event.target) : null;
     const token = localStorage.getItem("access_token");
     const email = localStorage.getItem("user_email") || "visitante@test.com";
 
-    console.log(`📡 [Fluxo] Iniciando registro da Aula ${topicId} para ${email}`);
-
-    // Função auxiliar de navegação
-    const navegar = () => { 
-        if (proximaAula) window.location.href = proximaAula; 
-    };
+    const navegar = () => { window.location.href = proximaAula; };
 
     if (!token) {
-        console.warn("⚠️ Token não encontrado. Navegando como visitante.");
+        console.warn("⚠️ Token não encontrado. Redirecionando como visitante.");
         navegar();
         return;
     }
 
     try {
-        const response = await fetch(`${getAPI()}/progress/complete`, {
+        const response = await fetch(`${apiUrl}/progress/complete`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                email: email,
-                topic_id: parseInt(topicId)
-            })
+            body: JSON.stringify({ email, topic_id: parseInt(topicId) })
         });
 
-        if (response.ok) {
-            console.log("✅ [VPS] Registro concluído.");
-
-            if (btn) {
-                btn.innerText = "Registrado! ✓";
-                btn.style.backgroundColor = "#28a745";
-                btn.disabled = true;
-            }
-
+        if (response.ok && btn) {
+            btn.innerText = "Registrado! ✓";
+            btn.style.backgroundColor = "#28a745";
+            btn.disabled = true;
             setTimeout(navegar, 800);
-
         } else if (response.status === 401) {
-            console.error("❌ Sessão expirada ou Token inválido.");
-            alert("Sua sessão expirou. Por favor, faça login novamente.");
-            window.location.href = "login.html";
+            alert("Sessão expirada. Faça login novamente.");
+            window.location.href = "/gitcourse-frontend-v2/login.html";
         } else {
-            const erroMsg = await response.text();
-            console.error(`❌ Status ${response.status}: ${erroMsg}`);
+            console.error(`Erro no registro: Status ${response.status}`);
             navegar();
         }
-
-    } catch (error) {
-        console.error("💥 Falha crítica de conexão:", error);
+    } catch (err) {
+        console.error("Erro de rede:", err);
         navegar();
     }
 }
 
-// ==================================================
-//  FUNÇÃO: logout
-// ==================================================
-export function logout() {
-    console.log("🔐 Encerrando sessão...");
-
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("user_name");
-
-    const repoPath = "/gitcourse-frontend-v2";
-    window.location.href = window.location.origin + repoPath + "/index.html";
-}
-
-window.logout = logout;
-
-// ==================================================
-//  FUNÇÃO: getProgress
-// ==================================================
-export async function getProgress() {
+export async function getProgress(apiUrl) {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("Token não encontrado");
 
     try {
-        const response = await fetch(`${getAPI()}/progress/summary`, {
+        const response = await fetch(`${apiUrl}/progress/summary`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -109,12 +104,9 @@ export async function getProgress() {
         });
 
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-
-        const data = await response.json();
-        return data;
-
-    } catch (error) {
-        console.error("Erro ao buscar progresso:", error);
-        throw error;
+        return await response.json();
+    } catch (err) {
+        console.error("Erro ao buscar progresso:", err);
+        throw err;
     }
 }
