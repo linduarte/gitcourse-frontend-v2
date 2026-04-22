@@ -1,3 +1,13 @@
+// login.js 2026-04-22
+
+function getAPI() {
+    if (!window.CONFIG || !window.CONFIG.API_URL) {
+        console.warn("⚠️ CONFIG não carregado. Usando fallback.");
+        return "https://charles-gitcourse.duckdns.org";
+    }
+    return window.CONFIG.API_URL;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("login-form");
     const emailInput = document.getElementById("email");
@@ -5,17 +15,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultEl = document.getElementById("result");
     const btn = document.getElementById("btn-login");
 
-    const API = window.CONFIG?.API_URL;
-
-    console.log("🔥 API:", API);
-
-    // 🔥 Preenche email salvo
     const savedEmail = localStorage.getItem("user_email");
-    if (savedEmail) {
-        emailInput.value = savedEmail;
-    }
+    if (savedEmail) emailInput.value = savedEmail;
 
-    // 🎯 foco automático
     emailInput.focus();
 
     form.addEventListener("submit", async (e) => {
@@ -24,13 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // UX
         btn.disabled = true;
         btn.textContent = "Entrando...";
         resultEl.textContent = "";
 
         try {
-            const response = await fetch(`${API}/auth/login`, {
+            const response = await fetch(`${getAPI()}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -40,11 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
 
-            console.log("🔐 resposta:", data);
-
             if (response.ok && data.access_token) {
 
-                // 💾 salvar sessão
                 localStorage.setItem("access_token", data.access_token);
                 localStorage.setItem("user_email", email);
 
@@ -67,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error(err);
 
             resultEl.style.color = "#f87171";
-            resultEl.textContent = "Erro ao conectar ao servidor.";
+            resultEl.textContent = "Erro ao conectar.";
 
             btn.disabled = false;
             btn.textContent = "Entrar";
