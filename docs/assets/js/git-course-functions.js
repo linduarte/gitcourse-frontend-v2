@@ -1,52 +1,10 @@
-// git-course-functions.js - Versão final (Módulo ES6)
-// Autor: Charles Duarte - Abril 2026
-// 🔹 Funções de integração Frontend ↔ Backend
-// 🔹 Compatível com import { login, register, logout, registrarEAvancar, getProgress } from "./git-course-functions.js"
-// Last update: April 23, 2026 – 16:44
-
-
+// git-course-functions.js - Refatorado 2026-04-23
+// Last update: April 23, 2026 – 17:23
 import { CONFIG } from "./config.js";
 
 const API = CONFIG.API_URL;
 
-export async function register(email, password, apiUrl) {
-    try {
-        const response = await fetch(`${apiUrl}/auth/register`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-
-        if (!response.ok) return false;
-        return true;
-    } catch (err) {
-        console.error("Erro no register:", err);
-        return false;
-    }
-}
-
-export async function login(email, password, apiUrl) {
-    try {
-        const response = await fetch(`${apiUrl}/auth/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
-        });
-
-        if (!response.ok) return false;
-
-        const data = await response.json();
-        if (data.access_token) {
-            localStorage.setItem("access_token", data.access_token);
-            return true;
-        }
-        return false;
-    } catch (err) {
-        console.error("Erro no login:", err);
-        return false;
-    }
-}
-
+// Função de logout
 export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_email");
@@ -54,6 +12,7 @@ export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
     window.location.href = redirectUrl;
 }
 
+// Registro de progresso (inclui suporte para aula 2 + sub-aula 17)
 export async function registrarEAvancar(event, topicId, proximaAula) {
     if (event) event.preventDefault();
     const btn = event ? (event.currentTarget || event.target) : null;
@@ -68,41 +27,55 @@ export async function registrarEAvancar(event, topicId, proximaAula) {
         return;
     }
 
-    try {
-        const response = await fetch(`${API}/progress/complete`, {  // usa API do módulo
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ email, topic_id: parseInt(topicId) })
-        });
+    // Define os tópicos a registrar
+    const topicsParaRegistrar = [topicId];
+    if (topicId === 2) topicsParaRegistrar.push(17); // aula 2 + sub-aula 17
 
-        if (response.ok && btn) {
+    try {
+        for (const t of topicsParaRegistrar) {
+            const response = await fetch(`${API}/progress/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ email, topic_id: parseInt(t) })
+            });
+
+            if (!response.ok) {
+                if (response.status === 401) {
+                    alert("Sessão expirada. Faça login novamente.");
+                    window.location.href = "/gitcourse-frontend-v2/login.html";
+                    return;
+                }
+                console.error(`Erro no registro do topic ${t}: Status ${response.status}`);
+            } else {
+                console.log(`✅ Topic ${t} registrado com sucesso.`);
+            }
+        }
+
+        // Feedback visual
+        if (btn) {
             btn.innerText = "Registrado! ✓";
             btn.style.backgroundColor = "#28a745";
             btn.disabled = true;
-            setTimeout(navegar, 800);
-        } else if (response.status === 401) {
-            alert("Sessão expirada. Faça login novamente.");
-            window.location.href = "/gitcourse-frontend-v2/login.html";
-        } else {
-            console.error(`Erro no registro: Status ${response.status}`);
-            navegar();
         }
-    } catch (err) {
-        console.error("Erro de rede:", err);
-        navegar();
-    }
 
+        setTimeout(navegar, 800);
+
+    } catch (err) {
+        console.error("💥 Erro de rede ao registrar progresso:", err);
+        navegar(); // fallback seguro
+    }
 }
 
-export async function getProgress(apiUrl) {
+// Função para buscar progresso do usuário
+export async function getProgress() {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("Token não encontrado");
 
     try {
-        const response = await fetch(`${apiUrl}/progress/summary`, {
+        const response = await fetch(`${API}/progress/summary`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -112,6 +85,7 @@ export async function getProgress(apiUrl) {
 
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         return await response.json();
+
     } catch (err) {
         console.error("Erro ao buscar progresso:", err);
         throw err;
