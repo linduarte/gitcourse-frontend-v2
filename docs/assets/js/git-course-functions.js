@@ -2,6 +2,8 @@
 // Autor: Charles Duarte - Abril 2026
 // 🔹 Funções de integração Frontend ↔ Backend
 // 🔹 Compatível com import { login, register, logout, registrarEAvancar, getProgress } from "./git-course-functions.js"
+// Last update: April 23, 2026 – 16:44
+
 
 import { CONFIG } from "./config.js";
 
@@ -52,7 +54,7 @@ export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
     window.location.href = redirectUrl;
 }
 
-export async function registrarEAvancar(event, topicId, proximaAula, apiUrl) {
+export async function registrarEAvancar(event, topicId, proximaAula) {
     if (event) event.preventDefault();
     const btn = event ? (event.currentTarget || event.target) : null;
     const token = localStorage.getItem("access_token");
@@ -67,7 +69,7 @@ export async function registrarEAvancar(event, topicId, proximaAula, apiUrl) {
     }
 
     try {
-        const response = await fetch(`${apiUrl}/progress/complete`, {
+        const response = await fetch(`${API}/progress/complete`, {  // usa API do módulo
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -92,6 +94,7 @@ export async function registrarEAvancar(event, topicId, proximaAula, apiUrl) {
         console.error("Erro de rede:", err);
         navegar();
     }
+
 }
 
 export async function getProgress(apiUrl) {
