@@ -1,0 +1,184 @@
+
+<!-- Last update: April 24, 2026 – 15:10 -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Introdução - Git Course</title>
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+    <!-- PrismJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+
+    <!-- REMOVIDO: config.js (não deve estar em páginas do curso) -->
+
+    
+</head>
+
+<body class="intro-page">
+<div class="container page-large-font">
+
+    <h4>Introdução ao Git</h4>
+
+    <p class="p-styled spaced-p">
+        O Git Bash é um aplicativo para Windows que fornece uma camada de emulação para usar o Git via linha de comando.
+        Ele permite executar comandos Git de forma prática e eficiente, simulando um ambiente Unix dentro do Windows.
+    </p>
+
+    <img src="../../assets/images/pict_contr_versao.webp"
+     alt="Representação visual das funções do Git"
+     class="img-full">
+
+    <h4>Como adicionar o Git Bash ao Terminal do Windows</h4>
+
+    <ol class="left-list">
+        <li>
+            Instale o Terminal do Windows:
+            <ul>
+                <li>No Windows 11, ele já vem pré-instalado.</li>
+                <li>No Windows 10, baixe-o pela Microsoft Store.</li>
+                <li>Ao abrir pela primeira vez, você pode personalizar perfis e aparência.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <ol>
+        <li>
+            Instale o Git para Windows:
+            <ul>
+                <li>
+                    Baixe o instalador neste
+                    <a href="https://git-scm.com/downloads/win">link</a> e siga as imagens abaixo para concluir a instalação.
+                </li>
+            </ul>
+        </li>
+    </ol>
+
+<img src="../../assets/images/git-install.webp" 
+     alt="Instalação do Git para Windows" 
+     class="img-full">
+
+<img src="../../assets/images/git-install-a.webp" 
+     alt="Etapa da instalação do Git" 
+     class="img-full">
+
+<img src="../../assets/images/git-install-b.webp" 
+     alt="Configurações da instalação do Git" 
+     class="img-full">
+
+<img src="../../assets/images/git-install-c.webp" 
+     alt="Finalização da instalação do Git" 
+     class="img-full">
+
+<p class="p-styled spaced-p">
+    As imagens acima mostram as opções recomendadas durante a instalação do Git no Windows.
+</p>
+
+<p class="p-styled spaced-p">
+    Após a instalação, o Git Bash estará disponível no Terminal do Windows, como mostrado abaixo:
+</p>
+
+<img src="../../assets/images/bash_terminal.webp" 
+     alt="Terminal Windows com Git Bash" 
+     class="img-full">
+
+<p class="p-styled spaced-p">
+    A imagem abaixo mostra o mesmo Bash personalizado com o tema <strong>Oh My Posh</strong>:
+</p>
+
+<img src="../../assets/images/bash-oh-my-posh.webp" 
+     alt="Terminal Windows com Git Bash personalizado com Oh My Posh" 
+     class="img-full">
+
+<p class="p-styled spaced-p">
+    Na página inicial do curso, apresentamos as definições fundamentais do Git.
+</p>
+
+<p class="p-styled spaced-p">
+    Seguiremos um roteiro baseado no livro <strong>"Practical Guide to Git and GitHub For Windows Users"</strong>, de Roberto Vormittag.
+</p>
+
+<p class="p-styled spaced-p">
+    Este curso adota a mesma filosofia do livro, com explicações claras e exemplos práticos.
+</p>
+
+<p class="p-styled spaced-p">
+    Também utilizaremos representações visuais dos comandos Git, alinhadas às imagens dos terminais.
+</p>
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-flex">
+
+        <nav class="footer-nav">
+            <a href="1a-prefacio.html" class="footer-link">← Voltar</a>
+            <a href="3-git-config.html" class="footer-link">Próximo: git config →</a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button type="button" class="btn-footer-primary" onclick="logout()">
+                Logout
+            </button>
+
+            <button type="button" class="btn-footer-primary" 
+                onclick="registrarEAvancar(event, 2, '3-git-config.html')">
+                Concluído ✓
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer-instruction">
+        ✔ Faça a customização do terminal antes de marcar como concluído.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../assets/images/github-mark-white.png"
+                 alt="GitHub Logo"
+                 class="footer-logo">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!"
+                 class="footer-logo"
+                 width="45"
+                 height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script type="module">
+    // O 'import' carrega o arquivo de funções
+    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    
+    // Esta 'ponte' é VITAL: sem ela, o botão 'onclick' não acha a função
+    window.logout = logout;
+    window.registrarEAvancar = registrarEAvancar;
+
+    console.log("✅ Sistema de Navegação da Aula 2: Conectado.");
+</script>
+
+</body>
+</html>
