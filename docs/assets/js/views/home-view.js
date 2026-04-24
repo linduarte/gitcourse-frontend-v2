@@ -1,5 +1,6 @@
-// home-view.js - versão final alinhada com arquitetura SPA
-// Last update: April 23, 2026 – 17:26
+// home-view.js - SPA Dashboard Home
+// Last update: April 24, 2026 – 13:40
+
 import { navegar, LESSONS } from '../dashboard-router.js';
 import { getProgress } from '../git-course-functions.js';
 import { CONFIG } from '../config.js';
@@ -13,7 +14,7 @@ export class HomeView {
     async render() {
         if (!this.container) return;
 
-        // 🔹 Render inicial (evita flicker)
+        // 🔹 Render inicial (loading)
         this.container.innerHTML = `
             <div class="fade-in">
                 <p class="loading-text">Carregando sua jornada técnica...</p>
@@ -26,24 +27,21 @@ export class HomeView {
 
     async carregarDados() {
         try {
-            const progresso = await getProgress(); // ✅ NÃO usa mais CONFIG.API_URL
+            // 🔹 Pega progresso do backend
+            const progresso = await getProgress(CONFIG.API_URL);
             console.log("🔥 BACKEND:", progresso);
 
             const completed = progresso?.actual_count || 0;
 
-            // 🔥 NOVO ALUNO → PREFÁCIO
+            // 🔥 NOVO ALUNO → REDIRECT PARA PREFÁCIO
             if (completed === 0 && !this.redirecting) {
                 this.redirecting = true;
-
                 console.log("🚀 Novo aluno → Prefácio");
-
-                window.location.replace(
-                    CONFIG.REPO_BASE + "1a-prefacio.html"
-                );
+                window.location.replace(CONFIG.REPO_BASE + "1a-prefacio.html");
                 return;
             }
 
-            // 👉 Aluno com progresso → Dashboard
+            // Aluno com progresso → renderiza dashboard
             this.renderDashboard(progresso);
 
         } catch (err) {
@@ -53,7 +51,7 @@ export class HomeView {
     }
 
     renderDashboard(progresso) {
-        // 🔥 IMPORTANTE: remove sub-aula 17 das lacunas
+        // 🔹 Ignora sub-aula 17 nas lacunas
         const pendingRaw = progresso?.pending_topics || [];
         const pending = pendingRaw.filter(t => t !== 17);
 
@@ -90,7 +88,7 @@ export class HomeView {
         const mensagem = document.getElementById("mensagem-status");
         const lacunasBox = document.getElementById("lacunas-box");
 
-        // 🎯 Mensagem inteligente
+        // 🎯 Mensagem de status
         if (percent === 100) {
             mensagem.textContent = "🏆 Curso concluído!";
         } else if (percent >= 50) {
@@ -106,10 +104,8 @@ export class HomeView {
         } else {
             const aula = pending[0];
 
-            // 🔥 tratamento especial aula 1
-            const destino = (aula === 1)
-                ? "lesson:1a"
-                : `lesson:${aula}`;
+            // 🔥 Tratamento especial: aula 1 → 1a-prefácio
+            const destino = (aula === 1 || aula === "1a") ? "lesson:1a" : `lesson:${aula}`;
 
             btn.textContent = `Continuar aula ${aula}`;
             btn.onclick = () => navegar(destino, true);
@@ -129,11 +125,7 @@ export class HomeView {
             lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
                 btn.onclick = () => {
                     const aula = btn.dataset.aula;
-
-                    const destino = (aula === "1")
-                        ? "lesson:1a"
-                        : `lesson:${aula}`;
-
+                    const destino = (aula === "1" || aula === "1a") ? "lesson:1a" : `lesson:${aula}`;
                     navegar(destino, true);
                 };
             });
