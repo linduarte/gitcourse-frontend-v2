@@ -1,10 +1,13 @@
-// git-course-functions.js - Refatorado 2026-04-23
-// Last update: April 23, 2026 – 17:23
+// git-course-functions.js - FINAL (produção)
+// Last update: April 24, 2026 – 14:10
+
 import { CONFIG } from "./config.js";
 
 const API = CONFIG.API_URL;
 
-// Função de logout
+/**
+ * 🔐 Logout global
+ */
 export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_email");
@@ -12,67 +15,92 @@ export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
     window.location.href = redirectUrl;
 }
 
-// Registro de progresso (inclui suporte para aula 2 + sub-aula 17)
+/**
+ * 🚀 Registro de progresso + navegação
+ */
 export async function registrarEAvancar(event, topicId, proximaAula) {
     if (event) event.preventDefault();
-    const btn = event ? (event.currentTarget || event.target) : null;
+
+    const btn = event?.currentTarget || event?.target || null;
     const token = localStorage.getItem("access_token");
     const email = localStorage.getItem("user_email") || "visitante@test.com";
 
-    const navegar = () => { window.location.href = proximaAula; };
+    const navegar = () => {
+        window.location.href = proximaAula;
+    };
 
+    console.log("🚀 Clique detectado", { topicId });
+
+    // 🔐 Sem token → modo visitante
     if (!token) {
-        console.warn("⚠️ Token não encontrado. Redirecionando como visitante.");
+        console.warn("⚠️ Sem token → navegação direta");
         navegar();
         return;
     }
 
-    // Define os tópicos a registrar
+    // 🔥 REGRA CENTRAL: 2 + 17
     const topicsParaRegistrar = [topicId];
-    if (topicId === 2) topicsParaRegistrar.push(17); // aula 2 + sub-aula 17
+    if (parseInt(topicId) === 2) {
+        topicsParaRegistrar.push(17);
+    }
 
     try {
+        console.log("📡 Enviando tópicos:", topicsParaRegistrar);
+
         for (const t of topicsParaRegistrar) {
             const response = await fetch(`${API}/progress/complete`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ email, topic_id: parseInt(t) })
+                body: JSON.stringify({
+                    email,
+                    topic_id: parseInt(t)
+                })
             });
 
             if (!response.ok) {
                 if (response.status === 401) {
+                    console.error("❌ Token inválido");
                     alert("Sessão expirada. Faça login novamente.");
-                    window.location.href = "/gitcourse-frontend-v2/login.html";
+
+                    window.location.href =
+                        "/gitcourse-frontend-v2/auth/login.html";
                     return;
                 }
-                console.error(`Erro no registro do topic ${t}: Status ${response.status}`);
+
+                console.error(`❌ Erro ao registrar topic ${t}:`, response.status);
             } else {
-                console.log(`✅ Topic ${t} registrado com sucesso.`);
+                console.log(`✅ Topic ${t} registrado`);
             }
         }
 
-        // Feedback visual
+        // 🎯 Feedback UI
         if (btn) {
             btn.innerText = "Registrado! ✓";
             btn.style.backgroundColor = "#28a745";
             btn.disabled = true;
         }
 
+        // ⏳ Pequeno delay UX
         setTimeout(navegar, 800);
 
     } catch (err) {
-        console.error("💥 Erro de rede ao registrar progresso:", err);
+        console.error("💥 Erro de rede:", err);
         navegar(); // fallback seguro
     }
 }
 
-// Função para buscar progresso do usuário
+/**
+ * 📊 Buscar progresso
+ */
 export async function getProgress() {
     const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("Token não encontrado");
+
+    if (!token) {
+        throw new Error("Token não encontrado");
+    }
 
     try {
         const response = await fetch(`${API}/progress/summary`, {
@@ -83,11 +111,14 @@ export async function getProgress() {
             }
         });
 
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
         return await response.json();
 
     } catch (err) {
-        console.error("Erro ao buscar progresso:", err);
+        console.error("❌ Erro ao buscar progresso:", err);
         throw err;
     }
 }
