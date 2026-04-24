@@ -18,7 +18,7 @@ export function logout(redirectUrl = "/gitcourse-frontend-v2/index.html") {
 /**
  * 🚀 Registro de progresso + navegação
  */
-export async function registrarEAvancar(event, topicId, proximaAula) {
+export async function registrarEAvancar(_, topicId, proximaAula) {
     if (event) event.preventDefault();
 
     const btn = event?.currentTarget || event?.target || null;
