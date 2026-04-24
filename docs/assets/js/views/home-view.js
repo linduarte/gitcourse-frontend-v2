@@ -1,8 +1,8 @@
-// home-view.js - SPA Dashboard Home (Refatorada)
-// Last update: April 24, 2026 – Refactor 2a/2 handling
-// Last update: April 24, 2026 – 15:21
+// home-view.js - SPA Dashboard Home (Refatorada FINAL)
+// Abril 2026 – alinhada com LESSON_TO_TOPIC
+// Last update: April 24, 2026 – 17:03
 
-import { navegar, LESSONS, LESSON_TO_TOPIC } from '../dashboard-router.js';
+import { navegar, LESSON_TO_TOPIC } from '../dashboard-router.js';
 import { getProgress } from '../git-course-functions.js';
 import { CONFIG } from '../config.js';
 
@@ -15,7 +15,6 @@ export class HomeView {
     async render() {
         if (!this.container) return;
 
-        // Render inicial (loading)
         this.container.innerHTML = `
             <div class="fade-in">
                 <p class="loading-text">Carregando sua jornada técnica...</p>
@@ -41,7 +40,6 @@ export class HomeView {
                 return;
             }
 
-            // Renderiza dashboard
             this.renderDashboard(progresso);
 
         } catch (err) {
@@ -53,16 +51,18 @@ export class HomeView {
     renderDashboard(progresso) {
         const pendingRaw = progresso?.pending_topics || [];
 
-        // ✅ Map 2a e 2 corretamente
+        // 🔥 Mapeamento definitivo (backend → frontend)
         const pending = pendingRaw.map(id => {
-            if (id === 17) return "2";    // antiga 17 agora é 2
-            if (id === 2) return "2a";    // antiga 2 agora é 2a
+            if (id === 17) return "2";   // ex-17 → aula 2
+            if (id === 2) return "2a";   // ex-2 → aula 2a
             return id;
         });
 
-        const total = 16; // total de aulas considerado
+        // 🔥 TOTAL FIXO (regra de negócio)
+        const TOTAL_AULAS = 16;
+
         const completed = progresso?.actual_count || 0;
-        const percent = progresso?.percentage || Math.round((completed / total) * 100);
+        const percent = Math.round((completed / TOTAL_AULAS) * 100);
 
         const email = localStorage.getItem("user_email") || "usuário";
         const nome = email.split("@")[0];
@@ -74,7 +74,7 @@ export class HomeView {
                 <p id="mensagem-status"></p>
 
                 <div class="progress-box">
-                    <p>Progresso: ${completed} / ${total} (${percent}%)</p>
+                    <p>Progresso: ${completed} / ${TOTAL_AULAS} (${percent}%)</p>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width:${percent}%"></div>
                     </div>
@@ -92,7 +92,7 @@ export class HomeView {
         const mensagem = document.getElementById("mensagem-status");
         const lacunasBox = document.getElementById("lacunas-box");
 
-        // Mensagem de status
+        // 🎯 Mensagem
         if (percent === 100) {
             mensagem.textContent = "🏆 Curso concluído!";
         } else if (percent >= 50) {
@@ -101,18 +101,23 @@ export class HomeView {
             mensagem.textContent = "💡 Continue sua jornada!";
         }
 
-        // Botão principal
+        // 🎯 Botão principal
         if (pending.length === 0) {
             btn.textContent = "Ver progresso";
             btn.onclick = () => navegar("progresso", true);
         } else {
             const aula = pending[0];
-            const destino = (aula === "1" || aula === "1a") ? "lesson:1a" : `lesson:${aula}`;
+
+            const destino =
+                (aula === "1" || aula === "1a")
+                    ? "lesson:1a"
+                    : `lesson:${aula}`;
+
             btn.textContent = `Continuar aula ${aula}`;
             btn.onclick = () => navegar(destino, true);
         }
 
-        // Lacunas
+        // ⚠️ Lacunas
         if (pending.length > 1) {
             lacunasBox.innerHTML = `
                 <p>⚠️ Você pulou etapas:</p>
@@ -126,7 +131,12 @@ export class HomeView {
             lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
                 btn.onclick = () => {
                     const aula = btn.dataset.aula;
-                    const destino = (aula === "1" || aula === "1a") ? "lesson:1a" : `lesson:${aula}`;
+
+                    const destino =
+                        (aula === "1" || aula === "1a")
+                            ? "lesson:1a"
+                            : `lesson:${aula}`;
+
                     navegar(destino, true);
                 };
             });
