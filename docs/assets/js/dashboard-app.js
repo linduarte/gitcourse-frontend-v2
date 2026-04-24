@@ -1,24 +1,27 @@
-// dashboard-app.js - versão blindada
-// Last update: April 24, 2026 – 13:37
+// dashboard-app.js - versão blindada e refatorada
+// Last update: April 24, 2026 – 19:27
 import { navegar } from './dashboard-router.js';
 import { inicializarMenuLateral } from './sidebar-logic.js';
 import { getProgress } from './git-course-functions.js';
+import { CONFIG } from './config.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    // 🔹 Garante que estamos na dashboard
+    // 🔹 Garantia de dashboard
     if (!window.location.pathname.includes("dashboard.html")) {
         console.log("⛔ Ignorando script fora do dashboard");
         return;
     }
 
-    // Recupera rota atual do URL
+    let redirecting = false;
+
+    // Recupera a rota atual da URL
     const getRotaAtual = () => {
         const params = new URLSearchParams(window.location.search);
         return params.get("page") || "home";
     };
 
-    // Valida sessão e retorna booleano
+    // Valida sessão do usuário
     const validarSessao = () => {
         const token = localStorage.getItem("access_token");
         const email = localStorage.getItem("user_email");
@@ -27,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return !!token && !!email;
     };
 
+    // Atualiza mensagem de status
     const atualizarMensagemStatus = (mensagem, cor = "#333") => {
         const mensagemBox = document.getElementById("mensagem-status");
         if (mensagemBox) {
@@ -39,32 +43,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Boot do dashboard
     // ========================
     const boot = async () => {
+        if (redirecting) return;
+        redirecting = true;
+
+        // 🔒 Sessão inválida → login
         if (!validarSessao()) {
-            console.warn("⚠️ Usuário não autenticado → redirect para login");
+            console.warn("⚠️ Usuário não autenticado → login");
             window.location.href = "/gitcourse-frontend-v2/auth/login.html";
             return;
         }
 
+        // Inicializa menu lateral SPA
         inicializarMenuLateral();
+
         const rota = getRotaAtual();
 
         try {
-            const progresso = await getProgress();
+            console.log("🔹 Antes de getProgress");
+            const progresso = await getProgress(CONFIG.API_URL);
+            console.log("🔹 Progresso carregado:", progresso);
 
             const userEmail = localStorage.getItem("user_email") || "aluno";
             atualizarMensagemStatus(`Bem-vindo, ${userEmail}! Iniciando sua jornada técnica...`, "#1f2937");
 
-            // 🔹 Mostra lacunas, se houver
+            // Mostra lacunas, se houver
             const lacunasBox = document.getElementById("lacunas-box");
             if (lacunasBox && progresso.pending_topics.length > 0) {
                 const aulasPuladas = progresso.pending_topics.join(" • ");
                 lacunasBox.innerHTML = `<p class="lacunas-text">⚠️ Você pulou algumas etapas importantes: ${aulasPuladas}</p>`;
             }
 
-            // 🔹 Novo aluno → prefácio
+            // 🔹 Novo aluno → REDIRECT REAL para prefácio
             if (progresso.actual_count === 0) {
-                console.log("🚀 Novo aluno → indo para prefácio");
-                await navegar("lesson:1a", true);
+                console.log("🚀 Novo aluno → Prefácio");
+                window.location.replace(CONFIG.REPO_BASE + "1a-prefacio.html");
                 return;
             }
 
@@ -73,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             atualizarMensagemStatus("Erro ao carregar seu progresso. Recarregue a página.", "#d32f2f");
         }
 
-        // SPA: renderiza rota
+        // SPA: renderiza rota atual
         await navegar(rota);
     };
 
