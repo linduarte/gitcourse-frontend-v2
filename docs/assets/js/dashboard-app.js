@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const boot = async () => {
         if (!validarSessao()) {
             console.warn("⚠️ Usuário não autenticado → redirect para login");
-            window.location.href = "/gitcourse-frontend-v2/login.html";
+            window.location.href = "/gitcourse-frontend-v2/auth/login.html";
             return;
         }
 
