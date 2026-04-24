@@ -1,0 +1,192 @@
+<!-- Last update: April 24, 2026 – 15:09 -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script>
+        const API_URL = 'https://api.git-learn.com.br';
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customização do Terminal</title>
+
+    <!-- Caminhos corrigidos -->
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css"> 
+    <link rel="stylesheet" href="../../assets/css/git-term.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+
+    
+</head>
+
+<body class="intro-page" data-topic-id="20">
+<div class="container">
+
+    <section id="terminal-intro" style="padding: 40px 0; text-align: center;">
+        <h1 style="font-size: 2rem; color: #3b82f6;">Seu Cockpit de Programação</h1>
+        <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; color: #4b5563;">
+            Dominar o Git exige clareza. Vamos transformar seu terminal em um painel de instrumentos profissional, 
+            rápido e intuitivo usando o <strong>Starship</strong>.
+        </p>
+    </section>
+
+    <section class="setup-guide" style="max-width: 900px; margin: 0 auto; padding: 20px;">
+        
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #3b82f6; padding-left: 15px;">1. A Fundação: Windows Terminal e PowerShell</h2>
+            <p>Primeiro, precisamos das ferramentas modernas da Microsoft para garantir velocidade e suporte a cores.</p>
+            
+            <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin-top: 15px;">
+                <p><strong>A. Instale o Windows Terminal:</strong></p>
+                <pre><code class="language-bash">winget install Microsoft.WindowsTerminal</code></pre>
+                
+                <p style="margin-top: 20px;"><strong>B. Instale o PowerShell Moderno (Versão 7+):</strong></p>
+                <pre><code class="language-bash">winget install --id Microsoft.PowerShell --source winget</code></pre>
+            </div>
+        </div>
+
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #10b981; padding-left: 15px;">2. A Visão: Nerd Fonts (Obrigatório)</h2>
+            <p>Para enxergar os ícones (🐍 e 🌱), seu terminal precisa de uma fonte especial. Recomendamos a <strong>Fira Code</strong>.</p>
+            <pre><code class="language-bash">winget install NerdFonts.FiraCode</code></pre>
+            
+            <div style="margin: 20px 0; background: #fffbeb; border: 1px solid #f59e0b; padding: 15px; border-radius: 6px;">
+                <strong>⚠️ Configuração Manual:</strong> Abra o Windows Terminal, vá em <em>Configurações > Aparência</em> e mude a fonte para <strong>"FiraCode Nerd Font"</strong>.
+            </div>
+        </div>
+
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #8b5cf6; padding-left: 15px;">3. O Motor: Starship</h2>
+            <p>Agora instalamos o Starship e ensinamos o PowerShell a iniciá-lo automaticamente.</p>
+            <pre><code class="language-bash">winget install Starship.Starship</code></pre>
+
+            <p style="margin-top: 20px;">Edite seu perfil de usuário:</p>
+            <pre><code class="language-powershell">notepad $PROFILE</code></pre>
+            
+            <p>Cole esta linha ao final do arquivo, salve e feche:</p>
+            <pre><code class="language-powershell">Invoke-Expression (&starship init powershell)</code></pre>
+        </div>
+
+        <div class="step" style="margin-bottom: 50px;">
+            <h2 style="color: #1f2937; border-left: 5px solid #ec4899; padding-left: 15px;">4. Personalização Profissional</h2>
+            <p>Crie o arquivo de configuração para ter o visual exato do curso:</p>
+            <pre><code class="language-bash">notepad ~/.config/starship.toml</code></pre>
+            
+            <p>Copie e cole o código abaixo:</p>
+            <div style="position: relative;">
+                <pre><code class="language-toml">
+# Configuração Oficial - Curso de Git Charles Duarte
+format = "$directory$git_branch$git_status$python$character"
+
+[directory]
+style = "cyan"
+truncation_length = 3
+
+[git_branch]
+symbol = "🌱 "
+style = "bold purple"
+
+[git_status]
+style = "bold yellow"
+staged = "+"
+modified = "!"
+untracked = "?"
+
+[python]
+symbol = "🐍 "
+format = "via [$symbol$version]($style) "
+style = "bold green"
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+                </code></pre>
+            </div>
+        </div>
+
+        <div class="result-box" style="padding: 40px; background: #111827; border-radius: 12px; text-align: center; color: white;">
+            <h2 style="color: #10b981; margin-bottom: 20px;">🎯 Resultado Final</h2>
+            <p style="margin-bottom: 20px;">Seu terminal agora deve se parecer com este snapshot:</p>
+            <img src="../../assets/images/starship_show.webp" alt="Snapshot Starship" style="max-width: 100%; border-radius: 8px; border: 1px solid #374151; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <p style="margin-top: 20px; font-style: italic; color: #9ca3af;">
+                Note como a <strong>🐍 Versão do Python</strong> e a <strong>🌱 Branch</strong> ficam visíveis de imediato!
+            </p>
+        </div>
+
+    </section>
+
+
+<!-- ============================
+         FOOTER
+============================= -->
+<footer class="footer">
+
+    <div class="footer-copyright">
+        © 2025 Curso de Git. Todos os direitos reservados.
+    </div>
+
+    <div class="footer-flex">
+
+        <nav class="footer-nav">
+            <a href="1a-prefacio.html" class="footer-link">← Voltar</a>
+            <a href="2a-introduction.html" class="footer-link">
+            Próximo: Introdução →
+            </a>
+        </nav>
+
+        <div class="footer-buttons">
+            <button type="button" class="btn-footer-primary" onclick="logout()">
+                Logout
+            </button>
+
+            <button type="button" class="btn-footer-primary" 
+            onclick="registrarEAvancar(event, 17, '2a-introduction.html')">
+            Concluído ✓
+            </button>
+        </div>
+
+    </div>
+
+    <div class="footer-instruction">
+        Após concluir esta etapa, retorne à Aula 2 para continuar sua jornada.
+    </div>
+
+    <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+            <span>🐙 GitHub Pages</span>
+            <img src="../../assets/images/github-mark-white.png"
+                 alt="GitHub Logo"
+                 class="footer-logo"
+                 width="16"
+                 height="16">
+        </a>
+
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+            <img src="https://jigsaw.w3.org/css-validator/images/vcss"
+                 alt="CSS válido!"
+                 class="footer-logo"
+                 width="45"
+                 height="16">
+        </a>
+    </div>
+
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
+<script>Prism.highlightAll();</script>
+
+<script type="module">
+    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+
+    window.logout = logout;
+    window.registrarEAvancar = registrarEAvancar;
+
+    console.log("✅ Aula 2 (Terminal) conectada.");
+</script>
+
+</body>
+</html>
