@@ -1,24 +1,26 @@
 // dashboard-router.js
+// Last update: April 24, 2026 – 15:13
 import { HomeView } from './views/home-view.js';
-export const LESSONS = [
-    '1a-prefacio.html',
-    '2-introduction.html',
-    '3-git-config.html',
-    '4-hosting.html',
-    '5-connect.html',
-    '6-git-clone.html',
-    '7-git-status.html',
-    '8-git-add.html',
-    '9-git-commit.html',
-    '10-feature_req.html',
-    '11-branch.html',
-    '12-branch-merge.html',
-    '13-git-diff.html',
-    '14-undo-changes.html',
-    '15-git-init.html',
-    '16-git-workflows.html',
-    '17-terminal-customization.html'
-];
+
+export const LESSON_TO_TOPIC = {
+    "2-terminal-customization.html": 17,
+    "2a-introduction.html": 2,
+
+    "3-git-config.html": 3,
+    "4-hosting.html": 4,
+    "5-connect.html": 5,
+    "6-git-clone.html": 6,
+    "7-git-status.html": 7,
+    "8-git-add.html": 8,
+    "9-git-commit.html": 9,
+    "10-feature_req.html": 10,
+    "11-branch.html": 11,
+    "12-branch-merge.html": 12,
+    "13-git-diff.html": 13,
+    "14-undo-changes.html": 14,
+    "15-git-init.html": 15,
+    "16-git-workflows.html": 16
+};
 
 const BASE_URL = "https://linduarte.github.io/gitcourse-frontend-v2/curso/git-course/";
 
