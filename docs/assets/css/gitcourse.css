@@ -1,3 +1,4 @@
+/* Last update: April 25, 2026 – 20:18 */
 /* ============================================
    GitCourse Framework — CSS Unificado (Refatorado)
    ============================================ */
@@ -67,6 +68,18 @@ ul, ol {
     line-height: 1.6;
     margin-bottom: 1em;
 }
+
+
+/* Classe para parágrafos com estilo destacado e espaçamento extra */
+.p-styled.spaced-p {
+    font-size: 1.15rem;       /* Um pouco maior que o corpo padrão para destaque */
+    line-height: 1.8;         /* Mantém a consistência do respiro visual */
+    margin-top: 1.5rem;       /* Espaçamento superior */
+    margin-bottom: 1.5rem;    /* Espaçamento inferior */
+    color: #444;              /* Um tom levemente mais suave que o preto puro */
+    font-weight: 400;         /* Garante que a Victor Mono fique bem legível */
+}
+
 
 /* ---------- 6. Imagens Responsivas ---------- */
 .img-full, .img-half {
