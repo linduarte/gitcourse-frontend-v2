@@ -12,7 +12,7 @@ body.prefacio {
     box-shadow: 0 8px 32px rgba(31,38,135,0.25);
     margin: 40px auto;
     padding: 40px;
-    max-width: 900px;
+    max-width: 950px;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255,255,255,0.2);
@@ -34,7 +34,7 @@ body.prefacio {
 
 .prefacio .welcome-header p {
     color: #5c4033;
-    font-size: 1.1rem;
+    font-size: 1.25rem;
 }
 
 /* Overview grid */
@@ -67,6 +67,8 @@ body.prefacio {
 .prefacio .overview-section li {
     margin-bottom: 8px;
     color: #5c4033;
+    font-size: 1.1rem; /* Garante leitura clara dos tópicos */
+
 }
 
 /* Botão principal */
@@ -81,8 +83,8 @@ body.prefacio {
     padding: 18px 40px;
     border: none;
     border-radius: 10px;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(241, 78, 50, 0.3);
@@ -129,3 +131,5 @@ body.prefacio {
         background-attachment: scroll;
     }
 }
+
+
