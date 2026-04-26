@@ -1,3 +1,4 @@
+<!-- Last update: April 26, 2026 – 07:50 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -22,7 +23,7 @@
 <body class="intro-page">
 <div class="container">
 
-    <h1>Conectando Git com o GitHub</h1>
+    <h3>Conectando Git com o GitHub</h3>
 
     <p class="p-styled spaced-p">
         <strong>O que é SSH?</strong>  
@@ -43,17 +44,17 @@
         Após configurar as chaves, sua máquina se autentica automaticamente.
     </p>
 
-    <h2>Passo 1: Verificando a existência de chaves SSH</h2>
+    <h4>Passo 1: Verificando a existência de chaves SSH</h4>
     <p>No Windows, abra o Git Bash e execute:</p>
     <pre><code class="language-bash">ls -al ~/.ssh</code></pre>
 
-    <h2>Passo 2: Gerando uma nova chave SSH</h2>
+    <h4>Passo 2: Gerando uma nova chave SSH</h4>
     <p>Se não houver chaves, gere uma nova com:</p>
     <pre><code class="language-bash">ssh-keygen -t rsa -b 4096 -C "seu_email@example.com"</code></pre>
 
     <p>Siga as instruções do terminal para salvar a chave e definir uma senha (opcional).</p>
 
-    <h2>Passo 3: Adicionando a chave SSH ao ssh-agent</h2>
+    <h4>Passo 3: Adicionando a chave SSH ao ssh-agent</h4>
     <p>Inicie o ssh-agent:</p>
     <pre><code class="language-bash">eval "$(ssh-agent -s)"</code></pre>
 
@@ -67,7 +68,7 @@
     <pre><code class="language-bash">Enter file in which to save the key: [Press enter]</code></pre>
     <pre><code class="language-bash">Enter passphrase: [Type a passphrase]</code></pre>
 
-    <h2>Passo 4: Adicionando a chave SSH ao GitHub</h2>
+    <h4>Passo 4: Adicionando a chave SSH ao GitHub</h4>
 
     <p class="p-styled spaced-p">Copie sua chave pública:</p>
     <pre><code class="language-bash">clip &lt; ~/.ssh/id_rsa.pub</code></pre>
@@ -81,7 +82,7 @@
         dê um nome e cole a chave pública.
     </p>
 
-    <h2>Passo 5: Testando a conexão</h2>
+    <h4>Passo 5: Testando a conexão</h4>
 
     <p class="p-styled spaced-p">Execute:</p>
     <pre><code class="language-bash">ssh -T git@github.com</code></pre>
