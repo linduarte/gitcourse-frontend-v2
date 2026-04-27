@@ -2,7 +2,7 @@
 // Last update: April 27, 2026 – 14:25
 
 import { navegar } from '../dashboard-router.js';
-import { getProgress } from '../git-course-functions.js';
+import { getProgress } from '../git-course-functions.js?v=1777360726079';
 import { CONFIG } from '../config.js';
 
 export class HomeView {

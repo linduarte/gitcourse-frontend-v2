@@ -3,7 +3,7 @@
 
 import { navegar } from './dashboard-router.js';
 import { inicializarMenuLateral } from './sidebar-logic.js';
-import { getProgress } from './git-course-functions.js';
+import { getProgress } from './git-course-functions.js?v=1777360726079';
 import { CONFIG } from './config.js';
 
 document.addEventListener("DOMContentLoaded", async () => {

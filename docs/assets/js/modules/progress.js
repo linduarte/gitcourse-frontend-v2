@@ -1,4 +1,4 @@
-import { protectRoute, loadNavbar, getCurrentUser } from "../git-course-functions.js";
+import { protectRoute, loadNavbar, getCurrentUser } from "../git-course-functions.js?v=1777360726079";
 
 document.addEventListener("DOMContentLoaded", async () => {
     protectRoute();
