@@ -1,4 +1,5 @@
-<!-- Last update: April 26, 2026 – 07:50 --><!DOCTYPE html>
+<!-- Last update: April 27, 2026 – 15:29 -->
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -120,10 +121,9 @@
 
     <div class="footer-buttons">
     <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>            
-        <button type="button" class="btn-footer-primary" 
-            onclick="registrarEAvancar(event,4,'5-connect.html')">
-        Concluído ✓
-    </button>
+        <button type="button" class="btn-footer-primary" id="btn-concluir">
+            Concluído ✓
+        </button>
     
 
     </div>
@@ -148,13 +148,15 @@
 
 <!-- Scripts -->
 <script type="module">
-    // Verifique se o nome do arquivo é functions (com S) ou function (sem S)
     import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
-    
-    window.logout = logout;
-    window.registrarEAvancar = registrarEAvancar;
 
-    console.log("✅ Sistema de Navegação da Aula 4: Conectado.");
+    window.logout = logout;
+
+    document.getElementById("btn-concluir").addEventListener("click", (e) => {
+        registrarEAvancar(e, 5, '5-connect.html');
+    });
+
+    console.log("✅ Aula 4 (Hospedagem) conectada.");
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
