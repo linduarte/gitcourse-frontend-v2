@@ -1,5 +1,5 @@
 
-<!-- Last update: April 27, 2026 – 05:11 -->
+<!-- Last update: April 27, 2026 – 15:22 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -133,8 +133,7 @@
                 Logout
             </button>
 
-            <button type="button" class="btn-footer-primary"
-                onclick="registrarEAvancar(null, 2, '3-git-config.html')">
+            <button type="button" class="btn-footer-primary" id="btn-concluir">
                 Concluído ✓
             </button>
         </div>
@@ -170,14 +169,15 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    // O 'import' carrega o arquivo de funções
     import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
-    
-    // Esta 'ponte' é VITAL: sem ela, o botão 'onclick' não acha a função
-    window.logout = logout;
-    window.registrarEAvancar = registrarEAvancar;
 
-    console.log("✅ Sistema de Navegação da Aula 2: Conectado.");
+    window.logout = logout;
+
+    document.getElementById("btn-concluir").addEventListener("click", (e) => {
+        registrarEAvancar(e, 3, '3-git-config.html');
+    });
+
+    console.log("✅ Aula 2a (Terminal) conectada.");
 </script>
 
 </body>
