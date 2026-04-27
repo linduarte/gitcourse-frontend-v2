@@ -81,11 +81,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
-            // SPA: renderiza rota atual e injeta progresso na view
-            const view = await navegar(rota, true);
-            if (view && typeof view.render === "function") {
-                await view.render(progresso);
-            }
+            // ✔ versão correta (igual ao modelo que funcionava)
+            await navegar(rota);
 
         } catch (err) {
             console.error("❌ Erro ao carregar progresso:", err);
