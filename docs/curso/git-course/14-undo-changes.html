@@ -1,4 +1,4 @@
-<!-- Last update: April 26, 2026 – 07:47 -->
+<!-- Last update: April 27, 2026 – 15:53 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -285,9 +285,8 @@ flowchart TD
 
         <div class="footer-buttons">
         <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>    
-        <button type="button" class="btn-footer-primary" 
-            onclick="registrarEAvancar(event,14,'15-git-init.html')">
-        Concluído ✓
+        <button type="button" class="btn-footer-primary" id="btn-concluir">
+            Concluído ✓
         </button>
         
         </div>
@@ -317,13 +316,15 @@ flowchart TD
 
 
 <script type="module">
-    // Verifique se o nome do arquivo é functions (com S) ou function (sem S)
     import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
-    
-    window.logout = logout;
-    window.registrarEAvancar = registrarEAvancar;
 
-    console.log("✅ Sistema de Navegação da Aula 14: Conectado.");
+    window.logout = logout;
+
+    document.getElementById("btn-concluir").addEventListener("click", (e) => {
+        registrarEAvancar(e, 14, '15-git-init.html');
+    });
+
+    console.log("✅ Aula 14 (Undo Changes) conectada.");
 </script>
 
 
