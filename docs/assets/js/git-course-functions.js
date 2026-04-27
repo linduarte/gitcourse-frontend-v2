@@ -44,4 +44,35 @@ export async function registrarEAvancar(_, topicId, proximaAula) {
         console.error("❌ Erro de rede:", err);
         navegar(); // fallback
     }
+
+    // 🔹 BUSCA PROGRESSO DO ALUNO
+export async function getProgress() {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+        throw new Error("Token não encontrado");
+    }
+
+    try {
+        const response = await fetch(`${API}/progress/summary`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+
+    } catch (err) {
+        console.error("❌ Erro ao buscar progresso:", err);
+        throw err;
+    }
+}
+
 }
