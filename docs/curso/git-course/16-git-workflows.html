@@ -1,4 +1,4 @@
-<!-- Last update: April 26, 2026 – 07:46 -->
+<!-- Last update: April 27, 2026 – 16:09 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -302,18 +302,15 @@
 
     <div class="footer-flex">
 
-        <div class="footer-buttons">
-            <button type="button" class="btn-footer-primary" onclick="logout()">
-                Logout
-            </button>
+        <button type="button" id="btn-logout" class="btn-footer-primary">
+            Logout
+        </button>
 
-            <button type="button" 
-                    id="btn-finalizar"
-                    class="btn-footer-primary" 
-                    onclick="finalizarCurso()">
-                Finalizar Curso e Ver Progresso ✓
-            </button>
-        </div>
+        <button type="button" 
+        id="btn-finalizar"
+        class="btn-footer-primary">
+        Finalizar Curso e Ver Progresso ✓
+        </button>
 
     </div>
 
@@ -350,16 +347,20 @@
     import { CONFIG } from '../../assets/js/config.js';
     import { logout } from "../../assets/js/git-course-functions.js";
 
-    window.logout = logout;
+    // 🔹 Logout
+    document.getElementById("btn-logout")
+        ?.addEventListener("click", logout);
 
-    window.finalizarCurso = async () => {
+    // 🔹 Finalizar curso
+    document.getElementById("btn-finalizar")
+        ?.addEventListener("click", async () => {
+
         const btn = document.getElementById("btn-finalizar");
         const token = localStorage.getItem('access_token');
         const urlDashboard = '../../dashboard.html';
 
         if (!btn) return;
 
-        // 🔄 feedback visual
         btn.disabled = true;
         btn.textContent = "Processando...";
 
@@ -399,9 +400,9 @@
                 window.location.href = urlDashboard;
             }, 2000);
         }
-    };
+    });
 
-    console.log("✅ Aula 16 pronta (fluxo final correto)");
+    console.log("🏁 Aula 16 pronta (versão estável)");
 </script>
 
 </body>
