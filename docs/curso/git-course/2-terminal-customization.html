@@ -1,4 +1,4 @@
-<!-- Last update: April 27, 2026 – 05:11 -->
+<!-- Last update: April 27, 2026 – 15:21 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -143,8 +143,7 @@ error_symbol = "[❯](bold red)"
             </button>
         
             <!-- Concluído -->
-            <button type="button" class="btn-footer-primary"
-                onclick="registrarEAvancar(null, 17, '2a-introduction.html')">
+            <button type="button" class="btn-footer-primary" id="btn-concluir">
                 Concluído ✓
             </button>
         </div>
@@ -185,7 +184,10 @@ error_symbol = "[❯](bold red)"
     import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
 
     window.logout = logout;
-    window.registrarEAvancar = registrarEAvancar;
+
+    document.getElementById("btn-concluir").addEventListener("click", (e) => {
+        registrarEAvancar(e, 17, '2a-introduction.html');
+    });
 
     console.log("✅ Aula 2 (Terminal) conectada.");
 </script>
