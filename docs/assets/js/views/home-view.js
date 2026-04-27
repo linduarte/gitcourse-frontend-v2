@@ -1,20 +1,51 @@
-// home-view.js - SPA Dashboard Home (ALINHADO)
-// Abril 2026 – versão sincronizada com dashboard-
-// Last update: April 27, 2026 – 05:42
+// home-view.js - SPA Dashboard Home (FINAL ESTÁVEL)
+// Last update: April 27, 2026 – 14:25
 
 import { navegar } from '../dashboard-router.js';
+import { getProgress } from '../git-course-functions.js';
+import { CONFIG } from '../config.js';
 
 export class HomeView {
     constructor() {
         this.container = document.getElementById('spa-content');
+        this.redirecting = false;
     }
 
-    async render(progresso) {
+    async render() {
         if (!this.container) return;
 
-        console.log("🧩 HomeView render:", progresso);
+        // 🔹 Loading inicial
+        this.container.innerHTML = `
+            <div class="fade-in">
+                <p class="loading-text">Carregando sua jornada técnica...</p>
+            </div>
+        `;
 
-        this.renderDashboard(progresso);
+        await new Promise(r => requestAnimationFrame(r));
+        await this.carregarDados(); // 🔥 ESSENCIAL
+    }
+
+    async carregarDados() {
+        try {
+            const progresso = await getProgress(CONFIG.API_URL);
+            console.log("🔥 BACKEND:", progresso);
+
+            const completed = progresso?.actual_count || 0;
+
+            // 🔹 Novo aluno → Prefácio
+            if (completed === 0 && !this.redirecting) {
+                this.redirecting = true;
+                console.log("🚀 Novo aluno → Prefácio");
+                window.location.replace(CONFIG.REPO_BASE + "1a-prefacio.html");
+                return;
+            }
+
+            this.renderDashboard(progresso);
+
+        } catch (err) {
+            console.error("❌ Erro ao carregar progresso:", err);
+            this.container.innerHTML = `<h2>Erro ao carregar dados</h2>`;
+        }
     }
 
     renderDashboard(progresso) {
