@@ -1,5 +1,5 @@
 // home-view.js - SPA Dashboard Home (FINAL ESTÁVEL)
-// Last update: April 28, 2026 – 07:44
+// Last update: April 28, 2026 – 08:15
 
 import { navegar } from '../dashboard-router.js';
 import { getProgress } from '../git-course-functions.mjs?v=1777361682432';
@@ -26,27 +26,19 @@ export class HomeView {
     }
 
     async carregarDados() {
-        try {
-            const progresso = await getProgress();
-            console.log("🔥 BACKEND:", progresso);
+    console.log("🔥 STEP 1 - entrou carregarDados");
 
-            const completed = progresso?.actual_count || 0;
+    try {
+        const progresso = await getProgress();
+        console.log("🔥 STEP 2 - progresso recebido:", progresso);
 
-            // 🔹 Novo aluno → Prefácio
-            if (completed === 0 && !this.redirecting) {
-                this.redirecting = true;
-                console.log("🚀 Novo aluno → Prefácio");
-                window.location.replace(CONFIG.REPO_BASE + "1a-prefacio.html");
-                return;
-            }
+        this.renderDashboard(progresso);
+        console.log("🔥 STEP 3 - renderDashboard chamado");
 
-            this.renderDashboard(progresso);
-
-        } catch (err) {
-            console.error("❌ Erro ao carregar progresso:", err);
-            this.container.innerHTML = `<h2>Erro ao carregar dados</h2>`;
-        }
+    } catch (err) {
+        console.error("❌ STEP ERRO:", err);
     }
+}
 
     renderDashboard(progresso) {
         const pendingRaw = progresso?.pending_topics || [];

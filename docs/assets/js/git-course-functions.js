@@ -1,4 +1,4 @@
-// Last update: April 27, 2026 – 05:12
+// Last update: April 28, 2026 – 08:17
 
 import { CONFIG } from "./config.js";
 
@@ -47,32 +47,13 @@ export async function registrarEAvancar(_, topicId, proximaAula) {
 
     // 🔹 BUSCA PROGRESSO DO ALUNO
 export async function getProgress() {
-    const token = localStorage.getItem("access_token");
+    console.log("🔥 getProgress executado");
 
-    if (!token) {
-        throw new Error("Token não encontrado");
-    }
-
-    try {
-        const response = await fetch(`${API}/progress/summary`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-
-    } catch (err) {
-        console.error("❌ Erro ao buscar progresso:", err);
-        throw err;
-    }
+    return {
+        actual_count: 1,
+        pending_topics: [2, 3],
+        percentage: 10
+    };
 }
 
 }
