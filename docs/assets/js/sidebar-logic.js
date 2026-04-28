@@ -1,8 +1,9 @@
 /**
  * sidebar-logic.js (versão SPA com URL)
  */
+// Last update: April 28, 2026 – 05:34
 import { navegar } from './dashboard-router.js';
-import { logout } from './git-course-functions.js?v=1777361682432';
+import { logout } from './git-course-functions.mjs?v=1777361682432';
 
 export function inicializarMenuLateral() {
     const sidebar = document.querySelector('.sidebar');
