@@ -6,24 +6,40 @@ import { getProgress } from '../git-course-functions.mjs?v=1777361682432';
 import { CONFIG } from '../config.js';
 
 export class HomeView {
-    constructor() {
-        this.container = document.getElementById('spa-content');
-        this.redirecting = false;
+  constructor() {
+    this.container = document.getElementById('spa-content');
+  }
+
+  async render() {
+    console.log("🔥 HomeView.render()");
+    if (!this.container) return;
+
+    this.container.innerHTML = `
+      <div class="fade-in">
+        <p class="loading-text">Carregando sua jornada técnica...</p>
+      </div>
+    `;
+
+    await new Promise(r => requestAnimationFrame(r));
+    await this.carregarDados();
+  }
+
+  async carregarDados() {
+    console.log("🔥 STEP 1 - entrou carregarDados");
+
+    try {
+      const progresso = await getProgress(); // 👈 SEM parâmetro
+      console.log("🔥 STEP 2 - progresso:", progresso);
+
+      this.renderDashboard(progresso);
+      console.log("🔥 STEP 3 - renderDashboard chamado");
+
+    } catch (err) {
+      console.error("❌ STEP ERRO:", err);
+      this.container.innerHTML = `<h2>Erro ao carregar dados</h2>`;
     }
+  }
 
-    async render() {
-        if (!this.container) return;
-
-        // 🔹 Loading inicial
-        this.container.innerHTML = `
-            <div class="fade-in">
-                <p class="loading-text">Carregando sua jornada técnica...</p>
-            </div>
-        `;
-
-        await new Promise(r => requestAnimationFrame(r));
-        await this.carregarDados(); // 🔥 ESSENCIAL
-    }
 
     async carregarDados() {
     console.log("🔥 STEP 1 - entrou carregarDados");
