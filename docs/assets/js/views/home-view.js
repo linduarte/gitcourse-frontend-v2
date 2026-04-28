@@ -1,5 +1,5 @@
 // home-view.js - SPA Dashboard Home (FINAL ESTÁVEL)
-// Last update: April 28, 2026 – 05:33
+// Last update: April 28, 2026 – 07:44
 
 import { navegar } from '../dashboard-router.js';
 import { getProgress } from '../git-course-functions.mjs?v=1777361682432';
@@ -27,7 +27,7 @@ export class HomeView {
 
     async carregarDados() {
         try {
-            const progresso = await getProgress(CONFIG.API_URL);
+            const progresso = await getProgress();
             console.log("🔥 BACKEND:", progresso);
 
             const completed = progresso?.actual_count || 0;
