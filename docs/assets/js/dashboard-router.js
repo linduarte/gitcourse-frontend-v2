@@ -1,5 +1,5 @@
 // dashboard-router.js - versão robusta
-// Last update: April 28, 2026 – 07:11
+// Last update: April 28, 2026 – 08:31
 
 import { validarUsuario } from './git-course-functions.mjs';
 import { CONFIG } from './config.js';
@@ -36,15 +36,20 @@ function resolverAula(id) {
 // ============================
 // 🧭 ROTAS SPA
 // ============================
+
 const routes = {
     home: async () => {
-        const { HomeView } = await import('./views/home-view.js');
-        return new HomeView();
+        console.log("🔥 carregando HomeView");
+
+        const module = await import('./views/home-view.js');
+        return new module.HomeView();
     },
 
     progresso: async () => {
-        const { ProgressView } = await import('./views/progress-view.js');
-        return new ProgressView();
+        console.log("🔥 carregando ProgressView");
+
+        const module = await import('./views/progress-view.js');
+        return new module.ProgressView();
     }
 };
 
