@@ -1,5 +1,5 @@
 // dashboard-app.js - versão blindada e refatorada para SPA e HomeView
-// Last update: April 28, 2026 – 05:34
+// Last update: April 28, 2026 – 05:53
 
 import { navegar } from './dashboard-router.js';
 import { inicializarMenuLateral } from './sidebar-logic.js';
@@ -18,9 +18,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Recupera a rota atual da URL
     const getRotaAtual = () => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get("page") || "home";
-    };
+    const params = new URLSearchParams(window.location.search);
+
+    if (!params.get("page")) {
+        window.history.replaceState({}, "", "?page=home");
+        return "home";
+    }
+
+    return params.get("page");
+   };
 
     // Valida sessão do usuário
     const validarSessao = () => {
