@@ -17,11 +17,21 @@
   </div>
 
   <!-- 🚀 PONTO DE ENTRADA -->
-  <script type="module">
-    import { bootDashboard } from "./assets/js/dashboard-app.mjs";
 
-    console.log("🔥 HTML carregado - iniciando dashboard");
-    bootDashboard();
+  <script>
+  alert("🔥 HTML carregado");
+  </script>
+
+  <script type="module">
+  console.log("🔥 tentando carregar dashboard-app");
+
+  import("./assets/js/dashboard-app.mjs")
+    .then(() => console.log("✅ carregou OK"))
+    .catch(err => console.error("❌ ERRO REAL:", err));
+  </script>
+
+  <script>
+    console.log("🔥 SCRIPT SIMPLES FUNCIONANDO");
   </script>
 
 </body>

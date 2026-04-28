@@ -2,7 +2,7 @@
 // Last update: April 28, 2026 – 08:31
 
 import { validarUsuario } from './git-course-functions.mjs';
-import { CONFIG } from './config.js';
+import { CONFIG } from './config.mjs';
 
 const BASE_URL = CONFIG.REPO_BASE;
 

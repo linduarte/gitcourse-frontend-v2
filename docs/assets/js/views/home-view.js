@@ -1,9 +1,9 @@
 // home-view.js - SPA Dashboard Home (FINAL ESTÁVEL)
 // Last update: April 28, 2026 – 08:15
 
-import { navegar } from '../dashboard-router.js';
+import { navegar } from '../dashboard-router.mjs';
 import { getProgress } from '../git-course-functions.mjs?v=1777361682432';
-import { CONFIG } from '../config.js';
+import { CONFIG } from '../config.mjs';
 
 export class HomeView {
   constructor() {
