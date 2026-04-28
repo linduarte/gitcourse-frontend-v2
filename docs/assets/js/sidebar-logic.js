@@ -2,7 +2,7 @@
  * sidebar-logic.js (versão SPA com URL)
  */
 import { navegar } from './dashboard-router.js';
-import { logout } from './git-course-functions.js?v=1777360726079';
+import { logout } from './git-course-functions.js?v=1777361682432';
 
 export function inicializarMenuLateral() {
     const sidebar = document.querySelector('.sidebar');
