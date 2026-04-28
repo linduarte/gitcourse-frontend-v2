@@ -1,105 +1,131 @@
-// dashboard-router.js
-// Last update: April 24, 2026 – 15:13
-import { HomeView } from './views/home-view.js';
+// dashboard-router.js - versão robusta
+// Last update: April 28, 2026 – 07:11
 
-export const LESSON_TO_TOPIC = {
-    "2-terminal-customization.html": 17,
-    "2a-introduction.html": 2,
+import { validarUsuario } from './git-course-functions.mjs';
+import { CONFIG } from './config.js';
 
-    "3-git-config.html": 3,
-    "4-hosting.html": 4,
-    "5-connect.html": 5,
-    "6-git-clone.html": 6,
-    "7-git-status.html": 7,
-    "8-git-add.html": 8,
-    "9-git-commit.html": 9,
-    "10-feature_req.html": 10,
-    "11-branch.html": 11,
-    "12-branch-merge.html": 12,
-    "13-git-diff.html": 13,
-    "14-undo-changes.html": 14,
-    "15-git-init.html": 15,
-    "16-git-workflows.html": 16
+const BASE_URL = CONFIG.REPO_BASE;
+
+// ============================
+// 📚 Mapa de aulas (alinhado)
+// ============================
+const mapaAulas = {
+    1: "1a-prefacio.html",
+    2: "2a-introduction.html",
+    3: "3-git-config.html",
+    4: "4-hosting.html",
+    5: "5-connect.html",
+    6: "6-git-clone.html",
+    7: "7-git-status.html",
+    8: "8-git-add.html",
+    9: "9-git-commit.html",
+    10: "10-feature_req.html",
+    11: "11-branch.html",
+    12: "12-branch-merge.html",
+    13: "13-git-diff.html",
+    14: "14-undo-changes.html",
+    15: "15-git-init.html",
+    16: "16-git-workflows.html",
+    17: "2-terminal-customization.html" // 🔥 corrigido
 };
-
-const BASE_URL = "https://linduarte.github.io/gitcourse-frontend-v2/curso/git-course/";
-
-const routes = {
-    home: () => new HomeView(),
-    progresso: async () => ({
-        async render() {
-            const el = document.getElementById('spa-content');
-            if (!el) return;
-            el.innerHTML = `<div class="fade-in"><h2>📊 Progresso</h2><p>Em construção...</p></div>`;
-        }
-    })
-};
-
-// 🔐 AUTENTICAÇÃO
-async function validarUsuario() {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-        window.location.href = "auth/login.html";
-        return false;
-    }
-    try {
-        const response = await fetch(`${window.CONFIG.API_URL}/auth/me`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        if (!response.ok) throw new Error("Token inválido");
-        return true;
-    } catch (err) {
-        localStorage.removeItem("access_token");
-        window.location.href = "auth/login.html";
-        return false;
-    }
-}
 
 function resolverAula(id) {
-    const idStr = String(id);
-    if (idStr === "1" || idStr === "1a") return "1a-prefacio.html";
-    return LESSONS.find(aula => aula.startsWith(idStr + "-"));
+    return mapaAulas[id];
 }
 
-export async function navegar(rota, atualizarURL = false) {
+// ============================
+// 🧭 ROTAS SPA
+// ============================
+const routes = {
+    home: async () => {
+        const { HomeView } = await import('./views/home-view.js');
+        return new HomeView();
+    },
+
+    progresso: async () => {
+        const { ProgressView } = await import('./views/progress-view.js');
+        return new ProgressView();
+    }
+};
+
+// ============================
+// 🚀 NAVEGAÇÃO PRINCIPAL
+// ============================
+export async function navegar(rota = "home", atualizarURL = false) {
     const container = document.getElementById('spa-content');
-    if (!container) return;
 
-    // 🔒 valida antes de tudo
-    if (!(await validarUsuario())) return;
+    if (!container) {
+        console.error("❌ Container #spa-content não encontrado");
+        return;
+    }
 
-    if (atualizarURL) history.pushState({ rota }, "", `?page=${rota}`);
+    console.log("🧭 Navegando para:", rota);
+
+    // 🔒 valida sessão antes de tudo
+    if (!(await validarUsuario())) {
+        console.warn("⚠️ Usuário não autenticado");
+        return;
+    }
+
+    // 🔗 atualiza URL (SPA)
+    if (atualizarURL) {
+        history.pushState({ rota }, "", `?page=${rota}`);
+    }
 
     try {
+        // ============================
+        // 📘 Navegação para aulas
+        // ============================
         if (rota.startsWith("lesson:")) {
             const id = rota.split(":")[1];
             const arquivo = resolverAula(id);
-            if (!arquivo) { container.innerHTML = "<h2>Aula não encontrada</h2>"; return; }
+
+            if (!arquivo) {
+                container.innerHTML = "<h2>Aula não encontrada</h2>";
+                return;
+            }
+
+            console.log("📘 Redirecionando para aula:", arquivo);
             window.location.href = BASE_URL + arquivo;
             return;
         }
 
+        // ============================
+        // 🧭 Rotas SPA
+        // ============================
         const factory = routes[rota];
-        if (!factory) { container.innerHTML = "<h2>Rota não encontrada</h2>"; return; }
+
+        if (!factory) {
+            console.warn("⚠️ Rota inválida:", rota);
+            container.innerHTML = "<h2>Rota não encontrada</h2>";
+            return;
+        }
+
+        // 🔄 loading visual
+        container.innerHTML = `
+            <div class="fade-in">
+                <p class="loading-text">Carregando sua jornada técnica...</p>
+            </div>
+        `;
 
         const view = await factory();
+
+        if (!view || typeof view.render !== "function") {
+            throw new Error("View inválida");
+        }
+
+        // limpa e renderiza
         container.innerHTML = "";
         await view.render();
 
     } catch (err) {
-        console.error("Erro na navegação:", err);
-        container.innerHTML = `<div class="error-container"><h2>Erro ao carregar</h2><p>${err.message}</p></div>`;
+        console.error("❌ Erro na navegação:", err);
+
+        container.innerHTML = `
+            <div class="error-container">
+                <h2>Erro ao carregar</h2>
+                <p>${err.message}</p>
+            </div>
+        `;
     }
 }
-
-// 🚪 LOGOUT GLOBAL
-export function logout() {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_email");
-    window.location.href = "auth/login.html";
-}
-
-// 🔥 START
-document.addEventListener("DOMContentLoaded", () => {
-    navegar("home");
-});
