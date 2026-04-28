@@ -1,104 +1,50 @@
-// dashboard-app.js - versão blindada e refatorada para SPA e HomeView
-// Last update: April 28, 2026 – 05:53
+// dashboard-app.mjs
 
-import { navegar } from './dashboard-router.js';
-import { inicializarMenuLateral } from './sidebar-logic.js';
-import { getProgress } from './git-course-functions.mjs?v=1777361682432';
-import { CONFIG } from './config.js';
+console.log("🔥 dashboard-app carregado");
 
-document.addEventListener("DOMContentLoaded", async () => {
+import { getProgress } from "./git-course-functions.mjs";
 
-    // 🔹 Garante que estamos no dashboard
-    if (!window.location.pathname.includes("dashboard.html")) {
-        console.log("⛔ Ignorando script fora do dashboard");
+export async function bootDashboard() {
+    console.log("🚀 bootDashboard iniciado");
+
+    const token = localStorage.getItem("access_token");
+    const email = localStorage.getItem("user_email");
+
+    console.log("🔐 token:", token);
+    console.log("👤 email:", email);
+
+    if (!token) {
+        console.warn("⚠️ Sem token → redirecionar login");
         return;
     }
 
-    let redirecting = false;
+    // mostra usuário
+    document.getElementById("userEmailDisplay").textContent = email || "aluno";
 
-    // Recupera a rota atual da URL
-    const getRotaAtual = () => {
-    const params = new URLSearchParams(window.location.search);
+    try {
+        console.log("📡 chamando getProgress...");
+        const progresso = await getProgress();
 
-    if (!params.get("page")) {
-        window.history.replaceState({}, "", "?page=home");
-        return "home";
+        console.log("✅ progresso:", progresso);
+
+        renderDashboard(progresso);
+
+    } catch (err) {
+        console.error("❌ erro ao carregar progresso:", err);
+        document.getElementById("spa-content").innerHTML =
+            "<h2>Erro ao carregar dados</h2>";
     }
+}
 
-    return params.get("page");
-   };
+function renderDashboard(progresso) {
+    const container = document.getElementById("spa-content");
 
-    // Valida sessão do usuário
-    const validarSessao = () => {
-        const token = localStorage.getItem("access_token");
-        const email = localStorage.getItem("user_email");
+    const completed = progresso?.actual_count || 0;
 
-        console.log("🔐 Validando sessão...", { token, email });
-        return !!token && !!email;
-    };
+    container.innerHTML = `
+        <h2>Seu progresso</h2>
+        <p>Aulas concluídas: ${completed}</p>
+    `;
 
-    // Atualiza mensagem de status
-    const atualizarMensagemStatus = (mensagem, cor = "#333") => {
-        const mensagemBox = document.getElementById("mensagem-status");
-        if (mensagemBox) {
-            mensagemBox.textContent = mensagem;
-            mensagemBox.style.color = cor;
-        }
-    };
-
-    // ========================
-    // Boot do dashboard
-    // ========================
-    const boot = async () => {
-        if (redirecting) return;
-        redirecting = true;
-
-        // 🔒 Sessão inválida → login
-        if (!validarSessao()) {
-            console.warn("⚠️ Usuário não autenticado → login");
-            window.location.href = "/gitcourse-frontend-v2/auth/login.html";
-            return;
-        }
-
-        // Inicializa menu lateral SPA
-        inicializarMenuLateral();
-
-        const rota = getRotaAtual();
-
-        try {
-            console.log("🔹 Antes de getProgress");
-            const progresso = await getProgress(CONFIG.API_URL);
-            console.log("🔹 Progresso carregado:", progresso);
-
-            const userEmail = localStorage.getItem("user_email") || "aluno";
-            atualizarMensagemStatus(`Bem-vindo, ${userEmail}! Iniciando sua jornada técnica...`, "#1f2937");
-
-            // Mostra lacunas, se houver
-            const lacunasBox = document.getElementById("lacunas-box");
-            if (lacunasBox && progresso.pending_topics.length > 0) {
-                const aulasPuladas = progresso.pending_topics.join(" • ");
-                lacunasBox.innerHTML = `<p class="lacunas-text">⚠️ Você pulou algumas etapas importantes: ${aulasPuladas}</p>`;
-            }
-
-            // 🔹 Novo aluno → REDIRECT PREFÁCIO
-            if (progresso.actual_count === 0) {
-                console.log("🚀 Novo aluno → Prefácio");
-                window.location.replace(CONFIG.REPO_BASE + "1a-prefacio.html");
-                return;
-            }
-
-            // ✔ versão correta (igual ao modelo que funcionava)
-            await navegar(rota);
-
-        } catch (err) {
-            console.error("❌ Erro ao carregar progresso:", err);
-            atualizarMensagemStatus("Erro ao carregar seu progresso. Recarregue a página.", "#d32f2f");
-        }
-    };
-
-    // SPA back/forward
-    window.addEventListener("popstate", () => navegar(getRotaAtual()));
-
-    // Inicializa dashboard
-    boot();
-});
+    console.log("🎯 dashboard renderizado");
+}
