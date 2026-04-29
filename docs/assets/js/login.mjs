@@ -39,12 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            console.log("🔥 login response:", data);
 
-            console.log("🔥 resposta login:", data);
-
-            localStorage.setItem("access_token", data.access_token || data.token);
-            localStorage.setItem("user_email", email);
+            const token = data.access_token || data.token;
+                    
+            if (!token) {
+                console.error("❌ TOKEN NÃO VEIO DO BACKEND");
+            } else {
+                localStorage.setItem("access_token", token);
+                localStorage.setItem("user_email", email);
+    }
 
             if (!response.ok || !data.access_token) {
                 throw new Error(data.detail || "Login inválido");
