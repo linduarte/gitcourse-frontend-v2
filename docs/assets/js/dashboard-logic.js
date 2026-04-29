@@ -24,7 +24,7 @@ export function requireAuth() {
 
     if (!session) {
         console.warn("⚠️ Usuário não autenticado");
-        window.location.href = "auth/login.html";
+    // window.location.href = "auth/login.html";
         return null;
     }
 

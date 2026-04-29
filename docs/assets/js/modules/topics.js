@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("access_token");
 
     if (!token) {
-        window.location.href = "../../auth/login.html";
+        // window.location.href = "../../auth/login.html";
         return;
     }
 
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!response.ok) {
             localStorage.removeItem("access_token");
-            window.location.href = "../../auth/login.html";
+            //indow.location.href = "../../auth/login.html";
             return;
         }
 
@@ -25,6 +25,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (err) {
         console.error(err);
-        window.location.href = "../../auth/login.html";
+        // window.location.href = "../../auth/login.html";
     }
 });

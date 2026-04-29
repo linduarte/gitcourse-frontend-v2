@@ -41,6 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const data = await response.json();
 
+            console.log("🔥 resposta login:", data);
+
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("user_email", email);
+
             if (!response.ok || !data.access_token) {
                 throw new Error(data.detail || "Login inválido");
             }
