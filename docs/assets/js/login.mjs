@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             console.log("🔥 resposta login:", data);
 
-            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("access_token", data.access_token || data.token);
             localStorage.setItem("user_email", email);
 
             if (!response.ok || !data.access_token) {
