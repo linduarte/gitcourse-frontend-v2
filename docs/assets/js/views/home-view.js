@@ -1,191 +1,139 @@
-// home-view.js (refatorado)
+// home-view.js - SPA Dashboard Home (FINAL ESTÁVEL)
+// Last update: April 28, 2026 – 08:15
 
-import { navegar, LESSONS } from '../dashboard-router.js';
-import { getProgress } from '../git-course-functions.js';
-
-const USE_MOCK = true; // 🔥 controle central
+import { navegar } from '../dashboard-router.mjs';
+import { getProgress } from '../git-course-functions.mjs?v=1777361682432';
+import { CONFIG } from '../config.mjs';
 
 export class HomeView {
-    constructor() {
-        this.container = document.getElementById('spa-content');
+  constructor() {
+    this.container = document.getElementById('spa-content');
+  }
+
+  async render() {
+    console.log("🔥 HomeView.render()");
+    if (!this.container) return;
+
+    this.container.innerHTML = `
+      <div class="fade-in">
+        <p class="loading-text">Carregando sua jornada técnica...</p>
+      </div>
+    `;
+
+    await new Promise(r => requestAnimationFrame(r));
+    await this.carregarDados();
+  }
+
+  async carregarDados() {
+    console.log("🔥 STEP 1 - entrou carregarDados");
+
+    try {
+      const progresso = await getProgress(); // 👈 SEM parâmetro
+      console.log("🔥 STEP 2 - progresso:", progresso);
+
+      this.renderDashboard(progresso);
+      console.log("🔥 STEP 3 - renderDashboard chamado");
+
+    } catch (err) {
+      console.error("❌ STEP ERRO:", err);
+      this.container.innerHTML = `<h2>Erro ao carregar dados</h2>`;
     }
+  }
 
-    async render() {
-        if (!this.container) return;
 
-        this.container.innerHTML = this.template();
+    async carregarDados() {
+    console.log("🔥 STEP 1 - entrou carregarDados");
 
-        await new Promise(r => requestAnimationFrame(r));
-        await this.carregarDados();
+    try {
+        const progresso = await getProgress();
+        console.log("🔥 STEP 2 - progresso recebido:", progresso);
+
+        this.renderDashboard(progresso);
+        console.log("🔥 STEP 3 - renderDashboard chamado");
+
+    } catch (err) {
+        console.error("❌ STEP ERRO:", err);
     }
+}
 
-    template() {
-        return `
+    renderDashboard(progresso) {
+        const pendingRaw = progresso?.pending_topics || [];
+
+        // 🔥 Mapeamento backend → frontend
+        const pending = pendingRaw.map(id => {
+            if (id === 17) return "2";   // ex-17 → aula 2
+            if (id === 2) return "2a";   // ex-2 → aula 2a
+            return id;
+        });
+
+        const TOTAL_AULAS = 16;
+        const completed = progresso?.actual_count || 0;
+        const percent = Math.round((completed / TOTAL_AULAS) * 100);
+
+        const email = localStorage.getItem("user_email") || "usuário";
+        const nome = email.split("@")[0];
+
+        this.container.innerHTML = `
             <div class="fade-in">
-                <h2 id="welcome-user">Carregando...</h2>
-                <p id="mensagem-status" class="mensagem-status"></p>
+                <h2>Bem-vindo, ${nome}!</h2>
 
                 <div class="progress-box">
-                    <p id="progress-text">Calculando progresso...</p>
+                    <p>Progresso: ${completed} / ${TOTAL_AULAS} (${percent}%)</p>
                     <div class="progress-bar">
-                        <div id="progress-fill" class="progress-fill"></div>
+                        <div class="progress-fill" style="width:${percent}%"></div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <button id="btn-continuar">
-                        ⏳ Carregando progresso...
-                    </button>
+                    <button id="btn-continuar"></button>
                 </div>
 
                 <div id="lacunas-box"></div>
             </div>
         `;
-    }
 
-    async carregarDados() {
-        try {
-            let progresso;
-
-            if (USE_MOCK) {
-                console.log("🔥 MODO MOCK ATIVO");
-
-                progresso = {
-                    actual_count: 5,
-                    total: 15,
-                    percentage: 33,
-                    pending_topics: ["6", "7", "8"]
-                };
-            } else {
-                progresso = await getProgress();
-                console.log("🔥 BACKEND:", progresso);
-            }
-
-            this.atualizarUI(progresso);
-
-        } catch (err) {
-            console.error("Erro API:", err);
-            this.mostrarErro();
-        }
-    }
-
-    atualizarUI(progresso) {
-        const email = localStorage.getItem("user_email") || "usuário";
-        const nome = email.split("@")[0];
-
-        this.setText("welcome-user", `Bem-vindo, ${nome}!`);
-        this.atualizarMensagem(progresso.percentage);
-        this.atualizarBarra(progresso);
-        this.configurarBotao(progresso.pending_topics);
-        this.renderLacunas(progresso.pending_topics);
-    }
-
-    atualizarMensagem(percent = 0) {
-        let mensagem = "";
-
-        if (percent === 100) mensagem = "🏆 Parabéns! Você concluiu o curso!";
-        else if (percent >= 80) mensagem = "🔥 Você está muito perto de concluir!";
-        else if (percent >= 50) mensagem = "🚀 Excelente progresso!";
-        else if (percent > 0) mensagem = "💡 Continue avançando!";
-        else mensagem = "👋 Vamos começar sua jornada!";
-
-        const box = document.getElementById("mensagem-status");
-        if (!box) return;
-
-        box.textContent = mensagem;
-        box.className = "mensagem-status";
-
-        if (percent === 100) box.classList.add("sucesso");
-        else if (percent >= 80) box.classList.add("alerta");
-        else if (percent >= 50) box.classList.add("progresso");
-        else box.classList.add("inicio");
-    }
-
-    atualizarBarra({ actual_count = 0, total = 15, percentage = 0 }) {
-        this.setText("progress-text", `Progresso: ${actual_count} / ${total} aulas (${percentage}%)`);
-
-        const fill = document.getElementById("progress-fill");
-        if (!fill) return;
-
-        fill.style.width = "0%";
-        setTimeout(() => {
-            fill.style.width = `${percentage}%`;
-        }, 150);
-    }
-
-    configurarBotao(pending = []) {
         const btn = document.getElementById("btn-continuar");
-        if (!btn) return;
+        const lacunasBox = document.getElementById("lacunas-box");
 
+        // 🎯 Botão principal
         if (pending.length === 0) {
-            btn.textContent = "Curso Concluído 🎉";
+            btn.textContent = "Ver progresso";
             btn.onclick = () => navegar("progresso", true);
-            return;
-        }
-
-        const aula = pending[0];
-
-        if (aula === "1a") {
-            btn.textContent = "Iniciar Jornada Git";
-            btn.onclick = () => navegar("lesson:1a", true);
         } else {
-            btn.textContent = `Retomar Aula ${aula}`;
-            btn.onclick = () => navegar(`lesson:${aula}`, true);
-        }
-    }
+            const aula = pending[0];
 
-    renderLacunas(pending = []) {
-        const box = document.getElementById("lacunas-box");
-        if (!box) return;
+            const destino =
+                (aula === "1" || aula === "1a")
+                    ? "lesson:1a"
+                    : `lesson:${aula}`;
 
-        if (pending.length === 0) {
-            box.innerHTML = "";
-            return;
+            btn.textContent = `Continuar aula ${aula}`;
+            btn.onclick = () => navegar(destino, true);
         }
 
-        box.innerHTML = `
-            <div class="lacunas-card">
-                <h3>⚠️ Continue sua jornada</h3>
-                <p>Você pulou algumas etapas importantes:</p>
+        // ⚠️ Lacunas
+        if (pending.length > 1) {
+            lacunasBox.innerHTML = `
+                <p>⚠️ Você pulou etapas:</p>
+                ${pending.map(a => `
+                    <button class="lacuna-btn" data-aula="${a}">
+                        Aula ${a}
+                    </button>
+                `).join("")}
+            `;
 
-                <div class="lacunas-list">
-                    ${pending.map(a => `
-                        <button class="lacuna-btn" data-aula="${a}">
-                            Aula ${a} - ${this.formatLessonName(this.getLessonName(a))}
-                        </button>
-                    `).join("")}
-                </div>
-            </div>
-        `;
+            lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
+                btn.onclick = () => {
+                    const aula = btn.dataset.aula;
 
-        box.querySelectorAll(".lacuna-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                navegar(`lesson:${btn.dataset.aula}`, true);
+                    const destino =
+                        (aula === "1" || aula === "1a")
+                            ? "lesson:1a"
+                            : `lesson:${aula}`;
+
+                    navegar(destino, true);
+                };
             });
-        });
-    }
-
-    getLessonName(aulaId) {
-        const file = LESSONS.find(f => f.startsWith(`${aulaId}-`));
-        return file?.replace('.html', '').replace(/^\d+-?/, '').replace(/-/g, ' ') || `Aula ${aulaId}`;
-    }
-
-    formatLessonName(name) {
-        return name
-            .replace(/_/g, ' ')
-            .replace(/-/g, ' ')
-            .replace(/\b\w/g, c => c.toUpperCase());
-    }
-
-    mostrarErro() {
-        const box = document.getElementById("mensagem-status");
-        if (box) {
-            box.textContent = "⚠️ Sem conexão com servidor";
         }
-    }
-
-    setText(id, text) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = text;
     }
 }
