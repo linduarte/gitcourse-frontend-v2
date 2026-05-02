@@ -7,7 +7,7 @@
 import { CONFIG } from "./config.js"; // caminho relativo conforme sua estrutura
 import { login as loginAPI } from "./git-course-functions.js";
 
-const USE_MOCK = true; // 🔥 controle central
+const USE_MOCK = false; // 🔥 controle central
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
