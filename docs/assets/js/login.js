@@ -1,13 +1,10 @@
-// login.js - suporte a MOCK
-// Abril 2026 – versão SPA + mock
-// 🔹 USE_MOCK = true → simula login
-// 🔹 USE_MOCK = false → faz login real via API
-// Last update: May 02, 2026 – 17:07
+// Last update: May 02, 2026 – 17:46
+// login.js - SPA + suporte a MOCK
+// Abril 2026 – versão SPA + mock control
+import { CONFIG } from "./config.js";
+import { loginAPI } from "./git-course-functions.js";
 
-import { CONFIG } from "./config.js"; // caminho relativo conforme sua estrutura
-import { login as loginAPI } from "./git-course-functions.js";
-
-const USE_MOCK = false; // 🔥 controle central
+const USE_MOCK = false; // 🔥 true → simula login, false → API real
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
@@ -42,9 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // 🔹 Login real via API
-            const success = await loginAPI(email, password, CONFIG.API_URL);
+            const data = await loginAPI(email, password, CONFIG.API_URL);
 
-            if (success) {
+            if (data && data.access_token) {
                 console.log("✅ Login efetuado:", email);
                 localStorage.setItem("user_email", email);
                 window.location.href = CONFIG.REPO_BASE + "dashboard.html";
