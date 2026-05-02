@@ -1,95 +1,62 @@
-// login.js FINAL
-import { CONFIG } from "./config.js";
+// login.js - suporte a MOCK
+// Abril 2026 – versão SPA + mock
+// 🔹 USE_MOCK = true → simula login
+// 🔹 USE_MOCK = false → faz login real via API
+// Last update: May 02, 2026 – 17:07
+
+import { CONFIG } from "./config.js"; // caminho relativo conforme sua estrutura
+import { login as loginAPI } from "./git-course-functions.js";
+
+const USE_MOCK = true; // 🔥 controle central
 
 document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("loginForm");
+    if (!form) return;
 
-    const form = document.getElementById("login-form");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const resultEl = document.getElementById("result");
-    const btn = document.getElementById("btn-login");
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-    if (!form || !emailInput || !passwordInput || !resultEl || !btn) {
-        console.error("❌ Elementos do login não encontrados");
-        return;
-    }
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
 
-    // 💾 UX
-    const savedEmail = localStorage.getItem("user_email");
-    if (savedEmail) emailInput.value = savedEmail;
+        if (!email || !password) {
+            alert("Preencha email e senha");
+            return;
+        }
 
-    emailInput.focus();
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-
+        const btn = form.querySelector("button[type=submit]");
         btn.disabled = true;
         btn.textContent = "Entrando...";
-        resultEl.style.color = "#9ca3af";
-        resultEl.textContent = "Autenticando...";
 
         try {
-            // 🔐 LOGIN
-            const response = await fetch(`${CONFIG.API_URL}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
-
-            console.log("🔥 login response:", data);
-
-            const token = data.access_token || data.token;
-                    
-            if (!token) {
-                console.error("❌ TOKEN NÃO VEIO DO BACKEND");
-            } else {
-                localStorage.setItem("access_token", token);
+            if (USE_MOCK) {
+                // 🔹 Login simulado
+                console.log("🔥 MODO MOCK: login simulado");
+                localStorage.setItem("access_token", "mock_token_123");
                 localStorage.setItem("user_email", email);
-    }
 
-            if (!response.ok || !data.access_token) {
-                throw new Error(data.detail || "Login inválido");
+                setTimeout(() => {
+                    window.location.href = CONFIG.REPO_BASE + "dashboard.html";
+                }, 500);
+                return;
             }
 
-            // 💾 salva sessão
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("user_email", email);
+            // 🔹 Login real via API
+            const success = await loginAPI(email, password, CONFIG.API_URL);
 
-            resultEl.style.color = "#4ade80";
-            resultEl.textContent = "Login realizado!";
-
-            // =========================
-            // 🔥 DECISÃO BASEADA EM PROGRESSO
-            // =========================
-            const progressRes = await fetch(`${CONFIG.API_URL}/progress/summary`, {
-                headers: {
-                    "Authorization": `Bearer ${data.access_token}`
-                }
-            });
-
-            const progress = await progressRes.json();
-
-            if (!progressRes.ok || !progress || progress.actual_count === 0) {
-
-                // 🚀 NOVO ALUNO → PREFÁCIO
-                window.location.href =
-                    `${CONFIG.REPO_BASE}1a-prefacio.html`;
-
+            if (success) {
+                console.log("✅ Login efetuado:", email);
+                localStorage.setItem("user_email", email);
+                window.location.href = CONFIG.REPO_BASE + "dashboard.html";
             } else {
-
-                // 📊 ALUNO COM PROGRESSO → DASHBOARD
-                window.location.href = "../dashboard.html";
+                alert("Login falhou. Verifique suas credenciais.");
+                btn.disabled = false;
+                btn.textContent = "Entrar";
             }
 
         } catch (err) {
-            console.error("💥 Erro login:", err);
-
-            resultEl.style.color = "#f87171";
-            resultEl.textContent = err.message || "Erro ao conectar.";
-
+            console.error("❌ Erro no login:", err);
+            alert("Erro ao tentar logar. Veja o console.");
             btn.disabled = false;
             btn.textContent = "Entrar";
         }
