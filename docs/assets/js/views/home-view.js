@@ -1,4 +1,5 @@
 // home-view.js (refatorado)
+// Last update: May 02, 2026 – 10:46
 
 import { navegar, LESSONS } from '../dashboard-router.js';
 import { getProgress } from '../git-course-functions.js';
