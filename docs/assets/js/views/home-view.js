@@ -3,7 +3,7 @@
 import { navegar, LESSONS } from '../dashboard-router.js';
 import { getProgress } from '../git-course-functions.js';
 
-const USE_MOCK = true; // 🔥 controle central
+const USE_MOCK = false; // 🔥 controle central
 
 export class HomeView {
     constructor() {
