@@ -1,4 +1,4 @@
-<!-- Last update: April 29, 2026 – 15:38 -->
+<!-- Last update: May 03, 2026 – 17:59 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +7,8 @@
     <title>Branch Merge</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
+
 
     <!-- Prism -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -48,98 +49,98 @@
 
     <!-- ============================
          SECTION 1
-    ============================= -->
-    <section id="section1">
-        <h3>Alternando ramificações sem mesclar</h3>
+============================= -->
+<section id="section1">
+    <h3>Alternando ramificações sem mesclar</h3>
 
-        <p class="p-styled spaced-p">
-            Você pode ver a extensão das mudanças feitas na branch de teste do projeto Phonetic Website listando o conteúdo do diretório de trabalho:
-        </p>
+    <p class="p-styled spaced-p">
+        Você pode ver a extensão das mudanças feitas na branch de teste do projeto Phonetic Website listando o conteúdo do diretório de trabalho:
+    </p>
 
-        <img src="../../assets/images/ls-a.webp" alt="Arquivos do ramo test" class="img-half">
+    <img src="/gitcourse-frontend-v2/assets/images/ls-a.webp" alt="Arquivos do ramo test" class="img-half">
 
-        <p class="p-styled spaced-p">
-            Todos os arquivos CSS foram movidos um nível para cima e o diretório <em>style</em> não existe mais.
-        </p>
+    <p class="p-styled spaced-p">
+        Todos os arquivos CSS foram movidos um nível para cima e o diretório <em>style</em> não existe mais.
+    </p>
 
-        <p class="p-styled spaced-p">Agora vamos ver o poder das branches.</p>
+    <p class="p-styled spaced-p">Agora vamos ver o poder das branches.</p>
 
-        <p class="p-styled spaced-p">
-            Vamos voltar para a branch <strong>main</strong> usando o comando <code class="language-bash">git checkout</code> e listar o conteúdo novamente:
-        </p>
+    <p class="p-styled spaced-p">
+        Vamos voltar para a branch <strong>main</strong> usando o comando <code class="language-bash">git checkout</code> e listar o conteúdo novamente:
+    </p>
 
-        <img src="../../assets/images/checkout-main.webp" alt="git checkout no ramo main" class="img-half">
+    <img src="/gitcourse-frontend-v2/assets/images/checkout-main.webp" alt="git checkout no ramo main" class="img-half">
 
-        <p class="p-styled spaced-p">
-            Como você pode ver, o conteúdo do diretório de trabalho foi restaurado. O diretório de estilo está de volta, contendo todos os arquivos CSS.
-        </p>
+    <p class="p-styled spaced-p">
+        Como você pode ver, o conteúdo do diretório de trabalho foi restaurado. O diretório de estilo está de volta, contendo todos os arquivos CSS.
+    </p>
 
-        <p class="p-styled spaced-p"><strong>Como isso é possível?</strong></p>
+    <p class="p-styled spaced-p"><strong>Como isso é possível?</strong></p>
 
-        <p class="p-styled spaced-p">
-            Toda vez que você troca de branch, o Git busca no banco de dados do repositório o conteúdo do diretório de trabalho do último commit daquela branch.
-        </p>
+    <p class="p-styled spaced-p">
+        Toda vez que você troca de branch, o Git busca no banco de dados do repositório o conteúdo do diretório de trabalho do último commit daquela branch.
+    </p>
 
-        <p class="p-styled spaced-p">
-            Quando você roda o comando <code class="language-bash">git checkout &lt;branch&gt;</code>, o ponteiro <strong>HEAD</strong> se move para o último commit da branch escolhida.
-        </p>
+    <p class="p-styled spaced-p">
+        Quando você roda o comando <code class="language-bash">git checkout &lt;branch&gt;</code>, o ponteiro <strong>HEAD</strong> se move para o último commit da branch escolhida.
+    </p>
 
-        <p class="p-styled spaced-p">
-            Abaixo está uma ilustração gráfica do processo de troca. Na primeira imagem, a branch <strong>special2</strong> é a branch atual.
-        </p>
+    <p class="p-styled spaced-p">
+        Abaixo está uma ilustração gráfica do processo de troca. Na primeira imagem, a branch <strong>special2</strong> é a branch atual.
+    </p>
 
-        <img src="../../assets/images/git_diagram_a.webp" alt="Diagrama mostrando a posição do HEAD" class="img-half">
+    <img src="/gitcourse-frontend-v2/assets/images/git_diagram_a.webp" alt="Diagrama mostrando a posição do HEAD" class="img-half">
 
-        <p class="p-styled spaced-p">
-            A linha representa o ramo principal <strong>main</strong>, com cada commit mostrado como um círculo.
-        </p>
+    <p class="p-styled spaced-p">
+        A linha representa o ramo principal <strong>main</strong>, com cada commit mostrado como um círculo.
+    </p>
 
-        <img src="../../assets/images/git_diagram_b.webp" alt="Histórico de commits" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git_diagram_b.webp" alt="Histórico de commits" class="img-full">
 
-        <p class="p-styled spaced-p">
-            Após o comando <code class="language-bash">git checkout main</code>, o ponteiro HEAD se move para o último commit da branch main.
-        </p>
+    <p class="p-styled spaced-p">
+        Após o comando <code class="language-bash">git checkout main</code>, o ponteiro HEAD se move para o último commit da branch main.
+    </p>
 
-        <img src="../../assets/images/git-branch_2.webp" alt="Histórico de commits" class="img-full">
-        <img src="../../assets/images/branch_ghi_jkl.webp" alt="Branches g-h-i e j-k-l" class="img-full">
-        <img src="../../assets/images/checkout-ghi.webp" alt="git checkout g-h-i" class="img-full">
-        <img src="../../assets/images/added_G.webp" alt="Letra G adicionada" class="img-full">
-        <img src="../../assets/images/git-log-ghi.webp" alt="git log das letras G, H e I" class="img-full">
-        <img src="../../assets/images/git-st-ghi.webp" alt="git status do ramo g-h-i" class="img-full">
-        <img src="../../assets/images/git_checkout_main.webp" alt="git checkout main" class="img-full">
-        <img src="../../assets/images/git-merge-ghi.webp" alt="git merge g-h-i" class="img-full">
-        <img src="../../assets/images/git-log-main.webp" alt="git log após merge" class="img-full">
-        <img src="../../assets/images/gitgraph_view.webp" alt="Visão gitgraph após merge" class="img-full">
-    </section>
+    <img src="/gitcourse-frontend-v2/assets/images/git-branch_2.webp" alt="Histórico de commits" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/branch_ghi_jkl.webp" alt="Branches g-h-i e j-k-l" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/checkout-ghi.webp" alt="git checkout g-h-i" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/added_G.webp" alt="Letra G adicionada" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-log-ghi.webp" alt="git log das letras G, H e I" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-st-ghi.webp" alt="git status do ramo g-h-i" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git_checkout_main.webp" alt="git checkout main" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-merge-ghi.webp" alt="git merge g-h-i" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-log-main.webp" alt="git log após merge" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/gitgraph_view.webp" alt="Visão gitgraph após merge" class="img-full">
+</section>
 
-    <!-- ============================
+<!-- ============================
          SECTION 3 — CONFLITOS
-    ============================= -->
-    <section id="section3">
-        <h3>Resolvendo conflitos</h3>
+============================= -->
+<section id="section3">
+    <h3>Resolvendo conflitos</h3>
 
-        <img src="../../assets/images/git-sw-jkl.webp" alt="git switch j-k-l" class="img-full">
-        <img src="../../assets/images/git-log-jkl.webp" alt="git log j-k-l" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-sw-jkl.webp" alt="git switch j-k-l" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-log-jkl.webp" alt="git log j-k-l" class="img-full">
 
-        <p class="p-styled spaced-p"><strong>Exercício</strong></p>
+    <p class="p-styled spaced-p"><strong>Exercício</strong></p>
 
-        <img src="../../assets/images/pilots-add_J.webp" alt="Adição da letra J" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/pilots-add_J.webp" alt="Adição da letra J" class="img-full">
 
-        <img src="../../assets/images/git-log-total.webp" alt="git log total" class="img-full">
-        <img src="../../assets/images/git-st-jkl.webp" alt="git status j-k-l" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-log-total.webp" alt="git log total" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-st-jkl.webp" alt="git status j-k-l" class="img-full">
 
-        <img src="../../assets/images/git-log-main.webp" alt="git log main" class="img-full">
-        <img src="../../assets/images/git-merge-br2.webp" alt="git merge j-k-l" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-log-main.webp" alt="git log main" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-merge-br2.webp" alt="git merge j-k-l" class="img-full">
 
-        <img src="../../assets/images/git-st-conflit.webp" alt="git status com conflitos" class="img-full">
-        <img src="../../assets/images/pilots_conflits.webp" alt="Conflitos no arquivo pilots.html" class="img-full">
-        <img src="../../assets/images/pilots-fixed.webp" alt="Conflitos resolvidos" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-st-conflit.webp" alt="git status com conflitos" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/pilots_conflits.webp" alt="Conflitos no arquivo pilots.html" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/pilots-fixed.webp" alt="Conflitos resolvidos" class="img-full">
 
-        <img src="../../assets/images/git-comit-resolv.webp" alt="Commit resolvendo conflitos" class="img-full">
-        <img src="../../assets/images/git-log-main-merg.webp" alt="git log após merge final" class="img-full">
-        <img src="../../assets/images/git-tag-push.webp" alt="git tag e push" class="img-full">
-        <img src="../../assets/images/git-st-conclus.webp" alt="git status final" class="img-full">
-    </section>
+    <img src="/gitcourse-frontend-v2/assets/images/git-comit-resolv.webp" alt="Commit resolvendo conflitos" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-log-main-merg.webp" alt="git log após merge final" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-tag-push.webp" alt="git tag e push" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git-st-conclus.webp" alt="git status final" class="img-full">
+</section>
 
     <!-- ============================
          SECTION 4 — GIT GRAPH
@@ -217,9 +218,15 @@ gitGraph
 
         <div class="footer-buttons">
         <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>    
-        <button type="button" class="btn-footer-primary" id="btn-concluir">
-            Concluído ✓
+        <button 
+        type="button" 
+        class="btn-footer-primary" 
+        id="markCompletedButton"
+        data-topic-id="12"
+        data-next-lesson="13-git-diff.html">
+        Concluído ✓
         </button>
+
         
 
         </div>
@@ -232,7 +239,7 @@ gitGraph
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            <img src="/gitcourse-frontend-v2/assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
             <img src="https://jigsaw.w3.org/css-validator/images/vcss"
@@ -248,16 +255,14 @@ gitGraph
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+    import "/gitcourse-frontend-v2/assets/js/dashboard-logic.js";
 
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 12, '13-git-diff.html');
-    });
-
     console.log("✅ Aula 12 (Branch Merge) conectada.");
 </script>
+
 
 </body>
 </html>

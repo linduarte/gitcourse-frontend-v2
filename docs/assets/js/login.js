@@ -1,10 +1,11 @@
-// Last update: May 02, 2026 – 17:46
-// login.js - SPA + suporte a MOCK
-// Abril 2026 – versão SPA + mock control
-import { CONFIG } from "./config.js";
-import { loginAPI } from "./git-course-functions.js";
 
-const USE_MOCK = false; // 🔥 true → simula login, false → API real
+// login.js – SPA + modo mock + compatível com FastAPI (JSON)
+// Last update: May 03, 2026 – 09:24
+
+import { CONFIG } from "./config.js";
+import { login as loginAPI } from "./git-course-functions.js"; // usado apenas no modo mock
+
+const USE_MOCK = false; // 🔥 alterna entre mock e backend real
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
@@ -26,30 +27,57 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.textContent = "Entrando...";
 
         try {
+            // ---------------------------------------------------------
+            // 🔹 MODO MOCK (simulação local, sem backend)
+            // ---------------------------------------------------------
             if (USE_MOCK) {
-                // 🔹 Login simulado
                 console.log("🔥 MODO MOCK: login simulado");
-                localStorage.setItem("access_token", "mock_token_123");
+
+                const mock = await loginAPI(email, password); // função mock
+                if (!mock?.access_token) {
+                    throw new Error("Mock falhou");
+                }
+
+                localStorage.setItem("access_token", mock.access_token);
                 localStorage.setItem("user_email", email);
 
-                setTimeout(() => {
-                    window.location.href = CONFIG.REPO_BASE + "dashboard.html";
-                }, 500);
+                window.location.href = CONFIG.REPO_BASE + "dashboard.html";
                 return;
             }
 
-            // 🔹 Login real via API
-            const data = await loginAPI(email, password, CONFIG.API_URL);
+            // ---------------------------------------------------------
+            // 🔹 LOGIN REAL (FastAPI exige JSON)
+            // ---------------------------------------------------------
+            const response = await fetch(`${CONFIG.API_URL}/auth/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
 
-            if (data && data.access_token) {
+            const data = await response.json();
+
+            if (response.ok && data.access_token) {
                 console.log("✅ Login efetuado:", email);
+
+                localStorage.setItem("access_token", data.access_token);
                 localStorage.setItem("user_email", email);
+
                 window.location.href = CONFIG.REPO_BASE + "dashboard.html";
-            } else {
-                alert("Login falhou. Verifique suas credenciais.");
-                btn.disabled = false;
-                btn.textContent = "Entrar";
+                return;
             }
+
+            // ---------------------------------------------------------
+            // 🔹 Falha no login
+            // ---------------------------------------------------------
+            console.warn("⚠️ Login falhou:", data);
+            alert(data?.detail || "Credenciais inválidas.");
+            btn.disabled = false;
+            btn.textContent = "Entrar";
 
         } catch (err) {
             console.error("❌ Erro no login:", err);

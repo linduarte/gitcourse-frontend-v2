@@ -1,4 +1,4 @@
-<!-- Last update: April 29, 2026 – 15:31 -->
+<!-- Last update: May 03, 2026 – 10:15 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -173,12 +173,30 @@
 
 
 <script type="module">
-    import { logout } from "../../assets/js/git-course-functions.js";
+    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+    import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
 
     window.logout = logout;
 
+    // Corrige o botão "Iniciar Jornada Git"
+    const startBtn = document.querySelector(".start-button button");
+    if (startBtn) {
+        startBtn.onclick = () => {
+            window.location.href = `${CONFIG.COURSE_BASE}2-terminal-customization.html`;
+        };
+    }
+
+    // Corrige o botão "Início"
+    const inicioBtn = document.querySelector(".footer-nav button");
+    if (inicioBtn) {
+        inicioBtn.onclick = () => {
+            window.location.href = `${CONFIG.REPO_BASE}index.html`;
+        };
+    }
+
     console.log("✅ Prefácio carregado corretamente (sem registro de progresso).");
 </script>
+
 
 </body>
 </html>

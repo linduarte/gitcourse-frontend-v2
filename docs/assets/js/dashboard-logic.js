@@ -1,104 +1,57 @@
-// dashboard-logic.js
 
-import { CONFIG } from './config.js';
+// Last update: May 03, 2026 – 09:53
+// dashboard-logic.js – Controle de progresso dentro das páginas do curso
+// Usa o fluxo oficial registrarEAvancar()
 
-/**
- * 🔐 Valida sessão do usuário
- */
-export function getSession() {
+import { registrarEAvancar } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+
     const token = localStorage.getItem("access_token");
-    const email = localStorage.getItem("user_email");
 
-    if (!token || !email) {
-        return null;
+    // 🔒 Proteção: usuário não autenticado → volta para landing
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}landing.html`;
+        return;
     }
 
-    return { token, email };
-}
-
-/**
- * 🚫 Redireciona se não estiver logado
- */
-export function requireAuth() {
-    const session = getSession();
-
-    if (!session) {
-        console.warn("⚠️ Usuário não autenticado");
-    // window.location.href = "auth/login.html";
-        return null;
+    // 🔓 Logout (se existir na página)
+    const logoutBtn = document.getElementById("logoutButton");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("user_email");
+            window.location.href = `${CONFIG.REPO_BASE}landing.html`;
+        });
     }
 
-    return session;
-}
+    // 🎯 Botão Concluído
+    const btn = document.getElementById("markCompletedButton");
 
-/**
- * 👤 Busca dados do usuário
- */
-export async function fetchUser() {
-    const session = requireAuth();
-    if (!session) return null;
+    if (btn) {
+        btn.addEventListener("click", async () => {
 
-    try {
-        const res = await fetch(`${CONFIG.API_URL}/auth/me`, {
-            headers: {
-                Authorization: `Bearer ${session.token}`
+            const topicId = Number(btn.dataset.topicId);
+            const nextLesson = btn.dataset.nextLesson || null;
+
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "Enviando...";
+
+            try {
+                await registrarEAvancar(null, topicId, nextLesson);
+
+                btn.innerText = "Concluído ✓";
+                btn.classList.add("completed");
+
+            } catch (err) {
+                console.error("❌ Erro ao registrar progresso:", err);
+                btn.disabled = false;
+                btn.innerText = originalText;
+                alert("Erro ao registrar progresso");
             }
         });
-
-        if (!res.ok) throw new Error("Erro ao buscar usuário");
-
-        return await res.json();
-
-    } catch (err) {
-        console.error("❌ fetchUser:", err);
-        return null;
     }
-}
+});
 
-/**
- * 📊 Busca progresso do usuário
- */
-export async function fetchProgress() {
-    const session = requireAuth();
-    if (!session) return null;
-
-    try {
-        const res = await fetch(
-            `${CONFIG.API_URL}/progress/summary?email=${session.email}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${session.token}`
-                }
-            }
-        );
-
-        if (!res.ok) throw new Error("Erro ao buscar progresso");
-
-        return await res.json();
-
-    } catch (err) {
-        console.error("❌ fetchProgress:", err);
-        return null;
-    }
-}
-
-/**
- * 🚀 Função combinada (opcional)
- */
-export async function fetchDashboardData() {
-    const session = requireAuth();
-    if (!session) return null;
-
-    try {
-        const [user, progress] = await Promise.all([
-            fetchUser(),
-            fetchProgress()
-        ]);
-
-        return { user, progress };
-
-    } catch (err) {
-        console.error("❌ fetchDashboardData:", err);
-        return null;
-    }
-}

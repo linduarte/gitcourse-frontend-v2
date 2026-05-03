@@ -1,5 +1,5 @@
 
-<!-- Last update: April 29, 2026 – 15:33 -->
+<!-- Last update: May 03, 2026 – 10:15 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,7 +9,8 @@
     <title>Introdução - Git Course</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
+
 
     <!-- PrismJS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -133,9 +134,15 @@
                 Logout
             </button>
 
-            <button type="button" class="btn-footer-primary" id="btn-concluir">
-                Concluído ✓
+            <button 
+            type="button" 
+            class="btn-footer-primary" 
+            id="markCompletedButton"
+            data-topic-id="3"
+            data-next-lesson="3-git-config.html">
+            Concluído ✓
             </button>
+
         </div>
 
     </div>
@@ -169,16 +176,14 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+    import "/gitcourse-frontend-v2/assets/js/dashboard-logic.js";
 
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 3, '3-git-config.html');
-    });
-
-    console.log("✅ Aula 2a (Terminal) conectada.");
+    console.log("✅ Aula 2a (Introdução) conectada.");
 </script>
+
 
 </body>
 </html>

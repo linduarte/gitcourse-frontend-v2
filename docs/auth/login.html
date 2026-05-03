@@ -1,3 +1,4 @@
+<!-- Last update: May 03, 2026 – 09:32 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,13 +18,17 @@
     <h2 style="text-align:center;">Entrar</h2>
 
     <form id="loginForm">
-    <input id="email" type="email" placeholder="E-mail" required>
-    <input id="password" type="password" placeholder="Senha" required>
-    <button type="submit">Login</button>
-    <p id="loginMessage"></p>
-    </form>
 
-    <div id="result" style="margin-top:15px;"></div>
+      <label for="email" class="sr-only">E-mail</label>
+      <input id="email" type="email" placeholder="E-mail" autocomplete="email" required>
+
+      <label for="password" class="sr-only">Senha</label>
+      <input id="password" type="password" placeholder="Senha" autocomplete="current-password" required>
+
+      <button type="submit">Login</button>
+
+      <p id="loginMessage" style="text-align:center; margin-top:10px;"></p>
+    </form>
 
     <p style="text-align:center; margin-top:20px;">
       Ainda não tem conta?

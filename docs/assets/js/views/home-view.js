@@ -1,14 +1,12 @@
-// Last update: May 02, 2026 – 17:54
-// home-view.js - SPA Dashboard Home (Refatorado)
-// Maio 2026 – compatível com dashboard-app.js
-// 🔹 USE_MOCK = false → API real
-// 🔹 USE_MOCK = true → dados simulados
+
+// Last update: May 03, 2026 – 09:42
+// home-view.js - SPA Dashboard Home (Refatorado + integração real com FastAPI)
 
 import { navegar } from '../dashboard-router.js';
-import { getProgress } from '../git-course-functions.js';
+import { getProgress, logout } from '../git-course-functions.js';
 import { CONFIG } from '../config.js';
 
-const USE_MOCK = false; // 🔥 true → mock, false → API real
+const USE_MOCK = false;
 
 export class HomeView {
     constructor() {
@@ -30,13 +28,13 @@ export class HomeView {
 
     async carregarDados() {
         if (USE_MOCK) {
-            console.log("🔥 MODO MOCK: carregando progresso simulado");
+            console.log("🔥 MODO MOCK: progresso simulado");
 
             const progressoMock = {
                 actual_count: 5,
-                total: 15,
+                total: 16,
                 percentage: 33,
-                pending_topics: ["6", "7", "8"]
+                pending_topics: [6, 7, 8]
             };
 
             this.atualizarUI(progressoMock);
@@ -44,16 +42,19 @@ export class HomeView {
         }
 
         try {
-            const progresso = await getProgress(CONFIG.API_URL);
+            const progresso = await getProgress();
             console.log("🔥 BACKEND:", progresso);
 
             this.atualizarUI(progresso);
 
         } catch (err) {
-            console.error("Erro API:", err);
+            console.error("❌ Erro API:", err);
 
-            const mensagemBox = document.getElementById("mensagem-status");
-            if (mensagemBox) mensagemBox.textContent = "⚠️ Sem conexão com servidor";
+            if (String(err).includes("401")) {
+                console.warn("⚠️ Sessão expirada → logout");
+                logout(CONFIG.REPO_BASE + "auth/login.html");
+                return;
+            }
 
             if (this.container)
                 this.container.innerHTML = `<h2>Erro ao conectar com servidor</h2>`;
@@ -63,18 +64,10 @@ export class HomeView {
     atualizarUI(progresso) {
         if (!this.container) return;
 
-        const pendingRaw = progresso?.pending_topics || [];
-
-        // 🔥 Mapeamento backend → frontend
-        const pending = pendingRaw.map(id => {
-            if (id === 17) return "2";   // ex-17 → aula 2
-            if (id === 2) return "2a";   // ex-2 → aula 2a
-            return id;
-        });
-
-        const TOTAL_AULAS = 16;
-        const completed = progresso?.actual_count || 0;
-        const percent = Math.round((completed / TOTAL_AULAS) * 100);
+        const completed = progresso.actual_count;
+        const total = progresso.total;
+        const percent = progresso.percentage;
+        const pending = progresso.pending_topics || [];
 
         const email = localStorage.getItem("user_email") || "usuário";
         const nome = email.split("@")[0];
@@ -86,7 +79,7 @@ export class HomeView {
                 <p id="mensagem-status"></p>
 
                 <div class="progress-box">
-                    <p>Progresso: ${completed} / ${TOTAL_AULAS} (${percent}%)</p>
+                    <p>Progresso: ${completed} / ${total} (${percent}%)</p>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width:${percent}%"></div>
                     </div>
@@ -119,11 +112,7 @@ export class HomeView {
             btn.onclick = () => navegar("progresso", true);
         } else {
             const aula = pending[0];
-            const destino =
-                (aula === "1" || aula === "1a")
-                    ? "lesson:1a"
-                    : `lesson:${aula}`;
-
+            const destino = aula === 1 ? "lesson:1a" : `lesson:${aula}`;
             btn.textContent = `Retomar Aula ${aula}`;
             btn.onclick = () => navegar(destino, true);
         }
@@ -142,10 +131,7 @@ export class HomeView {
             lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
                 btn.onclick = () => {
                     const aula = btn.dataset.aula;
-                    const destino =
-                        (aula === "1" || aula === "1a")
-                            ? "lesson:1a"
-                            : `lesson:${aula}`;
+                    const destino = aula === "1" ? "lesson:1a" : `lesson:${aula}`;
                     navegar(destino, true);
                 };
             });

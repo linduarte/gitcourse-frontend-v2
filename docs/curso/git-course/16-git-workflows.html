@@ -1,4 +1,4 @@
-<!-- Last update: April 29, 2026 – 15:40 -->
+<!-- Last update: May 03, 2026 – 18:31 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +7,7 @@
     <title>Git Workflows</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
 
     <!-- Prism -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -17,10 +17,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 
-    
-    
-
-    
     <!-- Mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>mermaid.initialize({ startOnLoad: true, theme: "default" });</script>
@@ -146,152 +142,128 @@
     <p class="p-styled spaced-p"><strong>Quando usar:</strong><br>
         Projetos corporativos, times com CI/CD robusto e múltiplos ambientes.
     </p>
-
     <!-- ============================================================
          VANTAGENS
     ============================================================ -->
     <h4>Vantagens dos Git Workflows</h4>
 
-    <ul class="p-styled spaced-p">
-        <li>Organização e clareza no repositório.</li>
-        <li>Colaboração eficiente entre desenvolvedores.</li>
-        <li>Qualidade do código por meio de revisões e testes.</li>
-        <li>Flexibilidade para diferentes tamanhos de equipe.</li>
-    </ul>
+<ul class="p-styled spaced-p">
+    <li>Organização e clareza no repositório.</li>
+    <li>Colaboração eficiente entre desenvolvedores.</li>
+    <li>Qualidade do código por meio de revisões e testes.</li>
+    <li>Flexibilidade para diferentes tamanhos de equipe.</li>
+</ul>
 
-    <!-- ============================================================
-         CONCEITOS BÁSICOS
-    ============================================================ -->
-    <h4>Conceitos básicos no Git</h4>
+<h4>Conceitos básicos no Git</h4>
 
-    <ul class="p-styled spaced-p">
-        <li><strong>Repository (Repo):</strong> pasta rastreada pelo Git.</li>
-        <li><strong>Commit:</strong> instantâneo do projeto.</li>
-        <li><strong>Branch:</strong> linha paralela de desenvolvimento.</li>
-        <li><strong>Merge:</strong> mesclagem de mudanças.</li>
-        <li><strong>Remote:</strong> repositório hospedado online.</li>
-    </ul>
+<ul class="p-styled spaced-p">
+    <li><strong>Repository (Repo):</strong> pasta rastreada pelo Git.</li>
+    <li><strong>Commit:</strong> instantâneo do projeto.</li>
+    <li><strong>Branch:</strong> linha paralela de desenvolvimento.</li>
+    <li><strong>Merge:</strong> mesclagem de mudanças.</li>
+    <li><strong>Remote:</strong> repositório hospedado online.</li>
+</ul>
 
-    <!-- ============================================================
-         COMANDOS
-    ============================================================ -->
-    <h4>Comandos Git usados no dia a dia</h4>
+<h4>Comandos Git usados no dia a dia</h4>
 
-    <h5>Configurando o Git</h5>
-    <img src="../../assets/images/set-a.webp" class="img-full">
+<h5>Configurando o Git</h5>
+<img src="/gitcourse-frontend-v2/assets/images/set-a.webp" class="img-full">
 
-    <h5>Iniciando um repositório</h5>
-    <img src="../../assets/images/set-b.webp" class="img-full">
+<h5>Iniciando um repositório</h5>
+<img src="/gitcourse-frontend-v2/assets/images/set-b.webp" class="img-full">
 
-    <h5>Acompanhando mudanças</h5>
-    <img src="../../assets/images/set-c.webp" class="img-full">
+<h5>Acompanhando mudanças</h5>
+<img src="/gitcourse-frontend-v2/assets/images/set-c.webp" class="img-full">
 
-    <h5>Sincronizando com repositório remoto</h5>
-    <img src="../../assets/images/set-d.webp" class="img-full">
+<h5>Sincronizando com repositório remoto</h5>
+<img src="/gitcourse-frontend-v2/assets/images/set-d.webp" class="img-full">
 
-    <!-- ============================================================
-         FLUXOS DE TRABALHO
-    ============================================================ -->
-    <h4>Fluxos de trabalho do Git</h4>
+<h4>Fluxos de trabalho do Git</h4>
 
-    <p class="p-styled spaced-p">
-        Agora vamos ver workflows práticos usados no dia a dia.
-    </p>
+<p class="p-styled spaced-p">
+    Agora vamos ver workflows práticos usados no dia a dia.
+</p>
 
-    <!-- ============================================================
-         BÁSICO
-    ============================================================ -->
-    <h4>Fluxo de trabalho básico (desenvolvedor solo)</h4>
+<h4>Fluxo de trabalho básico (desenvolvedor solo)</h4>
 
-    <div class="mermaid">
-        graph LR
-            A[git init] --> B[git add]
-            B --> C[git commit]
-            C --> D[git push]
-    </div>
+<div class="mermaid">
+    graph LR
+        A[git init] --> B[git add]
+        B --> C[git commit]
+        C --> D[git push]
+</div>
 
-    <p class="p-styled spaced-p">
-        Ideal para quem trabalha sozinho.
-    </p>
+<p class="p-styled spaced-p">
+    Ideal para quem trabalha sozinho.
+</p>
 
-    <pre><code class="language-bash">git init</code></pre>
-    <pre><code class="language-bash">git add &lt;nome-do-arquivo&gt;</code></pre>
-    <pre><code class="language-bash">git commit -m "Mensagem significativa"</code></pre>
-    <pre><code class="language-bash">git push origin main</code></pre>
+<pre><code class="language-bash">git init</code></pre>
+<pre><code class="language-bash">git add &lt;nome-do-arquivo&gt;</code></pre>
+<pre><code class="language-bash">git commit -m "Mensagem significativa"</code></pre>
+<pre><code class="language-bash">git push origin main</code></pre>
 
-    <!-- ============================================================
-         CENTRALIZADO
-    ============================================================ -->
-    <h4>Fluxo de trabalho centralizado</h4>
+<h4>Fluxo de trabalho centralizado</h4>
 
-    <div class="mermaid">
-        graph LR
-            A[main] --> B[git pull]
-            B --> C[alterações]
-            C --> D[git add]
-            D --> E[git commit]
-            E --> F[git push]
-    </div>
+<div class="mermaid">
+    graph LR
+        A[main] --> B[git pull]
+        B --> C[alterações]
+        C --> D[git add]
+        D --> E[git commit]
+        E --> F[git push]
+</div>
 
-    <p class="p-styled spaced-p">
-        Todos trabalham na mesma branch (geralmente main).
-    </p>
+<p class="p-styled spaced-p">
+    Todos trabalham na mesma branch (geralmente main).
+</p>
 
-    <pre><code class="language-bash">git pull</code></pre>
-    <pre><code class="language-bash">git add .</code></pre>
-    <pre><code class="language-bash">git commit -m "Mensagem"</code></pre>
-    <pre><code class="language-bash">git push</code></pre>
+<pre><code class="language-bash">git pull</code></pre>
+<pre><code class="language-bash">git add .</code></pre>
+<pre><code class="language-bash">git commit -m "Mensagem"</code></pre>
+<pre><code class="language-bash">git push</code></pre>
 
-    <!-- ============================================================
-         FEATURE BRANCH
-    ============================================================ -->
-    <h4>Fluxo de trabalho com branch de funcionalidade</h4>
+<h4>Fluxo de trabalho com branch de funcionalidade</h4>
 
-    <div class="mermaid">
-        graph LR
-            A[main] --> B[feature/my-feature]
-            B --> C[commits]
-            C --> D[pull request]
-            D --> E[merge]
-    </div>
+<div class="mermaid">
+    graph LR
+        A[main] --> B[feature/my-feature]
+        B --> C[commits]
+        C --> D[pull request]
+        D --> E[merge]
+</div>
 
-    <p class="p-styled spaced-p">
-        Ideal para equipes trabalhando em paralelo.
-    </p>
+<p class="p-styled spaced-p">
+    Ideal para equipes trabalhando em paralelo.
+</p>
 
-    <pre><code class="language-bash">git clone &lt;repo-url&gt;</code></pre>
-    <pre><code class="language-bash">git checkout -b feature/minha-feature</code></pre>
-    <pre><code class="language-bash">git commit -m "Implementa feature X"</code></pre>
-    <pre><code class="language-bash">git push -u origin feature/minha-feature</code></pre>
+<pre><code class="language-bash">git clone &lt;repo-url&gt;</code></pre>
+<pre><code class="language-bash">git checkout -b feature/minha-feature</code></pre>
+<pre><code class="language-bash">git commit -m "Implementa feature X"</code></pre>
+<pre><code class="language-bash">git push -u origin feature/minha-feature</code></pre>
 
-    <!-- ============================================================
-         FORKING
-    ============================================================ -->
-    <h4>Fluxo de trabalho Forking (open source)</h4>
+<h4>Fluxo de trabalho Forking (open source)</h4>
 
-    <div class="mermaid">
-        graph LR
-            A[fork] --> B[clone]
-            B --> C[branch]
-            C --> D[commit]
-            D --> E[push]
-            E --> F[pull request]
-    </div>
+<div class="mermaid">
+    graph LR
+        A[fork] --> B[clone]
+        B --> C[branch]
+        C --> D[commit]
+        D --> E[push]
+        E --> F[pull request]
+</div>
 
-    <pre><code class="language-bash">git clone &lt;fork-url&gt;</code></pre>
-    <pre><code class="language-bash">git checkout -b feature/fix-bug</code></pre>
-    <pre><code class="language-bash">git push origin feature/fix-bug</code></pre>
+<pre><code class="language-bash">git clone &lt;fork-url&gt;</code></pre>
+<pre><code class="language-bash">git checkout -b feature/fix-bug</code></pre>
+<pre><code class="language-bash">git push origin feature/fix-bug</code></pre>
 
-    <p class="p-styled spaced-p">
-        Esse fluxo é comum em projetos open source.
-    </p>
+<p class="p-styled spaced-p">
+    Esse fluxo é comum em projetos open source.
+</p>
 
-    <!-- ============================================================
-         APLICAÇÃO EM OUTRAS ÁREAS
-    ============================================================ -->
-    <p class="p-styled spaced-p">
-        Embora muito usado em software, o Git também pode versionar desenhos mecânicos, elétricos, documentos operacionais e qualquer artefato que exija controle rigoroso.
-    </p>
+<p class="p-styled spaced-p">
+    Embora muito usado em software, o Git também pode versionar desenhos mecânicos, elétricos, documentos operacionais e qualquer artefato que exija controle rigoroso.
+</p>
+
 
 
 
@@ -307,9 +279,9 @@
         </button>
 
         <button type="button" 
-        id="btn-finalizar"
-        class="btn-footer-primary">
-        Finalizar Curso e Ver Progresso ✓
+                id="btn-finalizar"
+                class="btn-footer-primary">
+            Finalizar Curso e Ver Progresso ✓
         </button>
 
     </div>
@@ -321,7 +293,7 @@
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../assets/images/github-mark-white.png"
+            <img src="/gitcourse-frontend-v2/assets/images/github-mark-white.png"
                  alt="GitHub Logo"
                  class="footer-logo">
         </a>
@@ -337,27 +309,24 @@
 
 </footer>
 
-<!-- Prism (mantido) -->
+<!-- Prism -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
-<!-- 🚀 Script corrigido (SEM conflito de módulo) -->
 <script type="module">
-    import { CONFIG } from '../../assets/js/config.js';
-    import { logout } from "../../assets/js/git-course-functions.js";
+    import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
+    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
 
-    // 🔹 Logout
     document.getElementById("btn-logout")
         ?.addEventListener("click", logout);
 
-    // 🔹 Finalizar curso
     document.getElementById("btn-finalizar")
         ?.addEventListener("click", async () => {
 
         const btn = document.getElementById("btn-finalizar");
         const token = localStorage.getItem('access_token');
-        const urlDashboard = '../../dashboard.html';
+        const urlDashboard = '/gitcourse-frontend-v2/dashboard.html';
 
         if (!btn) return;
 

@@ -1,5 +1,6 @@
+<!-- Last update: May 03, 2026 – 09:34 -->
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,33 +16,54 @@
 </head>
 
 <body>
-  <main class="container register-box" style="max-width:400px; margin:50px auto;">
-    <h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
 
-    <div class="card" style="padding:30px;">
-      <h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
+<main class="container register-box" style="max-width:400px; margin:50px auto;">
+  <h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
 
-      <form id="registerForm" autocomplete="on">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required>
+  <div class="card" style="padding:30px;">
+    <h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
 
-        <label for="password">Senha</label>
-        <input type="password" id="password" placeholder="Crie uma senha" autocomplete="new-password" required>
+    <form id="registerForm" autocomplete="on">
 
-        <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">Registrar</button>
-      </form>
+      <label for="email">Email</label>
+      <input 
+        type="email" 
+        id="email" 
+        placeholder="seu@email.com" 
+        autocomplete="email" 
+        required
+      >
 
-      <div id="result" style="margin-top:15px;"></div>
+      <label for="password">Senha</label>
+      <input 
+        type="password" 
+        id="password" 
+        placeholder="Crie uma senha" 
+        autocomplete="new-password" 
+        required
+      >
 
-      <p style="text-align:center; margin-top:20px;">
-        Já tem conta? <a href="login.html" class="footer-link">Faça login</a>
-      </p>
-    </div>
-  </main>
+      <button 
+        type="submit" 
+        class="btn-footer-primary" 
+        style="width:100%; margin-top:15px;"
+      >
+        Registrar
+      </button>
 
-  <!-- Scripts -->
-  <script type="module" src="../assets/js/config.js"></script>
-  <script type="module" src="../assets/js/register.js"></script>
+      <p id="registerMessage" style="text-align:center; margin-top:15px;"></p>
+    </form>
+
+    <p style="text-align:center; margin-top:20px;">
+      Já tem conta? 
+      <a href="login.html" class="footer-link">Faça login</a>
+    </p>
+  </div>
+</main>
+
+<!-- Scripts -->
+<script type="module" src="../assets/js/config.js"></script>
+<script type="module" src="../assets/js/register.js"></script>
 
 </body>
 </html>

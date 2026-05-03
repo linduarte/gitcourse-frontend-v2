@@ -1,4 +1,4 @@
-<!-- Last update: April 29, 2026 – 15:40 -->
+<!-- Last update: May 03, 2026 – 18:31 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +7,8 @@
     <title>Git Init</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
+
 
     <!-- Prism -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -45,7 +46,8 @@
             C --> D[Branch inicial: main]
     </div>
 
-    <img src="../../assets/images/git_init_red.webp" alt="Terminal mostrando o comando git init" class="img-full">
+    <img src="/gitcourse-frontend-v2/assets/images/git_init_red.webp" alt="Terminal mostrando o comando git init" class="img-full">
+
 
     <p class="p-styled spaced-p">
         A imagem mostra a criação de um diretório chamado <strong>projeto-a</strong> e a execução do comando
@@ -91,9 +93,15 @@
 
         <div class="footer-buttons">
         <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>
-        <button type="button" class="btn-footer-primary" id="btn-concluir">
-            Concluído ✓
+        <button 
+        type="button" 
+        class="btn-footer-primary" 
+        id="markCompletedButton"
+        data-topic-id="15"
+        data-next-lesson="16-git-workflows.html">
+        Concluído ✓
         </button>
+
         
         </div>
     </div>
@@ -105,7 +113,7 @@
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            <img src="/gitcourse-frontend-v2/assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
             <img src="https://jigsaw.w3.org/css-validator/images/vcss"
@@ -121,16 +129,14 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+    import "/gitcourse-frontend-v2/assets/js/dashboard-logic.js";
 
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 15, '16-git-workflows.html');
-    });
-
     console.log("✅ Aula 15 (Git Init) conectada.");
 </script>
+
 
 </body>
 </html>

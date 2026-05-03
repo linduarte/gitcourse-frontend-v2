@@ -1,17 +1,25 @@
-// Last update: May 02, 2026 – 17:42
-// git-course-functions.js - SPA + Mock
-// Abril 2026 – Refatorado completo
+// Last update: May 03, 2026 – 09:36
+// git-course-functions.js - SPA + integração real com FastAPI
+// Refatorado para JSON + email/password
+
 import { CONFIG } from "./config.js";
 
 const API = CONFIG.API_URL;
 
-// 🔹 Login real via backend
+// ---------------------------------------------------------
+// 🔹 LOGIN REAL VIA FASTAPI (JSON)
+// ---------------------------------------------------------
 export async function loginAPI(email, password, apiUrl = API) {
     try {
         const response = await fetch(`${apiUrl}/auth/login`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: email, password })
+            headers: { 
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
         });
 
         if (!response.ok) {
@@ -23,11 +31,12 @@ export async function loginAPI(email, password, apiUrl = API) {
 
         if (data.access_token) {
             localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("user_email", email);
             return data;
-        } else {
-            console.warn("⚠️ Nenhum access_token retornado:", data);
-            return null;
         }
+
+        console.warn("⚠️ Nenhum access_token retornado:", data);
+        return null;
 
     } catch (err) {
         console.error("❌ Erro de rede loginAPI:", err);
@@ -35,10 +44,11 @@ export async function loginAPI(email, password, apiUrl = API) {
     }
 }
 
-// 🔹 Buscar progresso do usuário
+// ---------------------------------------------------------
+// 🔹 BUSCAR PROGRESSO DO USUÁRIO
+// ---------------------------------------------------------
 export async function getProgress(apiUrl = API) {
     const token = localStorage.getItem("access_token");
-
     if (!token) throw new Error("Token não encontrado");
 
     try {
@@ -50,7 +60,10 @@ export async function getProgress(apiUrl = API) {
             }
         });
 
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
         return await response.json();
 
     } catch (err) {
@@ -59,7 +72,9 @@ export async function getProgress(apiUrl = API) {
     }
 }
 
-// 🔹 Registrar progresso de uma aula
+// ---------------------------------------------------------
+// 🔹 REGISTRAR PROGRESSO E AVANÇAR PARA PRÓXIMA AULA
+// ---------------------------------------------------------
 export async function registrarEAvancar(_, topicId, proximaAula) {
     const token = localStorage.getItem("access_token");
 
@@ -80,7 +95,7 @@ export async function registrarEAvancar(_, topicId, proximaAula) {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ topic_id: parseInt(topicId) })
+            body: JSON.stringify({ topic_id: Number(topicId) })
         });
 
         if (response.ok) {
@@ -88,10 +103,10 @@ export async function registrarEAvancar(_, topicId, proximaAula) {
             navegar();
         } else if (response.status === 401) {
             console.warn("⚠️ Sessão expirada");
-            window.location.href = CONFIG.REPO_BASE + "auth/login.html";
+            logout(CONFIG.REPO_BASE + "auth/login.html");
         } else {
             console.error("❌ Falha ao registrar:", response.status);
-            navegar(); // não trava o aluno
+            navegar(); // fallback
         }
 
     } catch (err) {
@@ -100,7 +115,9 @@ export async function registrarEAvancar(_, topicId, proximaAula) {
     }
 }
 
-// 🔹 Logout do usuário
+// ---------------------------------------------------------
+// 🔹 LOGOUT
+// ---------------------------------------------------------
 export function logout(redirectUrl = CONFIG.REPO_BASE + "auth/login.html") {
     localStorage.removeItem("access_token");
     localStorage.removeItem("user_email");

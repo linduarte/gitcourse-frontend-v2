@@ -1,14 +1,16 @@
-// register.js
+// Last update: May 03, 2026 – 09:43
+// register.js – Registro real via FastAPI (JSON)
+
 import { CONFIG } from "./config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registerForm");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
-    const resultEl = document.getElementById("result");
-    const btn = form.querySelector("button[type=submit]");
+    const msg = document.getElementById("registerMessage");
+    const btn = form?.querySelector("button[type=submit]");
 
-    if (!form || !emailInput || !passwordInput || !resultEl || !btn) {
+    if (!form || !emailInput || !passwordInput || !msg || !btn) {
         console.error("❌ Elementos do registro não encontrados");
         return;
     }
@@ -21,31 +23,34 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // Validação simples de senha
+        // 🔐 Validação simples de senha
         if (password.length < 6 || !/[a-zA-Z]/.test(password)) {
-            resultEl.style.color = "#f87171";
-            resultEl.textContent = "Senha inválida (mínimo 6 caracteres e 1 letra).";
+            msg.style.color = "#f87171";
+            msg.textContent = "Senha inválida (mínimo 6 caracteres e 1 letra).";
             return;
         }
 
         btn.disabled = true;
         btn.textContent = "Registrando...";
-        resultEl.style.color = "#9ca3af";
-        resultEl.textContent = "Criando conta...";
+        msg.style.color = "#9ca3af";
+        msg.textContent = "Criando conta...";
 
         try {
-            // 🧾 Registro
             const response = await fetch(`${CONFIG.API_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({
+                    email,
+                    password,
+                    is_active: true
+                })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                resultEl.style.color = "#f87171";
-                resultEl.textContent = data.detail || "Erro ao registrar.";
+                msg.style.color = "#f87171";
+                msg.textContent = data.detail || "Erro ao registrar.";
                 btn.disabled = false;
                 btn.textContent = "Registrar";
                 return;
@@ -54,18 +59,18 @@ document.addEventListener("DOMContentLoaded", () => {
             // 💾 Salva email (UX)
             localStorage.setItem("user_email", email);
 
-            resultEl.style.color = "#4ade80";
-            resultEl.textContent = "Conta criada! Redirecionando para o Prefácio...";
+            msg.style.color = "#4ade80";
+            msg.textContent = "Conta criada! Redirecionando...";
 
-            // 🔐 Redireciona **fixo** para o prefácio
+            // 🔐 Redireciona para o prefácio usando COURSE_BASE
             setTimeout(() => {
-                window.location.href = `${CONFIG.REPO_BASE}1a-prefacio.html`;
+                window.location.href = `${CONFIG.COURSE_BASE}1a-prefacio.html`;
             }, 800);
 
         } catch (err) {
             console.error("💥 Erro de rede:", err);
-            resultEl.style.color = "#f87171";
-            resultEl.textContent = "Erro ao conectar ao servidor.";
+            msg.style.color = "#f87171";
+            msg.textContent = "Erro ao conectar ao servidor.";
             btn.disabled = false;
             btn.textContent = "Registrar";
         }

@@ -1,4 +1,4 @@
-<!-- Last update: April 29, 2026 – 15:33 -->
+<!-- Last update: May 03, 2026 – 17:22 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,10 +6,11 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Git Config - Git Course</title>
+    <title>Git Config</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
+
 
     <!-- PrismJS (CDN permanece igual) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -84,15 +85,21 @@ git config --global init.defaultBranch main
 
     <div class="footer-flex">
         <nav class="footer-nav">
-            <a href="2-introduction.html" class="footer-link">← Voltar</a>
+            <a href="2a-introduction.html" class="footer-link">← Voltar</a>
             <a href="4-hosting.html" class="footer-link">Próximo: Hospedagem →</a>
         </nav>
 
         <div class="footer-buttons">
         <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>            
-        <button type="button" class="btn-footer-primary" id="btn-concluir">
-            Concluído ✓
+        <button 
+        type="button" 
+        class="btn-footer-primary" 
+        id="markCompletedButton"
+        data-topic-id="4"
+        data-next-lesson="4-hosting.html">
+        Concluído ✓
         </button>
+
         
 
         </div>
@@ -122,16 +129,14 @@ git config --global init.defaultBranch main
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.js";
+    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+    import "/gitcourse-frontend-v2/assets/js/dashboard-logic.js";
 
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 4, '4-hosting.html');
-    });
-
-    console.log("✅ Aula 3 (Terminal) conectada.");
+    console.log("✅ Aula 3 (git config) conectada.");
 </script>
+
 
 </body>
 </html>
