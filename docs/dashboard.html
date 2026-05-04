@@ -1,6 +1,6 @@
-<!-- Last update: May 03, 2026 – 09:46 -->
+
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,9 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
-  <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/dashboard.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+  <link rel="stylesheet" href="assets/css/gitcourse.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 
 <body>
@@ -35,25 +35,16 @@
   <!-- CONTEÚDO PRINCIPAL -->
   <main class="dashboard-container container">
 
-    <!-- HEADER -->
-    <header class="dashboard-header">
-      <h1>
-        Bem-vindo, 
-        <span id="userEmailDisplay">...</span>!
-      </h1>
-      <p id="welcomeMessage">Iniciando sistema...</p>
-    </header>
-
-    <hr>
-
     <!-- Spinner global -->
     <div id="global-loader" class="hidden">
       <div class="spinner"></div>
     </div>
 
-    <!-- SPA ROOT -->
+    <!-- SPA ROOT (ÚNICO!) -->
     <section id="spa-content" aria-live="polite">
-      <p class="loading-text">Carregando sua jornada técnica...</p>
+      <p class="loading-text">
+        Carregando sua jornada técnica...
+      </p>
     </section>
 
     <!-- FOOTER -->
@@ -62,7 +53,7 @@
         <a href="https://pages.github.com/" class="github-link">
           <span>🐙 GitHub Pages</span>
           <img 
-            src="/gitcourse-frontend-v2/assets/images/github-mark-white.png" 
+            src="assets/images/github-mark-white.png" 
             alt="GitHub Logo" 
             class="footer-logo"
           >
@@ -83,8 +74,7 @@
   </main>
 
   <!-- JS -->
-  <script type="module" src="/gitcourse-frontend-v2/assets/js/dashboard-router.js"></script>
-  <script type="module" src="/gitcourse-frontend-v2/assets/js/dashboard-app.js"></script>
+  <script type="module" src="./assets/js/dashboard-app.js"></script>
 
 </body>
 </html>

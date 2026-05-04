@@ -1,4 +1,4 @@
-<!-- Last update: May 03, 2026 – 10:15 -->
+<!-- Last update: May 04, 2026 – 14:00 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -120,7 +120,10 @@
 
     <div class="start-button">
     <button type="button" class="btn-footer-primary" 
-            onclick="window.location.href='/gitcourse-frontend-v2/curso/git-course/2-terminal-customization.html'">
+            startBtn.onclick = () => {
+            window.location.href = `${CONFIG.COURSE_BASE}2-terminal-customization.html`;
+        };
+
         Iniciar Jornada Git ✓
     </button>
     </div>
@@ -173,8 +176,8 @@
 
 
 <script type="module">
-    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
-    import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
+    import { logout } from "../../assets/js/git-course-functions.js";
+    import { CONFIG } from "../../assets/js/config.js";
 
     window.logout = logout;
 
@@ -196,6 +199,7 @@
 
     console.log("✅ Prefácio carregado corretamente (sem registro de progresso).");
 </script>
+
 
 
 </body>

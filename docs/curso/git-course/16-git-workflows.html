@@ -1,4 +1,4 @@
-<!-- Last update: May 03, 2026 – 18:31 -->
+<!-- Last update: May 04, 2026 – 14:56 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +7,7 @@
     <title>Git Workflows</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
 
     <!-- Prism -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -167,16 +167,16 @@
 <h4>Comandos Git usados no dia a dia</h4>
 
 <h5>Configurando o Git</h5>
-<img src="/gitcourse-frontend-v2/assets/images/set-a.webp" class="img-full">
+<img src="../../assets/images/set-a.webp" class="img-full">
 
 <h5>Iniciando um repositório</h5>
-<img src="/gitcourse-frontend-v2/assets/images/set-b.webp" class="img-full">
+<img src="../../assets/images/set-b.webp" class="img-full">
 
 <h5>Acompanhando mudanças</h5>
-<img src="/gitcourse-frontend-v2/assets/images/set-c.webp" class="img-full">
+<img src="../../assets/images/set-c.webp" class="img-full">
 
 <h5>Sincronizando com repositório remoto</h5>
-<img src="/gitcourse-frontend-v2/assets/images/set-d.webp" class="img-full">
+<img src="../../assets/images/set-d.webp" class="img-full">
 
 <h4>Fluxos de trabalho do Git</h4>
 
@@ -293,7 +293,7 @@
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="/gitcourse-frontend-v2/assets/images/github-mark-white.png"
+            <img src="../../assets/images/github-mark-white.png"
                  alt="GitHub Logo"
                  class="footer-logo">
         </a>
@@ -315,8 +315,8 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
-    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
+    import { CONFIG } from "../../assets/js/config.js";
+    import { logout } from "../../assets/js/git-course-functions.js";
 
     document.getElementById("btn-logout")
         ?.addEventListener("click", logout);
@@ -326,7 +326,8 @@
 
         const btn = document.getElementById("btn-finalizar");
         const token = localStorage.getItem('access_token');
-        const urlDashboard = '/gitcourse-frontend-v2/dashboard.html';
+        const urlDashboard = '../dashboard.html';
+
 
         if (!btn) return;
 

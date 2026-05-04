@@ -1,4 +1,4 @@
-<!-- Last update: May 03, 2026 – 18:12 -->
+<!-- Last update: May 04, 2026 – 14:52 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,7 +7,7 @@
     <title>Desfazer Alterações</title>
 
     <!-- CSS principal -->
-    <link rel="stylesheet" href="/gitcourse-frontend-v2/assets/css/gitcourse.css">
+    <link rel="stylesheet" href="../../assets/css/gitcourse.css">
 
     <!-- Prism -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -56,7 +56,7 @@
         Para demonstrar cada um dos cenários acima, vamos simular alterações no arquivo.
     </p>
 
-    <img src="/gitcourse-frontend-v2/assets/images/alpha.webp" alt="Alteração inicial no arquivo pilots.html" class="img-full">
+    <img src="../../assets/images/alpha.webp" alt="Alteração inicial no arquivo pilots.html" class="img-full">
 
     <p class="p-styled spaced-p">
         Salve a alteração e visualize no navegador para confirmar o efeito.
@@ -77,7 +77,7 @@ flowchart LR
     B --> C["Repository<br>(.git)"]
     </div>
 
-    <img src="/gitcourse-frontend-v2/assets/images/1-checkout.webp" alt="git checkout restaurando arquivo" class="img-full">
+    <img src="../../assets/images/1-checkout.webp" alt="git checkout restaurando arquivo" class="img-full">
 
     <p class="p-styled spaced-p">
         Abra o arquivo <em>pilots.html</em> novamente para confirmar que foi restaurado.
@@ -87,34 +87,34 @@ flowchart LR
         <strong>2 — Desfazendo mudanças depois de adicioná-las ao staged</strong>
     </p>
 
-    <img src="/gitcourse-frontend-v2/assets/images/2-add.webp" alt="Arquivo adicionado ao staged" class="img-full">
+    <img src="../../assets/images/2-add.webp" alt="Arquivo adicionado ao staged" class="img-full">
 
     <p class="p-styled spaced-p">
         Ao executar <code>git status</code>, vemos que o arquivo está staged.
     </p>
 
-    <img src="/gitcourse-frontend-v2/assets/images/3-reset.webp" alt="git reset removendo arquivo do staged" class="img-full">
+    <img src="../../assets/images/3-reset.webp" alt="git reset removendo arquivo do staged" class="img-full">
 
     <p class="p-styled spaced-p">
         O comando <code>git reset</code> removeu o arquivo do index, retornando-o ao diretório de trabalho.
     </p>
 
-    <img src="/gitcourse-frontend-v2/assets/images/4-checkout.webp" alt="git checkout restaurando arquivo após reset" class="img-full">
+    <img src="../../assets/images/4-checkout.webp" alt="git checkout restaurando arquivo após reset" class="img-full">
 
     <p class="p-styled spaced-p">
         <strong>3 — Desfazendo mudanças comitadas</strong>
     </p>
 
-    <img src="/gitcourse-frontend-v2/assets/images/5-commit.webp" alt="Commit realizado" class="img-full">
-    <img src="/gitcourse-frontend-v2/assets/images/6-log.webp" alt="git log mostrando commit" class="img-full">
-    <img src="/gitcourse-frontend-v2/assets/images/7-revert.webp" alt="git revert aplicado" class="img-full">
-    <img src="/gitcourse-frontend-v2/assets/images/8-log.webp" alt="git log após revert" class="img-full">
+    <img src="../../assets/images/5-commit.webp" alt="Commit realizado" class="img-full">
+    <img src="../../assets/images/6-log.webp" alt="git log mostrando commit" class="img-full">
+    <img src="../../assets/images/7-revert.webp" alt="git revert aplicado" class="img-full">
+    <img src="../../assets/images/8-log.webp" alt="git log após revert" class="img-full">
 
     <h4>Marcando versões</h4>
 
-    <img src="/gitcourse-frontend-v2/assets/images/tag.webp" alt="Criação de tag" class="img-full">
-    <img src="/gitcourse-frontend-v2/assets/images/git-st.webp" alt="git status após tag" class="img-full">
-    <img src="/gitcourse-frontend-v2/assets/images/git-push-st.webp" alt="git push com tag" class="img-full">
+    <img src="../../assets/images/tag.webp" alt="Criação de tag" class="img-full">
+    <img src="../../assets/images/git-st.webp" alt="git status após tag" class="img-full">
+    <img src="../../assets/images/git-push-st.webp" alt="git push com tag" class="img-full">
 
     <h4>Complemento ao processo de desfazer mudanças</h4>
 
@@ -168,11 +168,11 @@ flowchart TD
     </p>
 
     <div class="image-container">
-        <img src="/gitcourse-frontend-v2/assets/images/commit_exemplo.webp" alt="Exemplo de commit" class="img-full">
+        <img src="../../assets/images/commit_exemplo.webp" alt="Exemplo de commit" class="img-full">
     </div>
 
     <div class="image-container">
-        <img src="/gitcourse-frontend-v2/assets/images/reset.webp" alt="Exemplo de git reset" class="img-full">
+        <img src="../../assets/images/reset.webp" alt="Exemplo de git reset" class="img-full">
     </div>
 
     <p class="p-styled spaced-p">
@@ -185,8 +185,8 @@ flowchart TD
         O <code>git revert</code> cria um novo commit que desfaz alterações anteriores sem modificar o histórico.
     </p>
 
-    <img src="/gitcourse-frontend-v2/assets/images/git-reflog.webp" alt="git reflog" class="img-full">
-    <img src="/gitcourse-frontend-v2/assets/images/git-revert-head.webp" alt="git revert HEAD" class="img-full">
+    <img src="../../assets/images/git-reflog.webp" alt="git reflog" class="img-full">
+    <img src="../../assets/images/git-revert-head.webp" alt="git revert HEAD" class="img-full">
 
     <h4>git reset x git revert</h4>
 
@@ -295,7 +295,7 @@ flowchart TD
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="/gitcourse-frontend-v2/assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+            <img src="../../assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
         </a>
         <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
             <img src="https://jigsaw.w3.org/css-validator/images/vcss"
@@ -331,7 +331,7 @@ flowchart TD
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
-            <img src="/gitcourse-frontend-v2/assets/images/github-mark-white.png" 
+            <img src="../../assets/images/github-mark-white.png" 
                  alt="GitHub Logo" 
                  class="footer-logo">
         </a>
@@ -350,8 +350,8 @@ flowchart TD
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
-    import "/gitcourse-frontend-v2/assets/js/dashboard-logic.js";
+    import { logout } from "../../assets/js/git-course-functions.js";
+    import "../../assets/js/dashboard-logic.js";
 
     window.logout = logout;
 
