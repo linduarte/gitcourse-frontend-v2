@@ -1,11 +1,11 @@
-// Last update: May 03, 2026 – 09:37
-// dashboard-app.js - SPA Dashboard (Refatorado + integração real com FastAPI)
+// Last update: May 04, 2026 – 17:45
+// dashboard-app.js — Revisado por Copilot — 2026-05-04
 
 import { getProgress, logout } from "./git-course-functions.js";
 import { CONFIG } from "./config.js";
 import { HomeView } from "./views/home-view.js";
 
-const USE_MOCK = false; // 🔥 true → usa dados simulados
+const USE_MOCK = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("🔥 dashboard-app carregado");
@@ -13,10 +13,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("access_token");
     const email = localStorage.getItem("user_email");
 
-    // 🔒 Usuário não autenticado → redirect login
+    // 🔒 Proteção: usuário não autenticado
     if (!token || !email) {
         console.warn("⚠️ Usuário não autenticado → login");
-        window.location.href = CONFIG.REPO_BASE + "auth/login.html";
+        window.location.href = `${CONFIG.REPO_BASE}auth/login.html`;
         return;
     }
 
@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const progressoMock = {
             actual_count: 5,
-            total: 15,
-            percentage: 33,
+            total: 16,
+            percentage: 31,
             pending_topics: ["6", "7", "8"]
         };
 
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ---------------------------------------------------------
     try {
         console.log("📡 chamando getProgress...");
-        const progresso = await getProgress(); // não precisa passar API_URL
+        const progresso = await getProgress();
         console.log("✅ progresso carregado:", progresso);
 
         homeView.atualizarUI(progresso);
@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (err) {
         console.error("❌ erro ao carregar progresso:", err);
 
-        // Se o erro for 401 → sessão expirada
+        // Sessão expirada
         if (String(err).includes("401")) {
             console.warn("⚠️ Sessão expirada → logout");
-            logout(CONFIG.REPO_BASE + "auth/login.html");
+            logout();
             return;
         }
 

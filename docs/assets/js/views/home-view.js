@@ -1,12 +1,8 @@
+// Last update: May 04, 2026 – 17:47
+// home-view.js — Revisado por Copilot — 2026-05-04
 
-// Last update: May 03, 2026 – 09:42
-// home-view.js - SPA Dashboard Home (Refatorado + integração real com FastAPI)
-
-import { navegar } from '../dashboard-router.js';
-import { getProgress, logout } from '../git-course-functions.js';
-import { CONFIG } from '../config.js';
-
-const USE_MOCK = false;
+import { navegar, LESSONS } from '../../dashboard-router.js';
+import { getProgress } from '../../git-course-functions.js';
 
 export class HomeView {
     constructor() {
@@ -18,7 +14,24 @@ export class HomeView {
 
         this.container.innerHTML = `
             <div class="fade-in">
-                <p class="loading-text">Carregando sua jornada técnica...</p>
+                <h2 id="welcome-user">Carregando...</h2>
+
+                <p id="mensagem-status" class="mensagem-status"></p>
+
+                <div class="progress-box">
+                    <p id="progress-text">Calculando progresso...</p>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <button id="btn-continuar">
+                        ⏳ Carregando progresso...
+                    </button>
+                </div>
+
+                <div id="lacunas-box"></div>
             </div>
         `;
 
@@ -27,114 +40,158 @@ export class HomeView {
     }
 
     async carregarDados() {
-        if (USE_MOCK) {
-            console.log("🔥 MODO MOCK: progresso simulado");
-
-            const progressoMock = {
-                actual_count: 5,
-                total: 16,
-                percentage: 33,
-                pending_topics: [6, 7, 8]
-            };
-
-            this.atualizarUI(progressoMock);
-            return;
-        }
-
         try {
             const progresso = await getProgress();
-            console.log("🔥 BACKEND:", progresso);
-
             this.atualizarUI(progresso);
 
         } catch (err) {
-            console.error("❌ Erro API:", err);
+            console.error("Erro API:", err);
 
-            if (String(err).includes("401")) {
-                console.warn("⚠️ Sessão expirada → logout");
-                logout(CONFIG.REPO_BASE + "auth/login.html");
-                return;
+            if (this.container) {
+                this.container.innerHTML = `
+                    <h2>Erro ao conectar com servidor</h2>
+                    <p>Tente novamente mais tarde.</p>
+                `;
             }
-
-            if (this.container)
-                this.container.innerHTML = `<h2>Erro ao conectar com servidor</h2>`;
         }
     }
 
     atualizarUI(progresso) {
-        if (!this.container) return;
+        const btn = document.getElementById("btn-continuar");
+        const welcome = document.getElementById("welcome-user");
+        const progressText = document.getElementById("progress-text");
+        const progressFill = document.getElementById("progress-fill");
+        const lacunasBox = document.getElementById("lacunas-box");
+        const mensagemBox = document.getElementById("mensagem-status");
 
-        const completed = progresso.actual_count;
-        const total = progresso.total;
-        const percent = progresso.percentage;
-        const pending = progresso.pending_topics || [];
-
+        // 👤 Nome via email
         const email = localStorage.getItem("user_email") || "usuário";
         const nome = email.split("@")[0];
 
-        this.container.innerHTML = `
-            <div class="fade-in">
-                <h2>Bem-vindo, ${nome}!</h2>
-
-                <p id="mensagem-status"></p>
-
-                <div class="progress-box">
-                    <p>Progresso: ${completed} / ${total} (${percent}%)</p>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width:${percent}%"></div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <button id="btn-continuar"></button>
-                </div>
-
-                <div id="lacunas-box"></div>
-            </div>
-        `;
-
-        const btn = document.getElementById("btn-continuar");
-        const lacunasBox = document.getElementById("lacunas-box");
-        const mensagem = document.getElementById("mensagem-status");
-
-        // 🎯 Mensagem de status
-        if (percent === 100) {
-            mensagem.textContent = "🏆 Curso concluído!";
-        } else if (percent >= 50) {
-            mensagem.textContent = "🚀 Excelente progresso!";
-        } else {
-            mensagem.textContent = "💡 Continue avançando!";
+        if (welcome) {
+            welcome.textContent = `Bem-vindo, ${nome}!`;
         }
 
-        // 🎯 Botão principal
-        if (pending.length === 0) {
-            btn.textContent = "Ver progresso";
+        // 📊 Dados do backend
+        const pendingIds = (progresso?.pending_topics || []).map(n => Number(n));
+        const total = progresso?.total || 16;
+        const completed = progresso?.actual_count || 0;
+        const percent = progresso?.percentage || 0;
+
+        // 🧠 Mensagem de status
+        let mensagem = "";
+
+        if (percent === 100) {
+            mensagem = "🏆 Parabéns! Você concluiu o curso!";
+        } else if (percent >= 80) {
+            mensagem = "🔥 Você está muito perto de concluir!";
+        } else if (percent >= 50) {
+            mensagem = "🚀 Excelente progresso, continue assim!";
+        } else if (percent > 0) {
+            mensagem = "💡 Continue avançando, você está no caminho certo!";
+        } else {
+            mensagem = "👋 Bem-vindo! Vamos começar sua jornada!";
+        }
+
+        if (mensagemBox) {
+            mensagemBox.textContent = mensagem;
+            mensagemBox.className = "mensagem-status";
+
+            if (percent === 100) {
+                mensagemBox.classList.add("sucesso");
+            } else if (percent >= 80) {
+                mensagemBox.classList.add("alerta");
+            } else if (percent >= 50) {
+                mensagemBox.classList.add("progresso");
+            } else {
+                mensagemBox.classList.add("inicio");
+            }
+        }
+
+        // 📊 UI progresso
+        if (progressText) {
+            progressText.textContent = `Progresso: ${completed} / ${total} aulas (${percent}%)`;
+        }
+
+        if (progressFill) {
+            progressFill.style.width = "0%";
+            setTimeout(() => {
+                progressFill.style.width = `${percent}%`;
+            }, 150);
+        }
+
+        if (!btn) return;
+
+        // 🎯 BOTÃO PRINCIPAL (Continuar de onde parei)
+        if (pendingIds.length === 0) {
+            btn.textContent = "Curso Concluído 🎉";
             btn.onclick = () => navegar("progresso", true);
         } else {
-            const aula = pending[0];
-            const destino = aula === 1 ? "lesson:1a" : `lesson:${aula}`;
-            btn.textContent = `Retomar Aula ${aula}`;
-            btn.onclick = () => navegar(destino, true);
+            const nextId = pendingIds[0];
+
+            if (nextId >= 1 && nextId <= 16) {
+                btn.textContent = `Retomar Aula ${nextId}`;
+                btn.onclick = () => navegar(`lesson:${nextId}`, true);
+            } else {
+                btn.textContent = "Continuar Jornada";
+                btn.onclick = () => navegar("home", true);
+            }
         }
 
-        // ⚠️ Lacunas
-        if (pending.length > 1) {
+        // =========================
+        // 🎨 LACUNAS VISUAIS
+        // =========================
+
+        function getLessonFileByTopicId(topicId) {
+            return LESSONS[Number(topicId)] || null;
+        }
+
+        function getLessonNameByTopicId(topicId) {
+            const file = getLessonFileByTopicId(topicId);
+            if (!file) return `Aula ${topicId}`;
+
+            return file
+                .replace('.html', '')
+                .replace(/^\d+[a-zA-Z]?[-_]?/, '')
+                .replace(/[-_]/g, ' ');
+        }
+
+        function formatLessonName(name) {
+            return name
+                .replace(/_/g, ' ')
+                .replace(/-/g, ' ')
+                .replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        if (lacunasBox && pendingIds.length > 0) {
             lacunasBox.innerHTML = `
-                <p>⚠️ Você pulou algumas etapas importantes:</p>
-                ${pending.map(a => `
-                    <button class="lacuna-btn" data-aula="${a}">
-                        Aula ${a}
-                    </button>
-                `).join("")}
+                <div class="lacunas-card">
+                    <h3>⚠️ Continue sua jornada</h3>
+                    <p>Você pulou algumas etapas importantes:</p>
+
+                    <div class="lacunas-list">
+                        ${pendingIds.map(id => {
+                            const nomeBruto = getLessonNameByTopicId(id);
+                            const nomeFmt = formatLessonName(nomeBruto);
+                            return `
+                                <button class="lacuna-btn" data-topic="${id}">
+                                    Aula ${id} — ${nomeFmt}
+                                </button>
+                            `;
+                        }).join("")}
+                    </div>
+                </div>
             `;
 
-            lacunasBox.querySelectorAll(".lacuna-btn").forEach(btn => {
-                btn.onclick = () => {
-                    const aula = btn.dataset.aula;
-                    const destino = aula === "1" ? "lesson:1a" : `lesson:${aula}`;
-                    navegar(destino, true);
-                };
+            lacunasBox.querySelectorAll(".lacuna-btn").forEach(botao => {
+                botao.addEventListener("click", () => {
+                    const topicId = botao.getAttribute("data-topic");
+                    navegar(`lesson:${topicId}`, true);
+                });
             });
+
+        } else if (lacunasBox) {
+            lacunasBox.innerHTML = "";
         }
     }
 }

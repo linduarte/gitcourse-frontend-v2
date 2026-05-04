@@ -1,58 +1,92 @@
-// Last update: May 03, 2026 – 09:36
-// git-course-functions.js - SPA + integração real com FastAPI
-// Refatorado para JSON + email/password
+// Last update: May 04, 2026 – 17:44
+// git-course-functions.js — versão revisada por Copilot — 2026-05-04
 
-import { CONFIG } from "./config.js";
+import { CONFIG } from './config.js';
 
-const API = CONFIG.API_URL;
+const API_URL = CONFIG.API_URL;
 
-// ---------------------------------------------------------
-// 🔹 LOGIN REAL VIA FASTAPI (JSON)
-// ---------------------------------------------------------
-export async function loginAPI(email, password, apiUrl = API) {
+/**
+ * Registra o progresso de uma aula e avança para a próxima.
+ * @param {number} topicId - ID da aula atual (1..16)
+ * @param {string|null} proximaAula - Caminho relativo da próxima aula
+ */
+export async function registrarEAvancar(topicId, proximaAula) {
+
+    const token = localStorage.getItem("access_token");
+
+    // Visitante → apenas navega
+    if (!token) {
+        console.warn("⚠️ Visitante: progresso não será registrado.");
+        if (proximaAula) window.location.href = proximaAula;
+        return;
+    }
+
     try {
-        const response = await fetch(`${apiUrl}/auth/login`, {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json"
+        const response = await fetch(`${API_URL}/progress/complete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                email: email,
-                password: password
+                topic_id: Number(topicId)
             })
         });
 
-        if (!response.ok) {
-            console.warn("⚠️ Login API falhou:", response.status);
-            return null;
+        if (response.ok) {
+            console.log(`✅ Progresso registrado (topic_id=${topicId})`);
+
+            if (proximaAula) {
+                setTimeout(() => {
+                    window.location.href = proximaAula;
+                }, 600);
+            }
+            return;
         }
 
-        const data = await response.json();
-
-        if (data.access_token) {
-            localStorage.setItem("access_token", data.access_token);
-            localStorage.setItem("user_email", email);
-            return data;
+        if (response.status === 401) {
+            console.error("❌ Sessão expirada.");
+            alert("Sua sessão expirou. Faça login novamente.");
+            window.location.href = `${CONFIG.REPO_BASE}auth/login.html`;
+            return;
         }
 
-        console.warn("⚠️ Nenhum access_token retornado:", data);
-        return null;
+        console.error(`❌ Erro ao registrar progresso: ${response.status}`);
+        if (proximaAula) window.location.href = proximaAula;
 
-    } catch (err) {
-        console.error("❌ Erro de rede loginAPI:", err);
-        return null;
+    } catch (error) {
+        console.error("💥 Erro de rede:", error);
+        if (proximaAula) window.location.href = proximaAula;
     }
 }
 
-// ---------------------------------------------------------
-// 🔹 BUSCAR PROGRESSO DO USUÁRIO
-// ---------------------------------------------------------
-export async function getProgress(apiUrl = API) {
+/**
+ * Logout universal
+ */
+export function logout() {
+    console.log("🔐 Encerrando sessão...");
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
+
+    window.location.href = `${CONFIG.REPO_BASE}index.html`;
+}
+
+window.logout = logout;
+
+/**
+ * Obtém o resumo do progresso do backend
+ */
+export async function getProgress() {
     const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("Token não encontrado");
+
+    if (!token) {
+        throw new Error("Token não encontrado");
+    }
 
     try {
-        const response = await fetch(`${apiUrl}/progress/summary`, {
+        const response = await fetch(`${API_URL}/progress/summary`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -60,66 +94,20 @@ export async function getProgress(apiUrl = API) {
             }
         });
 
+        if (response.status === 401) {
+            console.error("❌ Sessão expirada ao buscar progresso.");
+            window.location.href = `${CONFIG.REPO_BASE}auth/login.html`;
+            return;
+        }
+
         if (!response.ok) {
             throw new Error(`Erro HTTP: ${response.status}`);
         }
 
         return await response.json();
 
-    } catch (err) {
-        console.error("❌ Erro ao buscar progresso:", err);
-        throw err;
+    } catch (error) {
+        console.error("Erro ao buscar progresso:", error);
+        throw error;
     }
-}
-
-// ---------------------------------------------------------
-// 🔹 REGISTRAR PROGRESSO E AVANÇAR PARA PRÓXIMA AULA
-// ---------------------------------------------------------
-export async function registrarEAvancar(_, topicId, proximaAula) {
-    const token = localStorage.getItem("access_token");
-
-    const navegar = () => {
-        window.location.href = CONFIG.REPO_BASE + proximaAula;
-    };
-
-    if (!token) {
-        console.warn("⚠️ Sem token → seguindo como visitante");
-        navegar();
-        return;
-    }
-
-    try {
-        const response = await fetch(`${API}/progress/complete`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify({ topic_id: Number(topicId) })
-        });
-
-        if (response.ok) {
-            console.log("✅ Progresso registrado:", topicId);
-            navegar();
-        } else if (response.status === 401) {
-            console.warn("⚠️ Sessão expirada");
-            logout(CONFIG.REPO_BASE + "auth/login.html");
-        } else {
-            console.error("❌ Falha ao registrar:", response.status);
-            navegar(); // fallback
-        }
-
-    } catch (err) {
-        console.error("❌ Erro de rede:", err);
-        navegar(); // fallback
-    }
-}
-
-// ---------------------------------------------------------
-// 🔹 LOGOUT
-// ---------------------------------------------------------
-export function logout(redirectUrl = CONFIG.REPO_BASE + "auth/login.html") {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("user_email");
-    window.location.href = redirectUrl;
 }

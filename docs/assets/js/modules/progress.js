@@ -1,32 +1,53 @@
-// Last update: April 28, 2026 – 05:33
-import { protectRoute, loadNavbar, getCurrentUser } from "../git-course-functions.mjs?v=1777361682432";
+// Last update: May 04, 2026 – 17:42
+// módulo de tópico (refatorado)
+
+import { CONFIG } from "../config.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-    protectRoute();
-    loadNavbar();
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+        window.location.href = CONFIG.REPO_BASE + "auth/login.html";
+        return;
+    }
 
-    const user = await getCurrentUser();
-    const infoEl = document.getElementById("progress-info");
-    const listEl = document.getElementById("progress-list");
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug"); // importante: backend usa slug
+
+    const titleEl = document.getElementById("topic-title");
+    const contentEl = document.getElementById("topic-content");
 
     try {
-        const topics = await fetch(`${API_URL}/topics`).then(r => r.json());
-        const progress = await fetch(`${API_URL}/progress/${user.id}`).then(r => r.json());
+        const response = await fetch(`${CONFIG.API_URL}/topics/${slug}`);
+        if (!response.ok) throw new Error("Falha ao carregar tópico");
+        const topic = await response.json();
 
-        const doneIds = progress.map(p => p.topic_id);
-        const percent = Math.round((progress.length / topics.length) * 100);
-
-        infoEl.textContent = `Você concluiu ${progress.length} de ${topics.length} tópicos (${percent}%).`;
-
-        listEl.innerHTML = topics.map(t => `
-            <li>
-                ${doneIds.includes(t.id) ? "✔" : "✖"} 
-                ${t.title}
-            </li>
-        `).join("");
-
+        titleEl.textContent = topic.title;
+        contentEl.innerHTML = topic.content_html;
     } catch (err) {
         console.error(err);
-        infoEl.textContent = "Erro ao carregar progresso.";
+        titleEl.textContent = "Erro ao carregar tópico.";
+    }
+
+    const markBtn = document.getElementById("mark-done");
+    if (markBtn) {
+        markBtn.addEventListener("click", async () => {
+            try {
+                await fetch(`${CONFIG.API_URL}/progress/complete`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        topic_id: Number(markBtn.dataset.topicId)
+                    })
+                });
+
+                alert("Progresso salvo!");
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao salvar progresso.");
+            }
+        });
     }
 });

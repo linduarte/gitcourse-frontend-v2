@@ -1,14 +1,15 @@
-// Last update: May 03, 2026 – 09:57
-// sidebar-logic.js – Navegação SPA integrada ao dashboard
 
+// sidebar-logic.js — versão final — 2026-05-04
+// Last update: May 04, 2026 – 09:02
 import { navegar } from './dashboard-router.js';
 import { logout } from './git-course-functions.js';
+import { getProgress } from './git-course-functions.js';
 
 export function inicializarMenuLateral() {
     const sidebar = document.querySelector('.sidebar');
     if (!sidebar) return;
 
-    sidebar.addEventListener('click', (e) => {
+    sidebar.addEventListener('click', async (e) => {
         const link = e.target.closest('a');
         if (!link || !sidebar.contains(link)) return;
 
@@ -16,6 +17,10 @@ export function inicializarMenuLateral() {
 
         const id = link.id;
         console.log(`🖱️ Menu: ${id}`);
+
+        // Remove estado ativo anterior
+        sidebar.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
 
         switch (id) {
 
@@ -28,12 +33,25 @@ export function inicializarMenuLateral() {
                 break;
 
             case 'menuContinue':
-                // Por enquanto volta ao dashboard (HomeView decide a próxima aula)
-                navegar('home', true);
+                try {
+                    const progresso = await getProgress();
+                    const pending = progresso?.pending_topics || [];
+
+                    if (pending.length > 0) {
+                        const nextId = Number(pending[0]);
+                        navegar(`lesson:${nextId}`, true);
+                    } else {
+                        navegar('progresso', true);
+                    }
+
+                } catch (err) {
+                    console.error("Erro ao obter progresso:", err);
+                    navegar('home', true);
+                }
                 break;
 
             case 'menuSair':
-                logout(); // usa fluxo oficial (limpa token + redireciona)
+                logout();
                 break;
 
             default:

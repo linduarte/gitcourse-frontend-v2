@@ -1,14 +1,19 @@
+// Last update: May 04, 2026 – 17:49
+// dashboard-router.js — Revisado por Copilot — 2026-05-04
 
-// Last update: May 03, 2026 – 10:55
-// Navegação SPA + resolução de aulas + integração com HomeView
-
+import { CONFIG } from './config.js';
 import { HomeView } from './views/home-view.js';
-import { CONFIG } from "./config.js";
 
-// 📚 Lista oficial de aulas
+/**
+ * 📚 Mapa oficial das aulas
+ * Observação:
+ * - 1a-prefacio.html NÃO é concluível
+ * - topic_id = 1 corresponde à aula 2-terminal-customization.html
+ */
 export const LESSONS = [
-    "1a-prefacio.html",
-    "2a-introduction.html",
+    "1a-prefacio.html",               // Aula 0 (não concluível)
+    "2-terminal-customization.html",  // Aula 1 (topic_id = 1)
+    "2a-introduction.html",           // Aula 2
     "3-git-config.html",
     "4-hosting.html",
     "5-connect.html",
@@ -22,16 +27,17 @@ export const LESSONS = [
     "13-git-diff.html",
     "14-undo-changes.html",
     "15-git-init.html",
-    "16-git-workflows.html",
-    "2-terminal-customization.html"
+    "16-git-workflows.html"
 ];
 
-// 🌐 Base das aulas (GitHub Pages)
-const BASE_URL = CONFIG.COURSE_BASE;
+// Base das aulas
+const BASE_URL = CONFIG.REPO_BASE;
 
-// 🧠 Rotas SPA (somente dashboard)
+/**
+ * 🧠 Rotas SPA (somente dashboard)
+ */
 const routes = {
-    home: async () => new HomeView(),
+    home: () => new HomeView(),
 
     progresso: async () => ({
         async render() {
@@ -48,64 +54,63 @@ const routes = {
     })
 };
 
-// 🔍 Resolver aula com segurança
+/**
+ * 🔍 Resolver aula com segurança
+ */
 function resolverAula(id) {
-    const idStr = String(id).toLowerCase();
+    const idStr = String(id).trim().toLowerCase();
 
-    // Caso especial
+    // Caso especial: prefácio
     if (idStr === "1" || idStr === "1a") {
         return "1a-prefacio.html";
     }
 
-    // Busca por prefixo exato
-    return LESSONS.find(aula => aula.startsWith(idStr + "-")) || null;
+    // Busca por prefixo exato (ex.: "2-", "2a-")
+    const arquivo = LESSONS.find(aula =>
+        aula.toLowerCase().startsWith(`${idStr}-`)
+    );
+
+    if (!arquivo) {
+        console.warn(`⚠️ Aula não encontrada para ID: ${idStr}`);
+    }
+
+    return arquivo;
 }
 
 /**
  * 🚀 Navegação principal
+ * - SPA → dashboard
+ * - MPA → aulas HTML reais
  */
 export async function navegar(rota, atualizarURL = false) {
     const container = document.getElementById('spa-content');
 
+    // Se for aula → redireciona direto (MPA)
+    if (rota.startsWith("lesson:")) {
+        const id = rota.split(":")[1];
+        const arquivo = resolverAula(id);
+
+        if (!arquivo) {
+            if (container) container.innerHTML = "<h2>Aula não encontrada</h2>";
+            return;
+        }
+
+        window.location.href = BASE_URL + arquivo;
+        return;
+    }
+
+    // SPA: precisa do container
     if (!container) {
         console.error("❌ Container #spa-content não encontrado");
         return;
     }
 
-    // 🔒 Proteção de rota
-    const token = localStorage.getItem("access_token");
-    if (!token && rota !== "login") {
-        console.warn("⚠️ Usuário não autenticado → login");
-        window.location.href = `${CONFIG.REPO_BASE}auth/login.html`;
-        return;
-    }
-
-    // 🔄 Atualiza URL (somente dashboard)
-    if (atualizarURL) {
+    // Atualiza URL somente se rota existir
+    if (atualizarURL && routes[rota]) {
         history.pushState({ rota }, "", `?page=${rota}`);
     }
 
     try {
-        // 🎓 ROTA DE AULA → REDIRECT (MPA)
-        if (rota.startsWith("lesson:")) {
-            const id = rota.split(":")[1];
-
-            console.log("➡️ ID recebido:", id);
-
-            const arquivo = resolverAula(id);
-
-            console.log("➡️ Arquivo resolvido:", arquivo);
-
-            if (!arquivo) {
-                container.innerHTML = "<h2>Aula não encontrada</h2>";
-                return;
-            }
-
-            window.location.href = BASE_URL + arquivo;
-            return;
-        }
-
-        // 🧠 ROTAS DO DASHBOARD (SPA)
         const factory = routes[rota];
 
         if (!factory) {
@@ -122,9 +127,9 @@ export async function navegar(rota, atualizarURL = false) {
         console.error("💥 Erro na navegação:", err);
 
         container.innerHTML = `
-            <div class="error-container fade-in">
+            <div class="error-container">
                 <h2>Erro ao carregar</h2>
-                <p>${err.message || "Algo inesperado aconteceu"}</p>
+                <p>${err.message}</p>
             </div>
         `;
     }

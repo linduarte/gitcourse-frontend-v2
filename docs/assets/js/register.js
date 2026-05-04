@@ -1,5 +1,5 @@
-// Last update: May 03, 2026 – 09:43
-// register.js – Registro real via FastAPI (JSON)
+// Last update: May 04, 2026 – 17:53
+// register.js — Revisado por Copilot — 2026-05-04
 
 import { CONFIG } from "./config.js";
 
@@ -23,7 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // 🔐 Validação simples de senha
+        // 🔐 Validação de email
+        if (!email.includes("@") || !email.includes(".")) {
+            msg.style.color = "#f87171";
+            msg.textContent = "Digite um email válido.";
+            return;
+        }
+
+        // 🔐 Validação de senha
         if (password.length < 6 || !/[a-zA-Z]/.test(password)) {
             msg.style.color = "#f87171";
             msg.textContent = "Senha inválida (mínimo 6 caracteres e 1 letra).";
@@ -39,18 +46,26 @@ document.addEventListener("DOMContentLoaded", () => {
             const response = await fetch(`${CONFIG.API_URL}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    is_active: true
-                })
+                body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            let data = null;
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
 
             if (!response.ok) {
                 msg.style.color = "#f87171";
-                msg.textContent = data.detail || "Erro ao registrar.";
+
+                const detail =
+                    typeof data?.detail === "string"
+                        ? data.detail
+                        : "Erro ao registrar.";
+
+                msg.textContent = detail;
+
                 btn.disabled = false;
                 btn.textContent = "Registrar";
                 return;
@@ -62,9 +77,9 @@ document.addEventListener("DOMContentLoaded", () => {
             msg.style.color = "#4ade80";
             msg.textContent = "Conta criada! Redirecionando...";
 
-            // 🔐 Redireciona para o prefácio usando COURSE_BASE
+            // 🔐 Redireciona para o prefácio
             setTimeout(() => {
-                window.location.href = `${CONFIG.COURSE_BASE}1a-prefacio.html`;
+                window.location.href = `${CONFIG.REPO_BASE}1a-prefacio.html`;
             }, 800);
 
         } catch (err) {

@@ -1,18 +1,15 @@
-
-// Last update: May 03, 2026 – 09:53
+// Last update: May 04, 2026 – 17:40
 // dashboard-logic.js – Controle de progresso dentro das páginas do curso
-// Usa o fluxo oficial registrarEAvancar()
 
-import { registrarEAvancar } from "/gitcourse-frontend-v2/assets/js/git-course-functions.js";
-import { CONFIG } from "/gitcourse-frontend-v2/assets/js/config.js";
+import { registrarEAvancar } from "../../assets/js/git-course-functions.js";
+import { CONFIG } from "../../assets/js/config.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const token = localStorage.getItem("access_token");
 
-    // 🔒 Proteção: usuário não autenticado → volta para landing
+    // 🔒 Usuário não autenticado → volta para landing (index.html)
     if (!token) {
-        window.location.href = `${CONFIG.REPO_BASE}landing.html`;
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
         return;
     }
 
@@ -22,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         logoutBtn.addEventListener("click", () => {
             localStorage.removeItem("access_token");
             localStorage.removeItem("user_email");
-            window.location.href = `${CONFIG.REPO_BASE}landing.html`;
+            window.location.href = `${CONFIG.REPO_BASE}index.html`;
         });
     }
 
@@ -31,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (btn) {
         btn.addEventListener("click", async () => {
-
             const topicId = Number(btn.dataset.topicId);
             const nextLesson = btn.dataset.nextLesson || null;
 
@@ -40,11 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.innerText = "Enviando...";
 
             try {
-                await registrarEAvancar(null, topicId, nextLesson);
+                await registrarEAvancar(topicId, nextLesson);
 
                 btn.innerText = "Concluído ✓";
                 btn.classList.add("completed");
-
             } catch (err) {
                 console.error("❌ Erro ao registrar progresso:", err);
                 btn.disabled = false;
@@ -54,4 +49,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-

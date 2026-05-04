@@ -1,11 +1,9 @@
-
-// login.js – SPA + modo mock + compatível com FastAPI (JSON)
-// Last update: May 03, 2026 – 09:24
+// Last update: May 04, 2026 – 17:52
+// login.js — Revisado por Copilot — 2026-05-04
 
 import { CONFIG } from "./config.js";
-import { login as loginAPI } from "./git-course-functions.js"; // usado apenas no modo mock
 
-const USE_MOCK = false; // 🔥 alterna entre mock e backend real
+const USE_MOCK = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("loginForm");
@@ -18,7 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = document.getElementById("password").value.trim();
 
         if (!email || !password) {
-            alert("Preencha email e senha");
+            alert("Preencha email e senha.");
+            return;
+        }
+
+        // Validação simples de email
+        if (!email.includes("@") || !email.includes(".")) {
+            alert("Digite um email válido.");
             return;
         }
 
@@ -28,38 +32,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             // ---------------------------------------------------------
-            // 🔹 MODO MOCK (simulação local, sem backend)
+            // 🔹 MODO MOCK
             // ---------------------------------------------------------
             if (USE_MOCK) {
                 console.log("🔥 MODO MOCK: login simulado");
 
-                const mock = await loginAPI(email, password); // função mock
-                if (!mock?.access_token) {
-                    throw new Error("Mock falhou");
-                }
-
-                localStorage.setItem("access_token", mock.access_token);
+                localStorage.setItem("access_token", "mock_token_123");
                 localStorage.setItem("user_email", email);
 
-                window.location.href = CONFIG.REPO_BASE + "dashboard.html";
+                window.location.href = `${CONFIG.REPO_BASE}dashboard.html`;
                 return;
             }
 
             // ---------------------------------------------------------
-            // 🔹 LOGIN REAL (FastAPI exige JSON)
+            // 🔹 LOGIN REAL (FastAPI)
             // ---------------------------------------------------------
             const response = await fetch(`${CONFIG.API_URL}/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    email: email,
-                    password: password
-                })
+                body: JSON.stringify({ email, password })
             });
 
-            const data = await response.json();
+            let data = null;
+            try {
+                data = await response.json();
+            } catch {
+                data = {};
+            }
 
             if (response.ok && data.access_token) {
                 console.log("✅ Login efetuado:", email);
@@ -67,21 +68,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("access_token", data.access_token);
                 localStorage.setItem("user_email", email);
 
-                window.location.href = CONFIG.REPO_BASE + "dashboard.html";
+                window.location.href = `${CONFIG.REPO_BASE}dashboard.html`;
                 return;
             }
 
             // ---------------------------------------------------------
             // 🔹 Falha no login
             // ---------------------------------------------------------
-            console.warn("⚠️ Login falhou:", data);
-            alert(data?.detail || "Credenciais inválidas.");
+            const msg =
+                typeof data?.detail === "string"
+                    ? data.detail
+                    : "Credenciais inválidas.";
+
+            alert(msg);
+
             btn.disabled = false;
             btn.textContent = "Entrar";
 
         } catch (err) {
             console.error("❌ Erro no login:", err);
-            alert("Erro ao tentar logar. Veja o console.");
+            alert("Não foi possível conectar ao servidor.");
             btn.disabled = false;
             btn.textContent = "Entrar";
         }
