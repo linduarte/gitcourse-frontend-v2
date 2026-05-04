@@ -1,12 +1,26 @@
-/* Last update: April 25, 2026 – 20:17 */
-/* Fundo exclusivo do prefácio */
+/* Last update: May 04, 2026 – 18:05 */
+/* ============================================================
+   GitCourse Prefácio — CSS Exclusivo (Refatorado por Copilot)
+   Last update: May 04, 2026
+   ============================================================ */
+
+/* ---------- 1. Fundo exclusivo do prefácio ---------- */
 body.prefacio {
-    background: url("../../assets/images/waves.webp") center/cover no-repeat fixed;
+    background: url('/gitcourse-frontend-v2/assets/images/waves.webp')
+               center/cover no-repeat fixed;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    color: #222;
 }
 
-/* Container principal do prefácio */
+/* Fallback para navegadores sem blur */
+@supports not (backdrop-filter: blur(8px)) {
+    body.prefacio {
+        background: #f5f5f5;
+    }
+}
+
+/* ---------- 2. Container principal ---------- */
 .prefacio .course-container {
     background: rgba(255,255,255,0.75);
     border-radius: 16px;
@@ -21,7 +35,13 @@ body.prefacio {
     font-family: 'Victor Mono', monospace;
 }
 
-/* Header */
+@supports not (backdrop-filter: blur(8px)) {
+    .prefacio .course-container {
+        background: rgba(255,255,255,0.95);
+    }
+}
+
+/* ---------- 3. Header ---------- */
 .prefacio .welcome-header {
     text-align: center;
     margin-bottom: 30px;
@@ -29,7 +49,7 @@ body.prefacio {
 
 .prefacio .welcome-header h1 {
     color: #f14e32;
-    font-size: 2.2rem;
+    font-size: 2.4rem;
     margin-bottom: 10px;
 }
 
@@ -38,7 +58,7 @@ body.prefacio {
     font-size: 1.25rem;
 }
 
-/* Overview grid */
+/* ---------- 4. Overview grid ---------- */
 .prefacio .course-overview {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -68,11 +88,10 @@ body.prefacio {
 .prefacio .overview-section li {
     margin-bottom: 8px;
     color: #5c4033;
-    font-size: 1.1rem; /* Garante leitura clara dos tópicos */
-
+    font-size: 1.1rem;
 }
 
-/* Botão principal */
+/* ---------- 5. Botão principal ---------- */
 .prefacio .start-button {
     text-align: center;
     margin: 40px 0;
@@ -96,7 +115,7 @@ body.prefacio {
     box-shadow: 0 6px 20px rgba(241, 78, 50, 0.4);
 }
 
-/* Tip box */
+/* ---------- 6. Tip box ---------- */
 .prefacio .tip-box {
     background: #ffffff;
     padding: 20px;
@@ -115,7 +134,7 @@ body.prefacio {
     color: #5c4033;
 }
 
-/* Responsividade */
+/* ---------- 7. Responsividade ---------- */
 @media (max-width: 768px) {
 
     .prefacio .course-overview {
@@ -131,6 +150,13 @@ body.prefacio {
     body.prefacio {
         background-attachment: scroll;
     }
+
+    .prefacio .welcome-header h1 {
+        font-size: 2rem;
+    }
+
+    .prefacio .start-button button {
+        width: 100%;
+        padding: 16px;
+    }
 }
-
-
