@@ -1,104 +1,66 @@
-// dashboard-logic.js
+// Last update: May 15, 2026 – 08:22
+// dashboard-logic.js — Versão Consolidada 2026-05-15
+// Controle de progresso e proteção de acesso para páginas de aula
 
-import { CONFIG } from './config.js';
+import { registrarEAvancar, logout } from "./git-course-functions.js?v=2026-05-13-v8";
+import { CONFIG } from "../config.js?v=2026-05-13-v8";
 
-/**
- * 🔐 Valida sessão do usuário
- */
-export function getSession() {
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. 🔐 Verificação de Segurança
     const token = localStorage.getItem("access_token");
-    const email = localStorage.getItem("user_email");
 
-    if (!token || !email) {
-        return null;
+    if (!token) {
+        console.warn("⚠️ Acesso negado: Token não encontrado. Redirecionando para login.");
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+        return;
     }
 
-    return { token, email };
-}
-
-/**
- * 🚫 Redireciona se não estiver logado
- */
-export function requireAuth() {
-    const session = getSession();
-
-    if (!session) {
-        console.warn("⚠️ Usuário não autenticado");
-    // window.location.href = "auth/login.html";
-        return null;
+    // 2. 🔓 Gerenciamento de Logout
+    // Procura por 'logoutButton' ou 'btn-logout' (suporte a ambos os padrões usados nos seus HTMLs)
+    const logoutBtn = document.getElementById("logoutButton") || document.getElementById("btn-logout");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            logout(); // Usa a função centralizada do functions.js
+        });
     }
 
-    return session;
-}
+    // 3. 🎯 Lógica do Botão "Concluído"
+    const btn = document.getElementById("markCompletedButton");
 
-/**
- * 👤 Busca dados do usuário
- */
-export async function fetchUser() {
-    const session = requireAuth();
-    if (!session) return null;
+    if (btn) {
+        btn.addEventListener("click", async () => {
+            // Extração segura de dados do dataset do HTML
+            const topicId = Number(btn.dataset.topicId);
+            const nextLesson = btn.dataset.nextLesson || null;
 
-    try {
-        const res = await fetch(`${CONFIG.API_URL}/auth/me`, {
-            headers: {
-                Authorization: `Bearer ${session.token}`
+            if (!topicId || isNaN(topicId)) {
+                console.error("❌ Erro: data-topic-id ausente ou inválido no botão.");
+                return;
+            }
+
+            // Feedback visual de processamento (UX)
+            const originalText = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "Gravando...";
+
+            try {
+                // Envia para o backend (DuckDNS) e redireciona se houver sucesso
+                await registrarEAvancar(topicId, nextLesson);
+
+                // Feedback de sucesso (caso o redirecionamento demore 1s)
+                btn.innerText = "Concluído ✓";
+                btn.classList.add("completed");
+                btn.style.backgroundColor = "#10b981"; // Verde Starship
+
+            } catch (err) {
+                console.error("❌ Erro no registro de progresso:", err);
+                
+                // Reabilita o botão para nova tentativa em caso de falha de rede
+                btn.disabled = false;
+                btn.innerText = originalText;
+                alert("Falha ao salvar progresso. Verifique sua conexão com a internet.");
             }
         });
-
-        if (!res.ok) throw new Error("Erro ao buscar usuário");
-
-        return await res.json();
-
-    } catch (err) {
-        console.error("❌ fetchUser:", err);
-        return null;
     }
-}
-
-/**
- * 📊 Busca progresso do usuário
- */
-export async function fetchProgress() {
-    const session = requireAuth();
-    if (!session) return null;
-
-    try {
-        const res = await fetch(
-            `${CONFIG.API_URL}/progress/summary?email=${session.email}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${session.token}`
-                }
-            }
-        );
-
-        if (!res.ok) throw new Error("Erro ao buscar progresso");
-
-        return await res.json();
-
-    } catch (err) {
-        console.error("❌ fetchProgress:", err);
-        return null;
-    }
-}
-
-/**
- * 🚀 Função combinada (opcional)
- */
-export async function fetchDashboardData() {
-    const session = requireAuth();
-    if (!session) return null;
-
-    try {
-        const [user, progress] = await Promise.all([
-            fetchUser(),
-            fetchProgress()
-        ]);
-
-        return { user, progress };
-
-    } catch (err) {
-        console.error("❌ fetchDashboardData:", err);
-        return null;
-    }
-}
+});

@@ -1,63 +1,62 @@
-document.addEventListener('DOMContentLoaded', () => {
+// Last update: May 15, 2026 – 08:18
+// progress.js — Versão Consolidada 2026-05-15
+// Foco: Interceptação do botão "Concluído" nas páginas de aula
 
-    const token = localStorage.getItem('access_token');
+import { registrarEAvancar, logout } from "./git-course-functions.js?v=2026-05-13-v8";
+import { CONFIG } from "../config.js?v=2026-05-13-v8";
 
-    // 🔒 Proteção: se não estiver logado
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("access_token");
+
+    // 1. 🔒 Proteção de Página
     if (!token) {
-        window.location.href = '/gitcourse-frontend-v2/landing.html';
+        console.warn("Sessão não encontrada. Redirecionando...");
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
         return;
     }
 
-    // 🔓 Logout
-    const logoutBtn = document.getElementById('logoutButton');
+    // 2. 🔓 Configuração do Logout (se existir o botão na aula)
+    const logoutBtn = document.getElementById("logoutButton");
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('access_token');
-            window.location.href = '/gitcourse-frontend-v2/landing.html';
-        });
+        logoutBtn.addEventListener("click", logout);
     }
 
-    // ✅ Botão Concluído
+    // 3. 🎯 Lógica do Botão "Concluído ✓"
     const btn = document.getElementById("markCompletedButton");
 
     if (btn) {
         btn.addEventListener("click", async () => {
+            // Extração de metadados do botão
+            const topicId = Number(btn.dataset.topicId);
+            const nextLesson = btn.dataset.nextLesson || null;
 
-            const topicId = btn.dataset.topicId;
+            if (isNaN(topicId)) {
+                console.error("❌ Erro: ID do tópico inválido no botão.");
+                return;
+            }
+
+            // Feedback visual de processamento
             const originalText = btn.innerText;
-
             btn.disabled = true;
-            btn.innerText = "Enviando...";
+            btn.innerText = "Sincronizando...";
 
             try {
-                const response = await fetch(`${API_URL}/progress/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        topic_id: topicId,
-                        completed: true,
-                        feedback: "Concluído via site"
-                    })
-                });
+                // Chamada ajustada à assinatura correta: (topicId, proximaAula)
+                await registrarEAvancar(topicId, nextLesson);
 
-                if (response.ok) {
-                    btn.innerText = "Concluído ✓";
-                    btn.classList.add("completed");
-                } else {
-                    btn.disabled = false;
-                    btn.innerText = originalText;
-                    alert("Erro ao registrar progresso");
-                }
+                // Feedback visual de sucesso
+                btn.innerText = "Registrado! ✓";
+                btn.style.backgroundColor = "#10b981"; // Verde sucesso
+                btn.classList.add("completed");
 
-            } catch (error) {
+            } catch (err) {
+                console.error("❌ Falha na comunicação com DuckDNS:", err);
+                
+                // Reverte o botão para permitir nova tentativa
                 btn.disabled = false;
                 btn.innerText = originalText;
-                alert("Erro de conexão com o servidor");
+                alert("Não foi possível salvar seu progresso agora. Verifique sua conexão.");
             }
         });
     }
-
 });

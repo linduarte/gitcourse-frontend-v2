@@ -1,4 +1,4 @@
-<!-- Last update: April 28, 2026 – 05:29 -->
+<!-- Last update: May 13, 2026 – 15:00 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,6 +8,8 @@
 
     <!-- CSS principal -->
     <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+
 
     <!-- Prism -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -135,9 +137,15 @@
 
         <div class="footer-buttons">
         <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>         
-        <button type="button" class="btn-footer-primary" id="btn-concluir">
-          Concluído ✓
+        <button 
+        type="button" 
+        class="btn-footer-primary" 
+        id="markCompletedButton"
+        data-topic-id="5"
+        data-next-lesson="6-git-clone.html">
+        Concluído ✓
         </button>
+
         
 
         </div>
@@ -161,24 +169,30 @@
 </footer>
 
 <!-- Scripts -->
-
-<script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.mjs?v=1777361682432";
-
-    window.logout = logout;
-
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 6, '6-git-clone.html');
-    });
-
-    console.log("✅ Aula 5 (Conectando Git com o GitHub) conectada.");
-</script>
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-bash.min.js"></script>
 <script>Prism.highlightAll();</script>
 
+<script type="module">
+    // 1. Importa a configuração central ( DuckDNS )
+    import { CONFIG } from "../../assets/config.js?v=2026-05-13-v8";
+    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-13-v8";
+    
+    // 2. Importa a lógica do dashboard que gerencia o botão "Concluído"
+    // Este arquivo cuidará do clique no botão com ID 'markCompletedButton'
+    import "../../assets/js/dashboard-logic.js?v=2026-05-13-v8";
+
+    // 3. Proteção: Redireciona se o usuário tentar burlar e acessar sem login
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+    }
+
+    // 4. Disponibiliza o logout globalmente para o botão de sair da aula
+    window.logout = logout;
+
+    console.log(`✅ Aula conectada ao backend oficial.`);
+</script>
 
 
 </body>

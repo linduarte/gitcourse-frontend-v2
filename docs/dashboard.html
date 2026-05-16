@@ -1,38 +1,75 @@
+<!-- Last update: May 15, 2026 – 08:26 -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Git Course</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+  <link rel="stylesheet" href="assets/css/gitcourse.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
 </head>
 
 <body>
 
-  <h1>Bem-vindo, <span id="userEmailDisplay">...</span></h1>
-  <p id="mensagem-status">Iniciando sistema...</p>
+  <aside class="sidebar" aria-label="Menu lateral">
+    <h2 class="sidebar-title">Git Course</h2>
+    <nav>
+      <ul id="main-nav">
+        <li><a href="#" id="menuDashboard" class="active">Dashboard</a></li>
+        <li><a href="#" id="menuProgresso">Progresso</a></li>
+        <li><a href="#" id="menuContinue">Continuar</a></li>
+        <li><a href="#" id="menuSair" style="margin-top: 20px; border-top: 1px solid #374151; padding-top: 15px;">Sair</a></li>
+      </ul>
+    </nav>
+  </aside>
 
-  <hr>
+  <main class="dashboard-container container">
 
-  <div id="spa-content">
-    <p>Carregando sua jornada técnica...</p>
-  </div>
+    <div id="global-loader" class="hidden">
+      <div class="spinner"></div>
+    </div>
 
-  <!-- 🚀 PONTO DE ENTRADA -->
+    <section id="spa-content" aria-live="polite">
+      <div class="loading-placeholder">
+        <p class="loading-text">Sincronizando cockpit técnica...</p>
+        <div class="progress-bar-mini"></div>
+      </div>
+    </section>
 
-  <script>
-  alert("🔥 HTML carregado");
-  </script>
+    <footer class="footer">
+      <div class="footer-badges">
+        <a href="https://pages.github.com/" class="github-link">
+          <span>🐙 GitHub Pages</span>
+          <img src="assets/images/github-mark-white.png" alt="GitHub Logo" class="footer-logo">
+        </a>
 
-  <script type="module">
-  console.log("🔥 tentando carregar dashboard-app");
+        <a href="https://jigsaw.w3.org/css-validator/check/referer" class="w3c-link">
+          <img src="https://jigsaw.w3.org/css-validator/images/vcss" alt="CSS válido!" class="footer-logo" width="45" height="16">
+        </a>
+      </div>
+    </footer>
 
-  import("./assets/js/dashboard-app.mjs")
-    .then(() => console.log("✅ carregou OK"))
-    .catch(err => console.error("❌ ERRO REAL:", err));
-  </script>
+  </main>
 
-  <script>
-    console.log("🔥 SCRIPT SIMPLES FUNCIONANDO");
-  </script>
+<script type="module">
+  import { inicializarMenuLateral } from './assets/js/sidebar-logic.js?v=2026-05-13-v8';
+  
+  // O dashboard-app.js já faz o boot do conteúdo via DOMContentLoaded
+  // mas aqui garantimos que a sidebar também esteja pronta para os cliques
+  document.addEventListener("DOMContentLoaded", () => {
+      inicializarMenuLateral();
+      console.log("🛠️ Interface do Dashboard inicializada.");
+  });
+</script>
+
+<script type="module" src="assets/config.js?v=2026-05-13-v8"></script>
+<script type="module" src="assets/js/dashboard-app.js?v=2026-05-13-v8"></script>
 
 </body>
 </html>

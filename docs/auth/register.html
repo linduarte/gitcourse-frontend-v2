@@ -1,47 +1,76 @@
+<!-- Last update: May 15, 2026 – 08:21 -->
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Registro - Git Course</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@100..700&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
   <link rel="stylesheet" href="../assets/css/gitcourse.css">
 </head>
 
-<body>
-  <main class="container register-box" style="max-width:400px; margin:50px auto;">
-    <h1 style="text-align:center; margin-bottom:25px;">Criar Conta</h1>
+<body class="auth-page">
 
-    <div class="card" style="padding:30px;">
-      <h2 style="text-align:center; margin-bottom:20px;">Registre-se</h2>
+<main class="container register-box" style="max-width:400px; margin:50px auto;">
+  <h1 style="text-align:center; margin-bottom:25px; color: #3b82f6;">Criar Conta</h1>
 
-      <form id="registerForm" autocomplete="on">
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="seu@email.com" autocomplete="email" required>
+  <div class="card shadow-lg" style="padding:30px;">
+    <h2 style="text-align:center; margin-bottom:20px;">Cadastre-se para Iniciar</h2>
 
-        <label for="password">Senha</label>
-        <input type="password" id="password" placeholder="Crie uma senha" autocomplete="new-password" required>
+    <form id="registerForm" autocomplete="on">
+      <div class="form-group">
+        <label for="email" style="display:block; margin-bottom:5px;">E-mail</label>
+        <input 
+          type="email" 
+          id="email" 
+          placeholder="exemplo@dominio.com" 
+          autocomplete="email" 
+          required
+          class="form-input"
+          autofocus
+        >
+      </div>
 
-        <button type="submit" class="btn-footer-primary" style="width:100%; margin-top:15px;">Registrar</button>
-      </form>
+      <div class="form-group" style="margin-top: 15px;">
+        <label for="password" style="display:block; margin-bottom:5px;">Senha</label>
+        <input 
+          type="password" 
+          id="password" 
+          placeholder="Mínimo 6 caracteres" 
+          autocomplete="new-password" 
+          required
+          minlength="6"
+          class="form-input"
+        >
+      </div>
 
-      <div id="result" style="margin-top:15px;"></div>
+      <button 
+        type="submit"
+        id="btn-registrar"
+        class="btn-primary"
+        style="width:100%; margin-top:25px;"
+      >
+        Registrar e Começar
+      </button>
 
-      <p style="text-align:center; margin-top:20px;">
-        Já tem conta? <a href="login.html" class="footer-link">Faça login</a>
-      </p>
-    </div>
-  </main>
+      <p id="registerMessage"
+         style="text-align:center; margin-top:15px; font-size: 0.9rem; min-height: 1.2em;"
+         aria-live="polite"></p>
+    </form>
 
-  <!-- Scripts -->
-  <script type="module" src="../assets/js/config.mjs"></script>
-  <script type="module" src="../assets/js/register.mjs"></script>
+    <p style="text-align:center; margin-top:25px; font-size: 0.95rem;">
+      Já tem conta? 
+      <a href="login.html" style="color: #3b82f6; font-weight: 600;">Faça login aqui</a>
+    </p>
+  </div>
+</main>
+
+<script type="module" src="../assets/config.js?v=2026-05-13-v8"></script>
+<script type="module" src="../assets/js/register.js?v=2026-05-13-v8"></script>
 
 </body>
 </html>

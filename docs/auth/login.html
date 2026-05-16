@@ -1,3 +1,4 @@
+<!-- Last update: May 15, 2026 – 08:16 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,57 +9,55 @@
   <link rel="stylesheet" href="../assets/css/gitcourse.css">
 </head>
 
-<body>
+<body class="auth-page">
 
 <main class="container login-box" style="max-width:400px; margin:50px auto;">
-  <h1 style="text-align:center;">Git Course</h1>
+  <h1 style="text-align:center; color: #3b82f6;">Git Course</h1>
 
-  <div class="card">
-    <h2 style="text-align:center;">Entrar</h2>
+  <div class="card shadow-lg">
+    <h2 style="text-align:center; margin-bottom: 20px;">Entrar no Cockpit</h2>
 
-    <form id="login-form" autocomplete="on">
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email" class="sr-only">E-mail</label>
+        <input id="email"
+               type="email"
+               placeholder="Seu e-mail cadastrado"
+               autocomplete="username"
+               required
+               autofocus
+               class="form-input">
+      </div>
 
-      <label for="email">E-mail</label>
-      <input 
-        type="email" 
-        id="email" 
-        placeholder="seu@email.com"
-        autocomplete="email"
-        required
-      >
+      <div class="form-group" style="margin-top: 15px;">
+        <label for="password" class="sr-only">Senha</label>
+        <input id="password"
+               type="password"
+               placeholder="Sua senha"
+               autocomplete="current-password"
+               required
+               class="form-input">
+      </div>
 
-      <label for="password">Senha</label>
-      <input 
-        type="password" 
-        id="password" 
-        placeholder="Sua senha"
-        autocomplete="current-password"
-        required
-      >
-
-      <button 
-        id="btn-login"
-        type="submit" 
-        class="btn-footer-primary"
-        style="width:100%; margin-top:15px;">
+      <button type="submit" id="btn-entrar" class="btn-primary" style="width: 100%; margin-top: 20px;">
         Entrar
       </button>
 
+      <p id="loginMessage"
+         style="text-align:center; margin-top:10px; font-size: 0.9rem; min-height: 1.2em;"
+         aria-live="polite"></p>
     </form>
 
-    <div id="result" style="margin-top:15px;"></div>
-
-    <p style="text-align:center; margin-top:20px;">
+    <p style="text-align:center; margin-top:20px; font-size: 0.95rem; color: #6b7280;">
       Ainda não tem conta?
-      <a href="register.html">Registre-se</a>
+      <a href="register.html" style="color: #3b82f6; font-weight: 600;">Registre-se agora</a>
     </p>
 
   </div>
 </main>
 
-<!-- Scripts -->
-<script type="module" src="../assets/js/config.mjs"></script>
-<script type="module" src="../assets/js/login.mjs"></script>
+<script type="module" src="../assets/config.js?v=2026-05-13-v8"></script>
+<script type="module" src="../assets/js/login.js?v=2026-05-13-v8"></script>
 
 </body>
 </html>

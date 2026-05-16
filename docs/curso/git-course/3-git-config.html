@@ -1,15 +1,17 @@
-<!-- Last update: April 28, 2026 – 05:28 -->
-<!DOCTYPE html>
+<!-- Last update: May 15, 2026 – 18:18 -->
+ <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Git Config - Git Course</title>
+    <title>Git Config</title>
 
     <!-- CSS principal -->
     <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+
 
     <!-- PrismJS (CDN permanece igual) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -84,15 +86,21 @@ git config --global init.defaultBranch main
 
     <div class="footer-flex">
         <nav class="footer-nav">
-            <a href="2-introduction.html" class="footer-link">← Voltar</a>
+            <a href="2a-introduction.html" class="footer-link">← Voltar</a>
             <a href="4-hosting.html" class="footer-link">Próximo: Hospedagem →</a>
         </nav>
 
         <div class="footer-buttons">
         <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>            
-        <button type="button" class="btn-footer-primary" id="btn-concluir">
-            Concluído ✓
+        <button 
+        type="button" 
+        class="btn-footer-primary" 
+        id="markCompletedButton"
+        data-topic-id="4"
+        data-next-lesson="4-hosting.html">
+        Concluído ✓
         </button>
+
         
 
         </div>
@@ -122,16 +130,26 @@ git config --global init.defaultBranch main
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.mjs?v=1777361682432";
+    // 1. Importa a configuração central ( DuckDNS )
+    import { CONFIG } from "../../assets/config.js?v=2026-05-13-v8";
+    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-13-v8";
+    
+    // 2. Importa a lógica do dashboard que gerencia o botão "Concluído"
+    // Este arquivo cuidará do clique no botão com ID 'markCompletedButton'
+    import "../../assets/js/dashboard-logic.js?v=2026-05-13-v8";
 
+    // 3. Proteção: Redireciona se o usuário tentar burlar e acessar sem login
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+    }
+
+    // 4. Disponibiliza o logout globalmente para o botão de sair da aula
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 4, '4-hosting.html');
-    });
-
-    console.log("✅ Aula 3 (Terminal) conectada.");
+    console.log(`✅ Aula conectada ao backend oficial.`);
 </script>
+
 
 </body>
 </html>

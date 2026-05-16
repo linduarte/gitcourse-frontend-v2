@@ -1,5 +1,4 @@
-
-<!-- Last update: April 28, 2026 – 05:28 -->
+<!-- Last update: May 15, 2026 – 18:19 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,6 +9,8 @@
 
     <!-- CSS principal -->
     <link rel="stylesheet" href="../../assets/css/gitcourse.css">
+
+
 
     <!-- PrismJS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
@@ -133,9 +134,15 @@
                 Logout
             </button>
 
-            <button type="button" class="btn-footer-primary" id="btn-concluir">
-                Concluído ✓
+            <button 
+            type="button" 
+            class="btn-footer-primary" 
+            id="markCompletedButton"
+            data-topic-id="3"
+            data-next-lesson="3-git-config.html">
+            Concluído ✓
             </button>
+
         </div>
 
     </div>
@@ -169,16 +176,27 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.mjs?v=1777361682432";
+    // 1. Importa a configuração central ( DuckDNS )
+    import { CONFIG } from "../../assets/config.js?v=2026-05-13-v8";
+    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-13-v8";
+    
+    // 2. Importa a lógica do dashboard que gerencia o botão "Concluído"
+    // Este arquivo cuidará do clique no botão com ID 'markCompletedButton'
+    import "../../assets/js/dashboard-logic.js?v=2026-05-13-v8";
 
+    // 3. Proteção: Redireciona se o usuário tentar burlar e acessar sem login
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+    }
+
+    // 4. Disponibiliza o logout globalmente para o botão de sair da aula
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 3, '3-git-config.html');
-    });
-
-    console.log("✅ Aula 2a (Terminal) conectada.");
+    console.log(`✅ Aula conectada ao backend oficial.`);
 </script>
+
+
 
 </body>
 </html>

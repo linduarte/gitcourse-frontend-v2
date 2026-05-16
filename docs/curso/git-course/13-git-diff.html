@@ -1,4 +1,4 @@
-<!-- Last update: April 28, 2026 – 05:32 -->
+<!-- Last update: May 13, 2026 – 15:11 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,7 +17,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
 
-    
     <!-- Mermaid -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
     <script>
@@ -152,89 +151,88 @@
         <li>32706f8 → hash atual</li>
         <li>100644 → permissões do arquivo</li>
     </ul>
-
     <h4>Identificação das versões</h4>
 
-    <ul class="p-styled spaced-p">
-        <li><code>--- a/pilots.html</code></li>
-        <li><code>+++ b/pilots.html</code></li>
-    </ul>
+<ul class="p-styled spaced-p">
+    <li><code>--- a/pilots.html</code></li>
+    <li><code>+++ b/pilots.html</code></li>
+</ul>
 
-    <h4>Bloco de contexto</h4>
+<h4>Bloco de contexto</h4>
 
-    <ul class="p-styled spaced-p">
-        <li><code>@@ -22,6 +22,7 @@</code></li>
-        <li>Mostra onde ocorreu a mudança.</li>
-    </ul>
+<ul class="p-styled spaced-p">
+    <li><code>@@ -22,6 +22,7 @@</code></li>
+    <li>Mostra onde ocorreu a mudança.</li>
+</ul>
 
-    <h4>Conteúdo antes e depois</h4>
+<h4>Conteúdo antes e depois</h4>
 
-    <img src="../../assets/images/conteudo_diff.webp" alt="Conteúdo antes e depois" class="img-full">
+<img src="../../assets/images/conteudo_diff.webp" alt="Conteúdo antes e depois" class="img-full">
 
-    <h4>Estado do repositório</h4>
+<h4>Estado do repositório</h4>
 
-    <ul class="p-styled spaced-p">
-        <li>A linha Delta já estava comitada.</li>
-        <li>A linha Foxtrot está unstaged.</li>
-        <li>A letra E está staged.</li>
-    </ul>
+<ul class="p-styled spaced-p">
+    <li>A linha Delta já estava comitada.</li>
+    <li>A linha Foxtrot está unstaged.</li>
+    <li>A letra E está staged.</li>
+</ul>
 
-    <h4>Testando no repositório</h4>
+<h4>Testando no repositório</h4>
 
-    <p class="p-styled spaced-p">Para ver diferenças staged:</p>
+<p class="p-styled spaced-p">Para ver diferenças staged:</p>
 
-    <pre class="spaced-pre"><code class="language-bash">git diff --staged pilots.html</code></pre>
+<pre class="spaced-pre"><code class="language-bash">git diff --staged pilots.html</code></pre>
 
-    <img src="../../assets/images/git-diff_staged.webp" alt="git diff --staged" class="img-full">
+<img src="../../assets/images/git-diff_staged.webp" alt="git diff --staged" class="img-full">
 
-    <h4>Alterações desde o último commit</h4>
+<h4>Alterações desde o último commit</h4>
 
-    <pre class="spaced-pre"><code class="language-bash">git diff HEAD pilots.html</code></pre>
+<pre class="spaced-pre"><code class="language-bash">git diff HEAD pilots.html</code></pre>
 
-    <img src="../../assets/images/git-diff-head.webp" alt="git diff HEAD" class="img-full">
+<img src="../../assets/images/git-diff-head.webp" alt="git diff HEAD" class="img-full">
 
-    <h4>Comparando dois commits</h4>
+<h4>Comparando dois commits</h4>
 
-    <pre class="spaced-pre"><code class="language-bash">git diff HEAD~1 HEAD pilots.html</code></pre>
+<pre class="spaced-pre"><code class="language-bash">git diff HEAD~1 HEAD pilots.html</code></pre>
 
-    <img src="../../assets/images/git-diff-head-head.webp" alt="Comparação entre commits" class="img-full">
+<img src="../../assets/images/git-diff-head-head.webp" alt="Comparação entre commits" class="img-full">
 
-    <h4>Obtendo hashes pelo git log</h4>
+<h4>Obtendo hashes pelo git log</h4>
 
-    <pre class="spaced-pre"><code class="language-bash">git log --oneline --decorate</code></pre>
-    <pre class="spaced-pre"><code class="language-bash">git diff d298f74 2dded79 pilots.html</code></pre>
+<pre class="spaced-pre"><code class="language-bash">git log --oneline --decorate</code></pre>
+<pre class="spaced-pre"><code class="language-bash">git diff d298f74 2dded79 pilots.html</code></pre>
 
-    <img src="../../assets/images/git-log-diff.webp" alt="git log e git diff" class="img-full">
+<img src="../../assets/images/git-log-diff.webp" alt="git log e git diff" class="img-full">
 
-    <h4>Commit das pendências</h4>
+<h4>Commit das pendências</h4>
 
-    <img src="../../assets/images/commit_E.webp" alt="Commit letra E" class="img-full">
-    <img src="../../assets/images/commit_F.webp" alt="Commit letra F" class="img-full">
+<img src="../../assets/images/commit_E.webp" alt="Commit letra E" class="img-full">
+<img src="../../assets/images/commit_F.webp" alt="Commit letra F" class="img-full">
 
-    <p class="p-styled spaced-p">
-        O commit da letra F foi precedido de <code>git add</code>.
-    </p>
+<p class="p-styled spaced-p">
+    O commit da letra F foi precedido de <code>git add</code>.
+</p>
 
-    <h4>Conclusão</h4>
+<h4>Conclusão</h4>
 
-    <img src="../../assets/images/git-st-final.webp" alt="Status final" class="img-full">
+<img src="../../assets/images/git-st-final.webp" alt="Status final" class="img-full">
 
-    <section>
-        <h3>Git Graph</h3>
-        <p class="p-styled spaced-p">Diagrama Mermaid para o Git Graph</p>
+<section>
+    <h3>Git Graph</h3>
+    <p class="p-styled spaced-p">Diagrama Mermaid para o Git Graph</p>
 
-        <div class="mermaid">
+    <div class="mermaid">
 gitGraph
     commit id: "0-Initial commit"
     commit id: "1-Adicionado o código fonte"
     commit id: "2-Letra D adicionada"
     commit id: "3-Letra E adicionada"
     commit id: "4-Letra F adicionada"
-        </div>
+    </div>
 
-        <h3>Mermaid Code</h3>
+    <h3>Mermaid Code</h3>
 
-        <div class="code-box">
+    <div class="code-box">
 <pre><code>
 gitGraph
     commit id: "0-Initial commit"
@@ -243,10 +241,8 @@ gitGraph
     commit id: "3-Letra E adicionada"
     commit id: "4-Letra F adicionada"
 </code></pre>
-        </div>
-    </section>
-
-
+    </div>
+</section>
 
 <!-- ============================
          FOOTER
@@ -260,11 +256,15 @@ gitGraph
         </nav>
 
         <div class="footer-buttons">
-        <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>    
-        <button type="button" class="btn-footer-primary" id="btn-concluir">
-            Concluído ✓
-        </button>
-        
+            <button type="button" class="btn-footer-primary" onclick="logout()">Logout</button>    
+            <button 
+                type="button" 
+                class="btn-footer-primary" 
+                id="markCompletedButton"
+                data-topic-id="13"
+                data-next-lesson="14-undo-changes.html">
+                Concluído ✓
+            </button>
         </div>
     </div>
 
@@ -291,16 +291,26 @@ gitGraph
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    import { logout, registrarEAvancar } from "../../assets/js/git-course-functions.mjs?v=1777361682432";
+    // 1. Importa a configuração central ( DuckDNS )
+    import { CONFIG } from "../../assets/config.js?v=2026-05-13-v8";
+    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-13-v8";
+    
+    // 2. Importa a lógica do dashboard que gerencia o botão "Concluído"
+    // Este arquivo cuidará do clique no botão com ID 'markCompletedButton'
+    import "../../assets/js/dashboard-logic.js?v=2026-05-13-v8";
 
+    // 3. Proteção: Redireciona se o usuário tentar burlar e acessar sem login
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+    }
+
+    // 4. Disponibiliza o logout globalmente para o botão de sair da aula
     window.logout = logout;
 
-    document.getElementById("btn-concluir").addEventListener("click", (e) => {
-        registrarEAvancar(e, 13, '14-undo-changes.html');
-    });
-
-    console.log("✅ Aula 13 (Git Diff) conectada.");
+    console.log(`✅ Aula conectada ao backend oficial.`);
 </script>
 
+    
 </body>
 </html>

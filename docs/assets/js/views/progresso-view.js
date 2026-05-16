@@ -1,49 +1,97 @@
-// Last update: April 28, 2026 – 07:13
-export function atualizarBotaoContinuar(dados) {
-    const btn = document.getElementById('btn-continuar-onde-parei');
-    if (!btn) return;
+// Last update: May 15, 2026 – 08:10
+// progresso-view.js — Versão Consolidada 2026-05-15
+import { LESSONS } from '../dashboard-router.js?v=2026-05-13-v8';
+import { getProgress } from '../git-course-functions.js?v=2026-05-13-v8';
 
-    // 1. Garantimos que o índice é um NÚMERO
-    // Se a VPS manda 'completed', usamos ele. Se não, zero.
-    const concluido = parseInt(dados.completed || 0);
-    const proximaAulaIndice = concluido + 1;
-
-    console.log("📊 Debug de Navegação:", { concluido, proximaAulaIndice });
-
-    // 🗺️ O MAPA DE ROTAS (Ajuste os nomes conforme seus arquivos reais)
-    const mapaAulas = {
-    1: "1a-prefacio.html",
-    2: "2a-introduction.html",   // 🔥 importante
-    3: "3-git-config.html",
-    4: "4-hosting.html",
-    5: "5-connect.html",
-    6: "6-git-clone.html",
-    7: "7-git-status.html",
-    8: "8-git-add.html",
-    9: "9-git-commit.html",
-    10: "10-feature_req.html",
-    11: "11-branch.html",
-    12: "12-branch-merge.html",
-    13: "13-git-diff.html",
-    14: "14-undo-changes.html",
-    15: "15-git-init.html",
-    16: "16-git-workflows.html",
-    17: "2-terminal-customization.html", // 🔥 corrigido
-    };
-
-    const paginaDestino = mapaAulas[proximaAulaIndice];
-
-    if (paginaDestino) {
-        // 🔗 Monta o link absoluto para evitar erros de pasta
-        const baseUrl = "/gitcourse-frontend-v2/curso/git-course/";
-        btn.href = baseUrl + paginaDestino;
-        console.log("✅ Rota definida para:", btn.href);
-    } else {
-        // ⚠️ Se cair aqui, o ID não existe no mapa!
-        console.warn("⚠️ ID não encontrado no mapa, usando fallback.");
-        btn.href = "/gitcourse-frontend-v2/curso/git-course/2-introduction.html";
+export class ProgressoView {
+    constructor() {
+        this.container = document.getElementById('spa-content');
     }
-    
+
+    async render() {
+        if (!this.container) return;
+
+        this.container.innerHTML = `
+            <div class="fade-in">
+                <h2 class="view-title">📊 Detalhamento da sua Jornada</h2>
+                
+                <div class="stats-container">
+                    <p id="progresso-resumo" class="resumo-text">Sincronizando dados com o servidor...</p>
+                    <div class="progress-bar mini">
+                        <div id="progress-fill-view" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="lista-wrapper">
+                    <ul id="lista-aulas" class="lista-aulas"></ul>
+                </div>
+            </div>
+        `;
+
+        await this.carregarDados();
+    }
+
+    async carregarDados() {
+        const resumoEl = document.getElementById("progresso-resumo");
+        const listaEl = document.getElementById("lista-aulas");
+        const fillEl = document.getElementById("progress-fill-view");
+
+        try {
+            const progresso = await getProgress();
+
+            // Transformamos em Set para busca rápida (O(1))
+            const pendingIds = new Set((progresso?.pending_topics || []).map(n => Number(n)));
+            const total = progresso?.total || 16;
+            const completed = progresso?.actual_count || 0;
+            const percent = progresso?.percentage || 0;
+
+            if (resumoEl) {
+                resumoEl.textContent = `Você completou ${completed} de ${total} etapas (${percent}%).`;
+            }
+            
+            if (fillEl) {
+                setTimeout(() => { fillEl.style.width = `${percent}%`; }, 100);
+            }
+
+            if (!listaEl) return;
+            listaEl.innerHTML = "";
+
+            // Percorre o mapa oficial de aulas (LESSONS)
+            LESSONS.forEach((file, index) => {
+                const topicId = index + 1; // Aula 1 é o índice 0
+                
+                const nomeFormatado = file
+                    .replace('.html', '')
+                    .replace(/^\d+[a-zA-Z]?[-_]?/, '')
+                    .replace(/[-_]/g, ' ')
+                    .replace(/\b\w/g, c => c.toUpperCase());
+
+                const isPendente = pendingIds.has(topicId);
+
+                const li = document.createElement("li");
+                li.className = `aula-item ${isPendente ? "pendente" : "concluida"}`;
+                
+                li.innerHTML = `
+                    <div class="aula-status-icon">
+                        ${isPendente ? '⭕' : '✅'}
+                    </div>
+                    <div class="aula-info">
+                        <span class="aula-numero">Aula ${topicId}</span>
+                        <span class="aula-nome">${nomeFormatado}</span>
+                    </div>
+                    <div class="aula-tag">
+                        ${isPendente ? 'Pendente' : 'Concluída'}
+                    </div>
+                `;
+
+                listaEl.appendChild(li);
+            });
+
+        } catch (err) {
+            console.error("❌ Falha ao carregar visão de progresso:", err);
+            if (resumoEl) {
+                resumoEl.innerHTML = `<span class="error">Não foi possível carregar os dados.</span>`;
+            }
+        }
+    }
 }
-// ✅ AGORA SIM, DO LADO DE FORA:
-    window.atualizarBotaoContinuar = atualizarBotaoContinuar;
