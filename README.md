@@ -1,120 +1,146 @@
-# GitCourse Frontend (V2)
+# **GitCourse Frontend (V2)**
 
-Interface web moderna para o curso de Git, projetada com foco em performance e experiência do usuário (UX).
+Interface web moderna para o curso de Git, construída como uma **mini‑SPA** de alta performance, com foco em experiência do usuário e integração inteligente com o backend.
+
+
 
 ## 🌐 Deploy e Arquitetura
-* O projeto utiliza uma arquitetura descentralizada para máxima eficiência e custo zero:
-* **Frontend:** Hospedado no **GitHub Pages**. Esta escolha estratégica permite um deploy contínuo (CI/CD) via GitHub Actions, garantindo que o site esteja sempre disponível em um ambiente escalável e seguro, sem a necessidade de servidores web complexos ou custos com domínios personalizados.
-* **Backend:** A API permanece em uma VPS dedicada para processamento de dados e segurança.  
-* **Arquitetura:** **SPA (Single Page Application)**. A navegação entre módulos e a atualização do Dashboard ocorrem de forma assíncrona, garantindo uma transição fluida sem recarregamento de página.
+
+O projeto utiliza uma arquitetura **descentralizada**, garantindo custo zero no frontend e alta confiabilidade no backend:
+
+- **Frontend:** Hospedado no GitHub Pages (CI/CD via GitHub Actions).
+
+- **Backend:** API FastAPI rodando em VPS dedicada (`https://charles-gitcourse.duckdns.org`).
+
+- **Arquitetura:** **SPA leve**, sem frameworks, com navegação dinâmica via JavaScript.
+
+A página nunca recarrega — todo o conteúdo é trocado de forma assíncrona.
+
+
 
 ## 🛠️ Tecnologias
-* **HTML5 / CSS3 / JavaScript (ES6+)**
-* **SPA Engine:** Lógica customizada para troca dinâmica de conteúdo.
-* **Integração:** Fetch API para comunicação com o Backend em tempo real.
-* **Segurança:** Gestão de persistência de tokens JWT para sessões de alunos.
 
-## 🔌 Funcionalidades da Dashboard
-A Dashboard funciona como o centro de controle do aluno:
-1.  **Cálculo de Progresso Dinâmico:** Atualiza instantaneamente via JavaScript conforme as aulas são marcadas.
-2.  **Sincronização Assíncrona:** Comunica-se com a API em `https://charles-gitcourse.duckdns.org` para persistir dados.
-3.  **Feedback Visual:** Indicadores de conclusão integrados ao sistema de notificações do Telegram (via Backend).
+- HTML5 / CSS3 / JavaScript (ES6+)
 
-## 🚀 Workflow de Desenvolvimento
-Para atualizar o site:
-```bash
-git add .
-git commit -m "feat: implementado SPA na dashboard de progresso"
-git push origin main
+- SPA Engine customizado
 
-# 🎓 Git Course Platform
+- Fetch API para comunicação com o backend
 
-Plataforma educacional interativa para ensino de Git, com foco em prática guiada, progressão inteligente e experiência do aluno.
+- Persistência segura de JWT via `localStorage`
 
----
+- Design responsivo e tema dark
 
-## ✨ Visão Geral
+## 📘 Funcionalidades da Dashboard
 
-Este projeto evoluiu de um estudo técnico para uma **plataforma funcional de aprendizado**, com:
+A dashboard é o centro de controle do aluno:
 
-- 📊 Dashboard dinâmico (mini-SPA)
-- 🔐 Autenticação com JWT
-- 📈 Progresso real persistido no backend
-- 🧠 Lógica pedagógica (detecção de lacunas)
-- 🎯 Navegação guiada (retomar aula automaticamente)
-- 🎨 Interface moderna e responsiva
+1. **Cálculo de progresso dinâmico** 
+   Atualização instantânea conforme o aluno conclui aulas.
 
----
+2. **Sincronização assíncrona com o backend** 
+   Comunicação direta com a API para registrar progresso real.
+
+3. **Feedback visual inteligente**
+   
+   - Barra de progresso animada
+   
+   - Mensagens motivacionais
+   
+   - Detecção de lacunas
+   
+   - Próxima aula recomendada
+
+4. **Integração com notificações** 
+   Backend pode enviar alertas via Telegram.
 
 ## 🧠 Conceito Pedagógico
 
-O sistema não apenas apresenta conteúdo — ele **guia o aluno**.
+O GitCourse não apenas apresenta conteúdo — ele **orienta o aluno**.
 
-### 🔹 Fluxo do Curso
-Prefácio (onboarding)
+### 🔹 Fluxo do Curso (oficial)
+
+```gcode
+1a-prefacio — Onboarding (não conta progresso)
 ↓
-Aula 2 (Introdução)
+2-terminal-customization — Aula obrigatória inicial
 ↓
-Aula 17 (customização obrigatória)
+2a-introduction — Introdução ao Git
 ↓
-Retorno à Aula 2
-↓
-Aulas 3 → 16
+3 → 16 — Aulas principais do curso
 ↓
 Conclusão
-
+```
 
 ### 🔹 Regras Importantes
 
-- Aula **1a (Prefácio)** → não conta progresso  
-- Aula **17** → sub-aula da 2  
-- Progresso válido → aulas **2 a 16 (15 aulas)**  
+- **1a-prefacio** → não conta progresso
 
----
+- **2-terminal-customization** → aula oficial
+
+- **2a-introduction** → aula oficial
+
+- **Aulas válidas para progresso:** **2-terminal-customization, 2a-introduction e 3 → 16**
+
+- **Total de aulas consideradas no progresso: 16**
+
+
 
 ## 📊 Sistema de Progresso
 
-O backend calcula:
+O backend calcula automaticamente:
 
-```json
+```gcode
 {
-  "total": 15,
+  "total": 16,
   "actual_count": 10,
   "pending_topics": [3, 5, 7],
-  "percentage": 66.67
+  "percentage": 62.5
 }
+```
 
-✔ Características
-Detecta aulas puladas automaticamente
-Nunca retorna progresso falso
-Corrige inconsistências de navegação
-Funciona mesmo fora de ordem
+### ✔ Características
 
+- Detecta aulas puladas
 
-🎯 Experiência do Usuário
-Dashboard
-👋 Saudação personalizada (email parcial)
-📊 Barra de progresso animada
-💬 Mensagem inteligente (feedback emocional)
-⚠️ Detecção de lacunas
-👉 Destaque da próxima aula recomendada
+- Nunca retorna progresso falso
+
+- Funciona mesmo fora de ordem
+
+- Corrige inconsistências de navegação
+
+### 🎯 Experiência do Usuário
+
+- Saudação personalizada
+
+- Barra de progresso animada
+
+- Mensagens motivacionais
+
+- Próxima aula recomendada
 
 Exemplos de feedback:
-🏆 Parabéns! Você concluiu o curso!
-🔥 Você está muito perto de concluir!
-🚀 Excelente progresso, continue assim!
 
-!
-🎨 Interface
-Tema dark moderno (estilo dev)
-Botões interativos (hover + animação)
-Gradiente animado na barra de progresso
-Layout responsivo
-Componentes reutilizáveis
+- 🏆 Parabéns! Você concluiu o curso!
 
-Arquitetura
-Frontend
+- 🔥 Você está muito perto de concluir!
 
+- 🚀 Excelente progresso, continue assim!
+
+## 🎨 Interface
+
+- Tema dark moderno
+
+- Botões com animação
+
+- Gradiente animado na barra de progresso
+
+- Layout responsivo
+
+- Componentes reutilizáveis
+
+🧱 Arquitetura do Frontend
+
+```gcode
 docs/
  ├── assets/
  │   ├── css/
@@ -123,172 +149,95 @@ docs/
  │   │   │   └── home-view.js
  │   │   ├── dashboard-router.js
  │   │   └── git-course-functions.js
+```
 
- Mini-SPA (sem framework)
-Renderização dinâmica via JS
-Estado controlado via localStorage
-Backend (FastAPI)
-JWT Authentication
-Endpoint /progress/complete
-Endpoint /progress/summary
-Banco com constraint única (user_id, topic_id)
-🧪 Testes Realizados
-👤 Aluno A (fluxo ideal)
+- Mini‑SPA sem frameworks
+
+- Renderização dinâmica via JS
+
+- Estado controlado via `localStorage`
+
+- Comunicação direta com o backend
+
+## 🔌 Integração com o Backend
+
+Endpoints utilizados:
+
+- `POST /auth/login`
+
+- `GET /progress/summary`
+
+- `POST /progress/complete`
+
+- `GET /topics/{slug}`
+
+Backend implementado em FastAPI com:
+
+- JWT Authentication
+
+- Constraint única `(user_id, topic_id)`
+
+- Cálculo inteligente de progresso
+
+## 🧪 Testes Realizados
+
+### 👤 Aluno A — fluxo ideal
 
 ✔ Conclusão linear
 ✔ 100% correto
 
-👤 Aluno B (fluxo caótico)
+### 👤 Aluno B — fluxo caótico
 
 ✔ Pula aulas
 ✔ Sistema detecta lacunas
 ✔ Navegação corrigida automaticamente
 
-👤 Aluno C (uso parcial)
+### 👤 Aluno C — uso parcial
 
 ✔ Entrada segura
 ✔ Sem quebra de fluxo
 
-🚀 Status Atual
+## 🚀 Status Atual
+
 ✔ Backend consistente
 ✔ Frontend funcional
 ✔ UX moderna
 ✔ Fluxo pedagógico validado
 ✔ Sistema resiliente
+✔ Pronto para uso real com alunos
 
-👉 Pronto para uso real com alunos.
+## 📌 Próximos Passos
 
-📌 Próximos Passos (planejados)
-🏆 Tela de conclusão avançada
-📜 Geração de certificado (PDF)
-📊 Histórico de progresso
-🎯 Recomendações inteligentes
-📈 Métricas de uso
-💡 Filosofia do Projeto
+- 🏆 Tela de conclusão avançada
 
-Mini-SPA (sem framework)
-Renderização dinâmica via JS
-Estado controlado via localStorage
-Backend (FastAPI)
-JWT Authentication
-Endpoint /progress/complete
-Endpoint /progress/summary
-Banco com constraint única (user_id, topic_id)
-🧪 Testes Realizados
-👤 Aluno A (fluxo ideal)
+- 📜 Certificado em PDF
 
-✔ Conclusão linear
-✔ 100% correto
+- 📊 Histórico de progresso
 
-👤 Aluno B (fluxo caótico)
+- 🎯 Recomendações inteligentes
 
-✔ Pula aulas
-✔ Sistema detecta lacunas
-✔ Navegação corrigida automaticamente
+- 📈 Métricas de uso
 
-👤 Aluno C (uso parcial)
+## 💡 Filosofia do Projeto
 
-✔ Entrada segura
-✔ Sem quebra de fluxo
+> “O sistema não apenas mostra conteúdo — ele orienta o aluno.”
 
-🚀 Status Atual
-✔ Backend consistente
-✔ Frontend funcional
-✔ UX moderna
-✔ Fluxo pedagógico validado
-✔ Sistema resiliente
+## 👨‍💻 Autor
 
-👉 Pronto para uso real com alunos.
+Projeto desenvolvido como evolução prática em:
 
-📌 Próximos Passos (planejados)
-🏆 Tela de conclusão avançada
-📜 Geração de certificado (PDF)
-📊 Histórico de progresso
-🎯 Recomendações inteligentes
-📈 Métricas de uso
-💡 Filosofia do Projeto
+- Python / FastAPI
 
-Mini-SPA (sem framework)
-Renderização dinâmica via JS
-Estado controlado via localStorage
-Backend (FastAPI)
-JWT Authentication
-Endpoint /progress/complete
-Endpoint /progress/summary
-Banco com constraint única (user_id, topic_id)
-🧪 Testes Realizados
-👤 Aluno A (fluxo ideal)
+- JavaScript (SPA leve)
 
-✔ Conclusão linear
-✔ 100% correto
+- UX aplicada à educação
 
-👤 Aluno B (fluxo caótico)
+## 🌐 Acesso ao Projeto
 
-✔ Pula aulas
-✔ Sistema detecta lacunas
-✔ Navegação corrigida automaticamente
+Frontend em produção:
+👉 [Curso Git - Aprenda de forma prática e eficiente](https://linduarte.github.io/gitcourse-frontend-v2/)
 
-👤 Aluno C (uso parcial)
+Link curto (Bit.ly):
+👉 [Curso Git - Aprenda de forma prática e eficiente](https://bit.ly/git-for-all)
 
-✔ Entrada segura
-✔ Sem quebra de fluxo
-
-🚀 Status Atual
-✔ Backend consistente
-✔ Frontend funcional
-✔ UX moderna
-✔ Fluxo pedagógico validado
-✔ Sistema resiliente
-
-👉 Pronto para uso real com alunos.
-
-📌 Próximos Passos (planejados)
-🏆 Tela de conclusão avançada
-📜 Geração de certificado (PDF)
-📊 Histórico de progresso
-🎯 Recomendações inteligentes
-📈 Métricas de uso
-💡 Filosofia do Projeto
-
-💡 Filosofia do Projeto
-
-“O sistema não apenas mostra conteúdo — ele orienta o aluno.”
-
-👨‍💻 Autor
-
-Projeto desenvolvido como evolução prática de aprendizado em:
-
-Python / FastAPI
-JavaScript (SPA leve)
-UX aplicada à educação
-
-educação
-📬 Contribuição
-
-Sugestões e melhorias são bem-vindas.
-
-🏁 Conclusão
-
-Este projeto representa a transição de:
-
-estudo técnico → produto funcional
-
-
----
-
-# 🎯 O que eu melhorei aqui
-
-✔ Transformei em **produto (não projeto)**  
-✔ Expliquei lógica pedagógica  
-✔ Documentei decisões importantes  
-✔ Mostrei maturidade técnica  
-✔ Preparado para GitHub público  
-
----
-
-## 🌐 Acesso ao projeto
-
-Acesse a plataforma em produção:
-
-👉 https://linduarte.github.io/gitcourse-frontend-v2/
 
