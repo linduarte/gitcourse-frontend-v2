@@ -1,4 +1,4 @@
-<!-- Last update: May 13, 2026 – 14:53 -->
+<!-- Last update: May 18, 2026 – 15:50 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -136,6 +136,12 @@ error_symbol = "[❯](bold red)"
             </a>
         </nav>
 
+        <div class="footer-support">
+            <button type="button" onclick="openSuporte()" class="btn-footer-support">
+            Preciso de Ajuda ❓
+            </button>
+        </div>
+
         <div class="footer-buttons">
             <!-- Logout -->
             <button type="button" class="btn-footer-primary" onclick="logout()">
@@ -156,10 +162,7 @@ error_symbol = "[❯](bold red)"
 
     </div>
 
-    <div class="footer-instruction">
-        Após concluir esta etapa, retorne à Aula 2 para continuar sua jornada.
-    </div>
-
+    
     <div class="footer-badges">
         <a href="https://pages.github.com/" class="github-link">
             <span>🐙 GitHub Pages</span>
@@ -187,24 +190,60 @@ error_symbol = "[❯](bold red)"
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    // 1. Importação centralizada (Fim do domínio antigo)
-    import { CONFIG } from "../../assets/config.js?v=2026-05-13-v8";
-    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-13-v8";
-    
-    // Importamos o dashboard-logic para gerenciar o botão "Concluído" automaticamente
-    import "../../assets/js/dashboard-logic.js?v=2026-05-13-v8";
+    // 1. Importação das funções globais e do configurador central (v9)
+    import { CONFIG } from "../../assets/config.js?v=2026-05-18-v9";
+    import { logout, openSuporte, marcarConcluido } from "../../assets/js/git-course-functions.js?v=2026-05-18-v9";
 
-    // 2. Disponibiliza o logout para o atributo onclick do HTML (se necessário)
+    // 2. Vinculação aos gatilhos 'onclick' do HTML (Escopo Global)
     window.logout = logout;
+    window.openSuporte = openSuporte;
+    window.marcarConcluido = marcarConcluido;
 
-    // 3. Verificação de sanidade
-    console.log("✅ Aula 2 (Terminal) conectada ao backend oficial via DuckDNS.");
-    
-    // Opcional: Log para depuração de caminhos em caso de erro 404
-    console.debug("Configuração ativa:", CONFIG.API_URL);
+    // 3. Trava de Segurança: Impede navegação de usuários deslogados
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+    }
+
+    // 4. Adaptação da Lógica Local da Aul
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // ID desta aula específica no seu banco de dados (Ajuste em cada página)
+        const TOPIC_ID = 1; 
+
+        // Nome do arquivo da próxima lição (Ajuste em cada página)
+        const PROXIMA_PAGINA = "2a-introduction.html"; 
+
+        // O seu botão "Concluído" vai disparar a API e depois navegar para a próxima página
+        const btnConcluido = document.querySelector(".btn-footer-success") || document.querySelector("[onclick='marcarConcluido()']");
+        if (btnConcluido) {
+            // Removemos o onclick antigo para injetar a lógica robusta com o ID correto da lição
+            btnConcluido.removeAttribute("onclick");
+            btnConcluido.addEventListener("click", () => {
+                marcarConcluido(TOPIC_ID, `${CONFIG.COURSE_BASE}${PROXIMA_PAGINA}`);
+            });
+        }
+
+        // Configuração dinâmica do botão "Próxima" (Modo Curiosidade / Sem salvar no banco)
+        const btnProxima = document.querySelector(".footer-nav button:nth-child(2)"); // Captura o segundo botão do bloco de navegação
+        if (btnProxima) {
+            btnProxima.onclick = () => {
+                window.location.href = `${CONFIG.COURSE_BASE}${PROXIMA_PAGINA}`;
+            };
+        }
+
+        // Configuração dinâmica do botão "Voltar" (Retorna para a página anterior se necessário)
+        // Nota: Ajuste o nome da página anterior manualmente se preferir um controle rígido de histórico
+        const btnVoltar = document.querySelector(".footer-nav button:nth-child(1)");
+        if (btnVoltar) {
+            btnVoltar.onclick = () => {
+                window.location.href = `${CONFIG.COURSE_BASE}1a-prefacio.html`; // No caso da página 1, volta pro prefácio
+            };
+        }
+
+        console.log(`📖 Módulo ${TOPIC_ID} carregado com proteção e suporte a bordo.`);
+    });
 </script>
-
-
 
 
 </body>

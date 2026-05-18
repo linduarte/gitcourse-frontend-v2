@@ -278,6 +278,13 @@
             Logout
         </button>
 
+        <div class="footer-support">
+            <button type="button" id="btn-suporte" class="btn-footer-support">
+            Preciso de Ajuda ❓
+            </button>
+        </div>
+
+
         <button type="button" 
                 id="btn-finalizar"
                 class="btn-footer-primary">
@@ -315,15 +322,19 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    // Importação centralizada das configurações e funções
-    import { CONFIG } from "../../assets/config.js?v=2026-05-13-v8";
-    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-13-v8";
+    // Importação centralizada das configurações e funções (Atualizado para v9)
+    import { CONFIG } from "../../assets/config.js?v=2026-05-18-v9";
+    import { logout, openSuporte } from "../../assets/js/git-course-functions.js?v=2026-05-18-v9";
 
     // 🔐 Proteção da página: impede acesso sem token
     const token = localStorage.getItem('access_token');
     if (!token) {
         window.location.href = `${CONFIG.REPO_BASE}index.html`;
     }
+
+    // 🧭 Gerenciamento do Botão "Preciso de Ajuda" (Boia de Salvamento)
+    // Certifique-se de colocar id="btn-suporte" no seu botão HTML correspondente no centro do footer
+    document.getElementById("btn-suporte")?.addEventListener("click", openSuporte);
 
     // Gerenciamento de Logout
     document.getElementById("btn-logout")?.addEventListener("click", logout);
@@ -383,7 +394,7 @@
         }
     });
 
-    console.log("🏁 Aula 16 (Finalização) pronta e conectada ao backend.");
+    console.log("🏁 Aula 16 (Finalização) pronta e conectada ao backend com suporte ativo.");
 </script>
 
 
