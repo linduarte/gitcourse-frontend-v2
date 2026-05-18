@@ -1,4 +1,4 @@
-/* Last update: May 04, 2026 – 18:01 */
+/* Last update: May 18, 2026 – 17:12 */
 /* ============================================================
    GitCourse Framework — CSS Unificado (Refatorado por Copilot)
    Last update: May 04, 2026
@@ -187,10 +187,16 @@ ul, ol {
 
 .footer-flex {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
+    justify-content: space-between; /* Empurra os blocos para as extremidades e deixa o suporte no centro */
+    align-items: center;            /* Alinha todos os botões verticalmente na mesma linha */
+    width: 100%;
+}
+
+/* Garante que o bloco do centro fique perfeitamente centralizado */
+.footer-support {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1; /* Permite que o bloco ocupe o espaço do meio harmonicamente */
 }
 
 .footer-nav {
@@ -500,4 +506,35 @@ pre[class*="language-"] code {
 * {
     scrollbar-width: thin;
     scrollbar-color: #4b5563 transparent;
+}
+
+/* ==========================================================================
+   BOTÃO DE SUPORTE (BOIA DE SALVAMENTO)
+   ========================================================================== */
+
+.btn-footer-support {
+    background-color: #ef6c00; /* Laranja caloroso (cor de suporte/atenção) */
+    color: #ffffff;            /* Texto em branco para alto contraste */
+    font-weight: 700;          /* Texto em negrito para facilitar a leitura */
+    border: none;              /* Sem bordas brutas */
+    padding: 8px 18px;         /* Espaçamento interno confortável */
+    border-radius: 4px;        /* Cantos suavizados combinando com o padrão */
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;                  /* Espaço perfeito entre o emoji/ícone e o texto */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Leve profundidade */
+}
+
+/* Efeito ao passar o mouse (Hover) */
+.btn-footer-support:hover {
+    background-color: #e65100; /* Tom de laranja ligeiramente mais escuro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra expande sutilmente */
+}
+
+/* Efeito ao clicar (Feedback tátil) */
+.btn-footer-support:active {
+    transform: scale(0.98);    /* Micro-redução para simular o clique mecânico */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
