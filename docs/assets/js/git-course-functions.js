@@ -1,4 +1,4 @@
-// Last update: May 15, 2026 – 08:12
+// Last update: May 18, 2026 – 17:12
 // git-course-functions.js — Versão Consolidada 2026-05-15
 // Foco: Estabilidade de Sessão e Comunicação DuckDNS
 
@@ -110,3 +110,12 @@ function tratarSessaoExpirada() {
 
 // Expõe logout globalmente para botões státicos (onclick)
 window.logout = logout;
+
+// Expõe suporte globalmente para botões estáticos (onclick)
+export function openSuporte() {
+    if (CONFIG.FORUM_SUPORTE) {
+        window.open(CONFIG.FORUM_SUPORTE, '_blank');
+    } else {
+        console.error("Link de suporte não configurado no CONFIG.");
+    }
+}
