@@ -1,9 +1,9 @@
-// Last update: May 15, 2026 – 08:24
+// Last update: May 19, 2026 – 15:42
 // sidebar-logic.js — Versão Consolidada 2026-05-15
 // Foco: Gestão de cliques na sidebar e navegação inteligente
 
-import { navegar } from './dashboard-router.js?v=2026-05-13-v8';
-import { logout, getProgress } from './git-course-functions.js?v=2026-05-13-v8';
+import { navegar } from './dashboard-router.js?v=2026-05-19-v9';
+import { logout, getProgress } from './git-course-functions.js?v=2026-05-19-v9';
 
 /**
  * Inicializa os ouvintes de evento da barra lateral

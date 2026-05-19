@@ -1,8 +1,8 @@
-// Last update: May 15, 2026 – 08:01
+// Last update: May 19, 2026 – 15:40
 // dashboard-app.js — Versão Consolidada SPA
-import { getProgress } from "./git-course-functions.js?v=2026-05-13-v8";
-import { CONFIG } from "../config.js?v=2026-05-13-v8";
-import { navegar } from "./dashboard-router.js?v=2026-05-13-v8";
+import { getProgress } from "./git-course-functions.js?v=2026-05-19-v9";
+import { CONFIG } from "../config.js?v=2026-05-19-v9";
+import { navegar } from "./dashboard-router.js?v=2026-05-19-v9";
 
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("access_token");

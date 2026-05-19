@@ -1,8 +1,8 @@
-// Last update: May 15, 2026 – 08:19
+// Last update: May 19, 2026 – 15:43
 // register.js — Versão Consolidada 2026-05-15
 // Foco: Registro de usuário e redirecionamento para login
 
-import { CONFIG } from "../config.js?v=2026-05-13-v8";
+import { CONFIG } from "../config.js?v=2026-05-19-v9";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registerForm");

@@ -1,8 +1,8 @@
-// Last update: May 15, 2026 – 08:14
+// Last update: May 19, 2026 – 15:43
 // login.js — Versão Consolidada 2026-05-15
 // Foco: Direcionamento inteligente e persistência de sessão
 
-import { CONFIG } from "../config.js?v=2026-05-13-v8";
+import { CONFIG } from "../config.js?v=2026-05-9-v9";
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();

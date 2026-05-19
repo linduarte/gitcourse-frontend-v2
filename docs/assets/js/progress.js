@@ -1,9 +1,9 @@
-// Last update: May 15, 2026 – 08:18
+// Last update: May 19, 2026 – 15:43
 // progress.js — Versão Consolidada 2026-05-15
 // Foco: Interceptação do botão "Concluído" nas páginas de aula
 
-import { registrarEAvancar, logout } from "./git-course-functions.js?v=2026-05-13-v8";
-import { CONFIG } from "../config.js?v=2026-05-13-v8";
+import { registrarEAvancar, logout } from "./git-course-functions.js?v=2026-05-19-v9";
+import { CONFIG } from "../config.js?v=2026-05-19-v9";
 
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("access_token");

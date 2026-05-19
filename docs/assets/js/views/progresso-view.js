@@ -1,7 +1,7 @@
-// Last update: May 15, 2026 – 08:10
-// progresso-view.js — Versão Consolidada 2026-05-15
-import { LESSONS } from '../dashboard-router.js?v=2026-05-13-v8';
-import { getProgress } from '../git-course-functions.js?v=2026-05-13-v8';
+// Last update: May 19, 2026 – 15:42
+// // progresso-view.js — Versão Consolidada 2026-05-15
+import { LESSONS } from '../dashboard-router.js?v=2026-05-19-v9';
+import { getProgress } from '../git-course-functions.js?v=2026-05-19-v9';
 
 export class ProgressoView {
     constructor() {

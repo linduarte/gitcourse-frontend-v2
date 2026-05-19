@@ -1,8 +1,8 @@
-// Last update: May 15, 2026 – 08:06
+// Last update: May 19, 2026 – 15:39
 // dashboard-router.js — Versão Consolidada 
-import { CONFIG } from '../config.js?v=2026-05-13-v8';
-import { HomeView } from './views/home-view.js?v=2026-05-13-v8';
-import { ProgressoView } from './views/progresso-view.js?v=2026-05-13-v8';
+import { CONFIG } from '../config.js?v=2026-05-19-v9';
+import { HomeView } from './views/home-view.js?v=2026-05-19-v9';
+import { ProgressoView } from './views/progresso-view.js?v=2026-05-19-v9';
 
 export const LESSONS = [
     "1a-prefacio.html", "2-terminal-customization.html", "2a-introduction.html",

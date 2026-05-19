@@ -1,8 +1,8 @@
-// Last update: May 18, 2026 – 17:12
+// Last update: May 19, 2026 – 15:38
 // git-course-functions.js — Versão Consolidada 2026-05-15
 // Foco: Estabilidade de Sessão e Comunicação DuckDNS
 
-import { CONFIG } from '../config.js?v=2026-05-13-v8';
+import { CONFIG } from '../config.js?v=2026-05-19-v9';
 
 const API_URL = CONFIG.API_URL;
 
@@ -118,4 +118,13 @@ export function openSuporte() {
     } else {
         console.error("Link de suporte não configurado no CONFIG.");
     }
+}
+
+/**
+ * Apelido de compatibilidade (Alias) para manter suporte às páginas 
+ * que ainda importam e chamam o termo "marcarConcluido".
+ */
+export async function marcarConcluido(topicId) {
+    // Repassa os dados internamente para a função nova
+    return await registrarEAvancar(topicId, null);
 }

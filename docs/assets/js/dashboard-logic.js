@@ -1,9 +1,9 @@
-// Last update: May 15, 2026 – 08:22
+// Last update: May 19, 2026 – 15:39
 // dashboard-logic.js — Versão Consolidada 2026-05-15
 // Controle de progresso e proteção de acesso para páginas de aula
 
-import { registrarEAvancar, logout } from "./git-course-functions.js?v=2026-05-13-v8";
-import { CONFIG } from "../config.js?v=2026-05-13-v8";
+import { registrarEAvancar, logout } from "./git-course-functions.js?v=2026-05-19-v9";
+import { CONFIG } from "../config.js?v=2026-05-19-v9";
 
 document.addEventListener("DOMContentLoaded", () => {
     // 1. 🔐 Verificação de Segurança
