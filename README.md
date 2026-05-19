@@ -239,5 +239,3 @@ Frontend em produção:
 
 Link curto (Bit.ly):
 👉 [Curso Git - Aprenda de forma prática e eficiente](https://bit.ly/git-for-all)
-
-
