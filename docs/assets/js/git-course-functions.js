@@ -1,4 +1,4 @@
-// Last update: May 19, 2026 – 15:38
+// Last update: May 19, 2026 – 15:54
 // git-course-functions.js — Versão Consolidada 2026-05-15
 // Foco: Estabilidade de Sessão e Comunicação DuckDNS
 
@@ -122,9 +122,9 @@ export function openSuporte() {
 
 /**
  * Apelido de compatibilidade (Alias) para manter suporte às páginas 
- * que ainda importam e chamam o termo "marcarConcluido".
+ * que importam 'marcarConcluido' passando o ID e o link da próxima aula.
  */
-export async function marcarConcluido(topicId) {
-    // Repassa os dados internamente para a função nova
-    return await registrarEAvancar(topicId, null);
+export async function marcarConcluido(topicId, proximaAula) {
+    // Agora capturamos a 'proximaAula' vinda do HTML e repassamos para a execução real
+    return await registrarEAvancar(topicId, proximaAula);
 }
