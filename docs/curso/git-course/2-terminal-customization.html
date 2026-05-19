@@ -205,53 +205,47 @@ error_symbol = "[❯](bold red)"
         window.location.href = `${CONFIG.REPO_BASE}index.html`;
     }
 
-    // 4. Adaptação da Lógica Local da Aula
+// 4. Adaptação da Lógica Local da Aula
     document.addEventListener("DOMContentLoaded", () => {
         
-        // ID desta aula específica no seu banco de dados (Ajuste em cada página)
-        const TOPIC_ID = 1; 
-
-        // Nome do arquivo da próxima lição (Ajuste em cada página)
-        const PROXIMA_PAGINA = "2a-introduction.html"; 
-
-        // O seu botão "Concluído" vai disparar a API e depois navegar para a próxima página
-        // SELETOR EVOLUÍDO: Procura pela classe OU por qualquer botão cujo onclick contenha "marcarConcluido"
-        const btnConcluido = document.querySelector(".btn-footer-success") || 
-                             document.querySelector("[onclick*='marcarConcluido']");
+        // Buscamos o botão diretamente pela ID infalível que está no seu HTML
+        const btnConcluido = document.getElementById("markCompletedButton");
 
         if (btnConcluido) {
-            // Removemos o onclick antigo do HTML para evitar disparos duplicados
-            btnConcluido.removeAttribute("onclick");
-    
-            // Injeta a lógica robusta associando o ID correto da lição
+            // Captura dinamicamente os valores direto dos atributos 'data-' do botão físico
+            const topicId = btnConcluido.getAttribute("data-topic-id") || 1; 
+            const proximaPagina = btnConcluido.getAttribute("data-next-lesson") || "2a-introduction.html"; 
+
+            // Injeta a lógica robusta associando o ID correto da lição ao clique
             btnConcluido.addEventListener("click", (e) => {
-                e.preventDefault(); // Garante que nenhum comportamento padrão trave o fluxo
-                console.log(`🚀 Executando salvar progresso para o Tópico: ${TOPIC_ID}`);
-                marcarConcluido(TOPIC_ID, `${CONFIG.COURSE_BASE}${PROXIMA_PAGINA}`);
+                e.preventDefault(); // Impede comportamentos padrão do navegador
+                console.log(`🚀 Executando salvar progresso para o Tópico: ${topicId}`);
+                
+                // Dispara a função global passando os parâmetros certos
+                marcarConcluido(topicId, `${CONFIG.COURSE_BASE}${proximaPagina}`);
             });
             console.log("🎯 Ouvinte de clique acoplado ao botão Concluído com sucesso!");
         } else {
-            console.warn("⚠️ Alerta: O botão Concluído não foi localizado pelos seletores.");
+            console.warn("⚠️ Alerta: O botão Concluído (#markCompletedButton) não foi localizado no HTML.");
         }
 
-        // Configuração dinâmica do botão "Próxima" (Modo Curiosidade / Sem salvar no banco)
-        const btnProxima = document.querySelector(".footer-nav button:nth-child(2)"); // Captura o segundo botão do bloco de navegação
+        // Configuração dinâmica dos links de navegação adicionais (Seletor ajustado para as tags <a>)
+        const btnProxima = document.querySelector(".footer-nav a:nth-child(2)");
         if (btnProxima) {
-            btnProxima.onclick = () => {
-                window.location.href = `${CONFIG.COURSE_BASE}${PROXIMA_PAGINA}`;
-            };
+            // Se quiser que o link simples também funcione dinamicamente via CONFIG:
+            const proximaPaginaAttr = btnConcluido ? btnConcluido.getAttribute("data-next-lesson") : "2a-introduction.html";
+            btnProxima.href = `${CONFIG.COURSE_BASE}${proximaPaginaAttr}`;
         }
 
-        // Configuração dinâmica do botão "Voltar" (Retorna para a página anterior se necessário)
-        const btnVoltar = document.querySelector(".footer-nav button:nth-child(1)");
+        const btnVoltar = document.querySelector(".footer-nav a:nth-child(1)");
         if (btnVoltar) {
-            btnVoltar.onclick = () => {
-                window.location.href = `${CONFIG.COURSE_BASE}1a-prefacio.html`; // No caso da página 1, volta pro prefácio
-            };
+            btnVoltar.href = `${CONFIG.COURSE_BASE}1a-prefacio.html`;
         }
 
-        console.log(`📖 Módulo ${TOPIC_ID} carregado com proteção e suporte a bordo.`);
-    });
+        // Recupera o ID para exibir no log de carregamento
+        const currentId = btnConcluido ? btnConcluido.getAttribute("data-topic-id") : 1;
+        console.log(`📖 Módulo ${currentId} carregado com proteção e suporte a bordo.`);
+    });    
 </script>
 
 
