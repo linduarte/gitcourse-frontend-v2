@@ -1,4 +1,4 @@
-<!-- Last update: May 19, 2026 – 06:53 -->
+<!-- Last update: May 19, 2026 – 14:24 -->
  <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,6 +8,9 @@
 
     <link rel="stylesheet" href="assets/css/gitcourse.css">
     <link rel="stylesheet" href="assets/css/landing.css">
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
 </head>
 
 <body>
@@ -189,7 +192,7 @@
 </main>
 </div>
 
-<script type="module" src="assets/config.js?v=2026-05-18-v8"></script>
+<script type="module" src="assets/config.js?v=2026-05-19-v9"></script>
 
 
 
@@ -214,19 +217,25 @@ const COURSE_TOPICS = [
     { title: "git init", items: ["Definição", "Iniciando repositório com nome específico"] },
     { title: "Git workflows para iniciantes", items: ["Como o Git habilita metodologias ágeis", "Comandos básicos", "Comandos do dia a dia", "Fluxos de trabalho"] },
     
-    // 🚀 MÓDULO 16: Adaptado perfeitamente para o seu motor clássico original
-    { 
-        title: "🚀 O Futuro: Jujutsu (jj) do Google", 
-        items: [
-            "<strong>Uma Alternativa moderna ao Git:</strong> O Git vem de longa data dominando o universo dos desenvolvedores. No entanto, ferramentas sólidas podem ser reinventadas buscando mitigar deficiências históricas.",
-            "Em 2025, foi apresentado o <strong>Jujutsu (jj)</strong>, um sistema de controle de versão experimental criado por Martin von Zweigbergk, engenheiro do Google e ex-contribuidor do Mercurial.",
-            "O nome é uma metáfora à arte marcial japonesa: o <code>jj</code> eleva os conceitos do Git e equaciona suas fraquezas, mantendo a compatibilidade total com repositórios Git, mas oferecendo uma interface muito mais amigável e intuitiva.",
-            "🔹 Compatibilidade nativa com o ecossistema Git",
-            "🔹 Interface focada na produtividade do desenvolvedor",
-            "🔹 Abordagem moderna para fluxos de trabalho complexos"
-        ] 
-    }
+// ==========================================================================
+// MÓDULO 16: Versão Corrigida sem Pontos e Vírgulas (Bomba Desarmada!)
+// ==========================================================================
+// assets/course-data.js (ou onde estiver seu array)
+{ 
+    title: "🚀 O Futuro: Jujutsu (jj) do Google", 
+    items: [
+        "<strong>Uma Alternativa moderna ao Git:</strong> O Git vem de longa data dominando o universo dos desenvolvedores. No entanto, ferramentas sólidas podem ser reinventadas buscando mitigar deficiências históricas.",
+        "Em 2025, foi apresentado o <strong>Jujutsu (jj)</strong>, um sistema de controle de versão experimental criado por Martin von Zweigbergk, engenheiro do Google e ex-contribuidor do Mercurial.",
+        "O nome é uma metáfora à arte marcial japonesa: o <code>jj</code> eleva os conceitos do Git e equaciona suas fraquezas, mantendo a compatibilidade total com repositórios Git, mas oferecendo uma interface muito mais amigável e intuitiva.",
+        "🔹 Compatibilidade nativa com o ecossistema Git",
+        "🔹 Interface focada na produtividade do desenvolvedor",
+        "🔹 Abordagem moderna para fluxos de trabalho complexos"
+
+        
+    ] 
+}
 ];
+
 
 // ==========================================================================
 // MOTOR DE RENDERIZAÇÃO DO ACORDEÃO — VERSÃO RESTAURADA E COMPATÍVEL
@@ -239,9 +248,23 @@ COURSE_TOPICS.forEach((topic, index) => {
     item.className = "accordion-item";
 
     // Se for o Jujutsu, ele verifica se existe o htmlContent, se não, usa a lista padrão de itens
-    const painelConteudo = topic.htmlContent 
+    let painelConteudo = topic.htmlContent 
         ? topic.htmlContent 
         : `<ul>${topic.items.map(i => `<li>${i}</li>`).join("")}</ul>`;
+
+    // ==========================================================================
+    // INJEÇÃO DA IMAGEM DO DIAGRAMA CONCEITUAL (APENAS NO MÓDULO 16 / ÍNDICE 15)
+    // ==========================================================================
+    if (index === 15) {
+        painelConteudo += `
+            <div class="diagrama-jujutsu-container" style="text-align: center; margin: 25px 0 10px 0; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                <img src="assets/images/diagrama-jujutsu.png" alt="Diagrama de Paradigma: Git vs Jujutsu" style="max-width: 100%; height: auto; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 10px; margin-bottom: 0; line-height: 1.4;">
+                    <em>Comparação visual entre o gerenciamento de ramificações do Git e a linearidade do Jujutsu.</em>
+                </p>
+            </div>
+        `;
+    }
 
     // Se for especial, aplica o tom azul (#00aaff) no botão de clique
     const estiloBotao = topic.isSpecial ? 'style="color: #00aaff; font-weight: bold;"' : '';
