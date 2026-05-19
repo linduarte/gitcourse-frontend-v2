@@ -264,3 +264,17 @@ body {
         width: 85%;
     }
 }
+
+/* ==========================================================================
+   Ajuste Fino do Módulo 16 (Jujutsu): Remove a bolinha e mantém o diamante
+   ========================================================================== */
+#acc-topic-15 ul {
+    list-style-type: none !important; /* Desliga as bolinhas pretas padrão do navegador */
+    padding-left: 0 !important;       /* Remove o recuo antigo da bolinha */
+    margin-left: 5px !important;      /* Alinha o diamante perfeitamente à esquerda */
+}
+
+acc-topic-15 li {
+    display: block !important;        /* Força o navegador a respeitar o fim da lista antiga */
+    margin-bottom: 8px;               /* Dá um espaçamento agradável entre os diamantes */
+}
