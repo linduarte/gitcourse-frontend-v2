@@ -1,4 +1,4 @@
-<!-- Last update: May 20, 2026 – 07:56 -->
+<!-- Last update: May 20, 2026 – 13:07 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -371,8 +371,8 @@
                             'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify({
-                            topic_id: 16
-                        } * 1) // Garante o cast numérico rigoroso
+                        topic_id: 16 // Apenas o número puro, sem multiplicações externas
+                        }) 
                     });
 
                     if (response.ok) {
