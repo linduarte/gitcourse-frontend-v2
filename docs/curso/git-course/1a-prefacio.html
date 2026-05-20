@@ -1,4 +1,4 @@
-<!-- Last update: May 19, 2026 – 08:53 -->
+<!-- Last update: May 20, 2026 – 07:38 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -207,30 +207,52 @@
 </div>
 
 <script type="module">
-    import { logout } from "../../assets/js/git-course-functions.js?v=2026-05-19-v9";
+    // 1. Importações centrais alinhadas com a versão v9 do ecossistema
+    import { logout, openSuporte } from "../../assets/js/git-course-functions.js?v=2026-05-19-v9";
     import { CONFIG } from "../../assets/config.js?v=2026-05-19-v9";
 
+    // 2. Vinculação ao escopo global para botões estáticos, se houver
     window.logout = logout;
+    window.openSuporte = openSuporte;
 
+    // 3. 🔐 Trava de Segurança: Impede acesso de usuários sem sessão ativa
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = `${CONFIG.REPO_BASE}index.html`;
+    }
+
+    // 4. Execução da lógica local após o carregamento estrutural do DOM
     document.addEventListener("DOMContentLoaded", () => {
 
-        // Botão "Iniciar Jornada Git"
+        // Botão central "Iniciar Jornada Git"
         const startBtn = document.getElementById("startCourseBtn");
         if (startBtn) {
-            startBtn.addEventListener("click", () => {
+            startBtn.addEventListener("click", (e) => {
+                e.preventDefault();
                 window.location.href = `${CONFIG.COURSE_BASE}2-terminal-customization.html`;
             });
         }
 
-        // Botão "Início"
-        const inicioBtn = document.querySelector(".footer-nav button");
+        // Botão/Link "Início" no Rodapé de Navegação
+        // SELETOR ADAPTADO: Procura tanto por tag 'a' quanto por 'button' dentro da navegação
+        const inicioBtn = document.querySelector(".footer-nav a") || document.querySelector(".footer-nav button");
         if (inicioBtn) {
-            inicioBtn.onclick = () => {
-                window.location.href = `${CONFIG.REPO_BASE}index.html`;
-            };
+            // Se for uma tag <a>, injetamos direto no atributo href (Melhor UX)
+            if (inicioBtn.tagName.toLowerCase() === 'a') {
+                inicioBtn.href = `${CONFIG.REPO_BASE}index.html`;
+            } else {
+                // Caso seja um button físico, mantemos o gatilho de clique
+                inicioBtn.onclick = () => {
+                    window.location.href = `${CONFIG.REPO_BASE}index.html`;
+                };
+            }
         }
 
-        console.log("Prefácio carregado com DOM pronto.");
+        // Suporte opcional no rodapé (Caso exista o botão físico id="btn-suporte" ou classe correspondente)
+        document.getElementById("btn-suporte")?.addEventListener("click", openSuporte);
+        document.querySelector(".btn-footer-support")?.addEventListener("click", openSuporte);
+
+        console.log("📖 Prefácio carregado com proteção ativa e DOM pronto.");
     });
 </script>
 
