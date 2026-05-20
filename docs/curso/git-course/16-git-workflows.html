@@ -1,4 +1,4 @@
-<!-- Last update: May 19, 2026 – 09:03 -->
+<!-- Last update: May 19, 2026 – 21:07 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -322,81 +322,94 @@
 <script>Prism.highlightAll();</script>
 
 <script type="module">
-    // Importação centralizada das configurações e funções (Atualizado para v9)
+    // 1. Importação centralizada das configurações e funções (Atualizado para v9)
     import { CONFIG } from "../../assets/config.js?v=2026-05-19-v9";
-    import { logout, openSuporte } from "../../assets/js/git-course-functions.js?v=2026-05-19-v9";
+    import { logout, openSuporte, marcarConcluido } from "../../assets/js/git-course-functions.js?v=2026-05-19-v9";
 
-    // 🔐 Proteção da página: impede acesso sem token
+    // 2. Vinculação aos gatilhos 'onclick' do HTML (Escopo Global e Retrocompatibilidade)
+    window.logout = logout;
+    window.openSuporte = openSuporte;
+    window.marcarConcluido = marcarConcluido;
+
+    // 3. 🔐 Proteção da página: impede acesso sem token
     const token = localStorage.getItem('access_token');
     if (!token) {
         window.location.href = `${CONFIG.REPO_BASE}index.html`;
     }
 
-    // 🧭 Gerenciamento do Botão "Preciso de Ajuda" (Boia de Salvamento)
-    // Certifique-se de colocar id="btn-suporte" no seu botão HTML correspondente no centro do footer
-    document.getElementById("btn-suporte")?.addEventListener("click", openSuporte);
-
-    // Gerenciamento de Logout
-    document.getElementById("btn-logout")?.addEventListener("click", logout);
-
-    // Lógica de Finalização
-    document.getElementById("btn-finalizar")?.addEventListener("click", async () => {
-        const btn = document.getElementById("btn-finalizar");
+    // 4. Adaptação da Lógica de Encerramento (Executada após carga do DOM)
+    document.addEventListener("DOMContentLoaded", () => {
         
-        // O caminho para o dashboard agora é construído via CONFIG para evitar erros de path
-        const urlDashboard = `${CONFIG.REPO_BASE}dashboard.html`;
+        // 🧭 Gerenciamento do Botão "Preciso de Ajuda"
+        document.getElementById("btn-suporte")?.addEventListener("click", openSuporte);
 
-        if (!btn) return;
+        // Gerenciamento de Logout
+        document.getElementById("btn-logout")?.addEventListener("click", logout);
 
-        // Feedback visual imediato (UX)
-        btn.disabled = true;
-        btn.textContent = "Processando...";
+        // Lógica de Finalização do Curso
+        const btnFinalizar = document.getElementById("btn-finalizar") || document.getElementById("markCompletedButton");
+        
+        if (btnFinalizar) {
+            btnFinalizar.addEventListener("click", async (e) => {
+                e.preventDefault();
+                
+                const urlDashboard = `${CONFIG.REPO_BASE}dashboard.html`;
 
-        try {
-            // Registro final no seu backend (DuckDNS)
-            const response = await fetch(`${CONFIG.API_URL}/progress/complete`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    topic_id: 16
-                })
+                // FEEDBACK VISUAL VENCEDOR (Harmonia com o restante do ecossistema)
+                btnFinalizar.disabled = true;
+                btnFinalizar.style.backgroundColor = "#28a745"; // Força o tom verde de sucesso
+                btnFinalizar.style.borderColor = "#28a745";
+                btnFinalizar.style.cursor = "not-allowed";
+                btnFinalizar.innerHTML = "Salvando... 🔄";
+
+                try {
+                    // Registro final no seu backend (DuckDNS) - Tópico 16
+                    const response = await fetch(`${CONFIG.API_URL}/progress/complete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            topic_id: 16
+                        } * 1) // Garante o cast numérico rigoroso
+                    });
+
+                    if (response.ok) {
+                        btnFinalizar.innerHTML = "Curso Concluído! ✓";
+                        console.log("✅ Aula 16 registrada com sucesso. Redirecionando para o cockpit...");
+
+                        // Pequena pausa para o usuário saborear a vitória e ver o status salvo
+                        setTimeout(() => {
+                            window.location.href = urlDashboard;
+                        }, 1500);
+
+                    } else {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || "Erro no servidor");
+                    }
+
+                } catch (error) {
+                    console.error("❌ Falha ao registrar conclusão da Aula 16:", error);
+
+                    btnFinalizar.innerHTML = "Erro no Registro";
+                    btnFinalizar.style.backgroundColor = "#dc3545";
+                    btnFinalizar.style.borderColor = "#dc3545";
+
+                    // Mesmo com erro de rede ou DuckDNS, força ida ao dashboard após um aviso
+                    setTimeout(() => {
+                        window.location.href = urlDashboard;
+                    }, 2500);
+                }
             });
-
-            if (response.ok) {
-                btn.textContent = "Curso Concluído! ✓";
-                btn.style.backgroundColor = "#28a745";
-
-                console.log("✅ Aula 16 registrada com sucesso. Redirecionando para o cockpit...");
-
-                // Pequena pausa para o usuário ver a mensagem de sucesso
-                setTimeout(() => {
-                    window.location.href = urlDashboard;
-                }, 1500);
-
-            } else {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || "Erro no servidor");
-            }
-
-        } catch (error) {
-            console.error("❌ Falha ao registrar conclusão:", error);
-
-            btn.textContent = "Erro no Registro";
-            btn.style.backgroundColor = "#dc3545";
-
-            // Mesmo com erro, redirecionamos para o dashboard após um alerta
-            setTimeout(() => {
-                window.location.href = urlDashboard;
-            }, 2500);
+            console.log("🎯 Ouvinte de clique acoplado ao botão de Finalização com sucesso!");
+        } else {
+            console.warn("⚠️ Alerta: O botão de finalização (#btn-finalizar ou #markCompletedButton) não foi achado.");
         }
+
+        console.log("🏁 Aula 16 (Finalização) pronta e conectada ao backend com suporte ativo.");
     });
-
-    console.log("🏁 Aula 16 (Finalização) pronta e conectada ao backend com suporte ativo.");
 </script>
-
 
 </body>
 </html>

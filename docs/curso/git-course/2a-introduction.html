@@ -1,4 +1,4 @@
-<!-- Last update: May 19, 2026 – 08:51 -->
+<!-- Last update: May 19, 2026 – 20:16 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -197,46 +197,65 @@
         window.location.href = `${CONFIG.REPO_BASE}index.html`;
     }
 
-    // 4. Adaptação da Lógica Local da Aula
+// 4. Adaptação da Lógica Local da Aula
     document.addEventListener("DOMContentLoaded", () => {
         
-        // ID desta aula específica no seu banco de dados (Ajuste em cada página)
-        const TOPIC_ID = 2; 
+        // Buscamos o botão diretamente pela ID infalível que está no seu HTML
+        const btnConcluido = document.getElementById("markCompletedButton");
 
-        // Nome do arquivo da próxima lição (Ajuste em cada página)
-        const PROXIMA_PAGINA = "3-git-config.html"; 
-
-        // O seu botão "Concluído" vai disparar a API e depois navegar para a próxima página
-        const btnConcluido = document.querySelector(".btn-footer-success") || document.querySelector("[onclick='marcarConcluido()']");
         if (btnConcluido) {
-            // Removemos o onclick antigo para injetar a lógica robusta com o ID correto da lição
+            // Removemos o onclick antigo do HTML para evitar disparos duplicados
             btnConcluido.removeAttribute("onclick");
-            btnConcluido.addEventListener("click", () => {
-                marcarConcluido(TOPIC_ID, `${CONFIG.COURSE_BASE}${PROXIMA_PAGINA}`);
+    
+            // Injeta a lógica robusta associando o ID correto da lição ao clique
+            btnConcluido.addEventListener("click", async (e) => {
+                e.preventDefault(); // Impede comportamentos padrões do navegador
+                
+                // 1. Captura as variáveis rigorosamente DENTRO do clique para evitar o ReferenceError
+                const currentTopicId = btnConcluido.getAttribute("data-topic-id") || 2; 
+                const proximaPagina = btnConcluido.getAttribute("data-next-lesson") || "2a-introduction.html"; 
+
+                // 2. FEEDBACK VISUAL: Texto mais curto para não empurrar o layout
+                btnConcluido.disabled = true;
+                btnConcluido.style.backgroundColor = "#28a745"; // Força um tom verde de sucesso
+                btnConcluido.style.borderColor = "#28a745";
+                btnConcluido.style.cursor = "not-allowed";
+                btnConcluido.innerHTML = "Salvando... 🔄"; // Curto e direto
+
+                console.log(`🚀 Executando salvar progresso para o Tópico: ${currentTopicId}`);
+                
+                try {
+                    // 3. Dispara a API passando a variável correta que acabámos de capturar
+                    await marcarConcluido(currentTopicId, `${CONFIG.COURSE_BASE}${proximaPagina}`);
+                } catch (apiError) {
+                    console.error("❌ Erro ao processar marcarConcluido no backend:", apiError);
+                    // Salvaguarda caso a API caia: força a navegação para o aluno não travar
+                    window.location.href = `${CONFIG.COURSE_BASE}${proximaPagina}`;
+                }
             });
+            console.log("🎯 Ouvinte de clique acoplado ao botão Concluído com sucesso!");
+        } else {
+            console.warn("⚠️ Alerta: O botão Concluído (#markCompletedButton) não foi localizado no HTML.");
         }
 
-        // Configuração dinâmica do botão "Próxima" (Modo Curiosidade / Sem salvar no banco)
-        const btnProxima = document.querySelector(".footer-nav button:nth-child(2)"); // Captura o segundo botão do bloco de navegação
+        // Configuração dinâmica dos links de navegação adicionais (Seletor ajustado para as tags <a>)
+        const btnProxima = document.querySelector(".footer-nav a:nth-child(2)");
         if (btnProxima) {
-            btnProxima.onclick = () => {
-                window.location.href = `${CONFIG.COURSE_BASE}${PROXIMA_PAGINA}`;
-            };
+            // Se quiser que o link simples também funcione dinamicamente via CONFIG:
+            const proximaPaginaAttr = btnConcluido ? btnConcluido.getAttribute("data-next-lesson") : "2a-introduction.html";
+            btnProxima.href = `${CONFIG.COURSE_BASE}${proximaPaginaAttr}`;
         }
 
-        // Configuração dinâmica do botão "Voltar" (Retorna para a página anterior se necessário)
-        // Nota: Ajuste o nome da página anterior manualmente se preferir um controle rígido de histórico
-        const btnVoltar = document.querySelector(".footer-nav button:nth-child(1)");
+        const btnVoltar = document.querySelector(".footer-nav a:nth-child(1)");
         if (btnVoltar) {
-            btnVoltar.onclick = () => {
-                window.location.href = `${CONFIG.COURSE_BASE}2a-introduction.html`; // No caso da página 2, volta para a introdução
-            };
+            btnVoltar.href = `${CONFIG.COURSE_BASE}1a-prefacio.html`;
         }
 
-        console.log(`📖 Módulo ${TOPIC_ID} carregado com proteção e suporte a bordo.`);
-    });
+        // Recupera o ID para exibir no log de carregamento
+        const currentId = btnConcluido ? btnConcluido.getAttribute("data-topic-id") : 2;
+        console.log(`📖 Módulo ${currentId} carregado com proteção e suporte a bordo.`);
+    });    
 </script>
-
 
 
 </body>
